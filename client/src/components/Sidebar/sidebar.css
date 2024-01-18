@@ -1,0 +1,19 @@
+.page {
+}
+
+.page .container-fluid {
+  background-color: #182433;
+}
+
+.nav-item:hover {
+  background-color: #223348;
+}
+
+.nav-link-icon,
+.nav-link-title {
+  color: #ffffffaf;
+}
+
+.catActive {
+  background-color: #223348;
+}
