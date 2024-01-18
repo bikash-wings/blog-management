@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      // User.hasMany(models.Blog, { foreignKey: "userId" });
     }
   }
 
@@ -38,6 +39,13 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           isEmail: true,
         },
+      },
+      isVerified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      verifyToken: {
+        type: DataTypes.STRING,
       },
       password: {
         type: DataTypes.STRING,

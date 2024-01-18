@@ -13,7 +13,7 @@ const hashPassword = async (password) => {
 
 const comparePassword = async (password, hashedPassword) => {
   try {
-    const isPasswordMatch = await bcrypt.compare(password, hashedPassword);
+    const isPasswordMatch = await bcrypt.compareSync(password, hashedPassword);
 
     return isPasswordMatch;
   } catch (error) {

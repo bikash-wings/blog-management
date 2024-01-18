@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      // blog.belongsTo(models.User, { foreignKey: "userId" });
     }
   }
   blog.init(
@@ -17,6 +18,13 @@ module.exports = (sequelize, DataTypes) => {
       id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
       title: { type: DataTypes.STRING, allowNull: false },
       description: { type: DataTypes.STRING, allowNull: false },
+      // userId: {
+      //   type: DataTypes.INTEGER,
+      //   allowNull: false,
+      //   references: { model: "User", key: "id" },
+      //   onUpdate: "CASCADE",
+      //   onDelete: "CASCADE",
+      // },
     },
     {
       sequelize,

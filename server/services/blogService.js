@@ -63,7 +63,11 @@ const updateBlog = async (req, res) => {
       blog.description = description;
     }
 
-    const updatedBlog = await blog.save();
+    const updatedBlog = await db.User.update(
+      { ...blog },
+      { where: { id: blogid } }
+    );
+    console.log(updatedBlog);
 
     return res.json(updatedBlog);
   } catch (error) {
