@@ -10,8 +10,8 @@ const BlogModal = ({ blogid, modal, setModal }) => {
   const fetchSingleBlog = async () => {
     try {
       const { data } = await axios.get(`${singleBlogRoute}/${blogid}`);
-      setBlog(data);
-      console.log(data);
+      setBlog(data.data);
+      console.log(data.data);
     } catch (error) {
       console.log(error);
     }
@@ -31,8 +31,8 @@ const BlogModal = ({ blogid, modal, setModal }) => {
         title: blog.title,
         description: blog.description,
       });
-      setBlog(data);
-      console.log(data);
+      setBlog(data.data);
+      console.log(data.data);
     } catch (error) {
       console.log(error);
     }

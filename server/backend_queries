@@ -1,4 +1,0 @@
-1. whether to use res.json inside controller or inside service
-2. is api implementations are good enough
-3. whether to always return 'Internal Server Error' or can send customized message
-4. 

@@ -20,8 +20,8 @@ const DataTables = ({ category, modal, setModal }) => {
   const fetchAllBlogs = async () => {
     try {
       const { data } = await axios.get(allBlogsRoute);
-      setSelectedData(data);
-      console.log(data);
+      setSelectedData(data.data);
+      console.log(data.data);
     } catch (error) {
       console.log(error);
     }
@@ -49,7 +49,7 @@ const DataTables = ({ category, modal, setModal }) => {
     try {
       const { data } = await axios.delete(`${deleteBlogRoute}/${selectedId}`);
       fetchAllBlogs();
-      console.log(data);
+      console.log(data.data);
     } catch (error) {
       console.log(error);
     }
@@ -115,6 +115,7 @@ const DataTables = ({ category, modal, setModal }) => {
                     {/* <td className="sort-city"> */}
                     {/* View icon/button */}
                     <FaRegEye
+                      style={{ margin: "15px 10px 0" }}
                       onClick={() => {
                         setModal((p) => ({ ...p, blog: true }));
                         setSelectedId(item.id);
@@ -122,20 +123,26 @@ const DataTables = ({ category, modal, setModal }) => {
                     />
 
                     {/* Edit icon/button */}
-                    <LuPencil
-                      onClick={() => {
-                        setModal((p) => ({ ...p, edit: true }));
-                        setSelectedId(item.id);
-                      }}
-                    />
+                    {category === "blogs" && (
+                      <>
+                        <LuPencil
+                          onClick={() => {
+                            setModal((p) => ({ ...p, edit: true }));
+                            setSelectedId(item.id);
+                          }}
+                          style={{ marginTop: "15px", marginRight: "10px" }}
+                        />
 
-                    {/* Delete icon/button */}
-                    <MdDeleteOutline
-                      onClick={() => {
-                        setModal((p) => ({ ...p, confirm: true }));
-                        setSelectedId(item.id);
-                      }}
-                    />
+                        {/* Delete icon/button */}
+                        <MdDeleteOutline
+                          onClick={() => {
+                            setModal((p) => ({ ...p, confirm: true }));
+                            setSelectedId(item.id);
+                          }}
+                          style={{ marginTop: "15px" }}
+                        />
+                      </>
+                    )}
 
                     {modal.confirm && (
                       <ConfirmModal

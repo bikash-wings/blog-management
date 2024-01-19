@@ -1,3 +1,4 @@
-.container-xl {
-  max-width: 1040px;
+.navbar-nav {
+  margin-top: 10px;
+  justify-content: space-between;
 }

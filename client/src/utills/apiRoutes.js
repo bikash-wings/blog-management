@@ -1,15 +1,18 @@
-export const host = `http://localhost:3000/api/v1`;
+export const host = `http://localhost:3000`;
 
 /* USER api routes */
 
 /* method: POST*/
-export const signupRoute = `${host}/users/signup`;
+export const signupRoute = `${host}/api/v1/users/signup`;
 
 /* method: POST */
-export const loginRoute = `${host}/users/login`;
+export const loginRoute = `${host}/api/v1/users/login`;
 
 /* method: GET */
-export const allUsersRoute = `${host}/users/get-all`;
+export const allUsersRoute = `${host}/api/v1/users/get-all`;
+
+/* method: POST, params: userid  */
+export const uploadAvatarRoute = `${host}/api/v1/users/upload`;
 
 /**
  * Below api routes is for Blogs
@@ -17,16 +20,16 @@ export const allUsersRoute = `${host}/users/get-all`;
  */
 
 /* method: POST */
-export const addBlogRoute = `${host}/blogs/add`;
+export const addBlogRoute = `${host}/api/v1/blogs/add`;
 
 /* params: blogid , method: GET */
-export const singleBlogRoute = `${host}/blogs`;
+export const singleBlogRoute = `${host}/api/v1/blogs`;
 
 /* method: GET */
-export const allBlogsRoute = `${host}/blogs/get-all`;
+export const allBlogsRoute = `${host}/api/v1/blogs/get-all`;
 
 /* params: blogid , method: PUT */
-export const updateBlogRoute = `${host}/blogs`;
+export const updateBlogRoute = `${host}/api/v1/blogs`;
 
 /* params: blogid , method: DELETE */
-export const deleteBlogRoute = `${host}/blogs`;
+export const deleteBlogRoute = `${host}/api/v1/blogs`;

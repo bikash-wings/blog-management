@@ -1,34 +1,67 @@
+const { StatusCodes } = require("http-status-codes");
 const blogService = require("../services/blogService");
+const { setSuccessResponse } = require("../utills/sendResponse");
+const { catchAsync } = require("../utills/catchAsync");
 
-const createBlog = async (req, res) => {
-  const blog = await blogService.createBlog(req, res);
+const createBlog = catchAsync(async (req, res) => {
+  const blog = await blogService.createBlog(req);
 
-  return blog;
-};
+  return setSuccessResponse(
+    res,
+    StatusCodes.OK,
+    true,
+    blog,
+    "Blog created successfully"
+  );
+});
 
-const getSingleBlog = async (req, res) => {
-  const blog = await blogService.fetchSingleBlog(req, res);
+const getSingleBlog = catchAsync(async (req, res) => {
+  const blog = await blogService.fetchSingleBlog(req);
 
-  return blog;
-};
+  return setSuccessResponse(
+    res,
+    StatusCodes.OK,
+    true,
+    blog,
+    "blog fetched successfully"
+  );
+});
 
-const getAllBlogs = async (req, res) => {
-  const allBlogs = await blogService.fetchAllBlogs(req, res);
+const getAllBlogs = catchAsync(async (req, res) => {
+  const allBlogs = await blogService.fetchAllBlogs();
 
-  return allBlogs;
-};
+  return setSuccessResponse(
+    res,
+    StatusCodes.OK,
+    true,
+    allBlogs,
+    "Fetched all blogs"
+  );
+});
 
-const updateBlog = async (req, res) => {
-  const updatedBlog = await blogService.updateBlog(req, res);
+const updateBlog = catchAsync(async (req, res) => {
+  const updatedBlog = await blogService.updateBlog(req);
 
-  return updatedBlog;
-};
+  return setSuccessResponse(
+    res,
+    StatusCodes.OK,
+    true,
+    updatedBlog,
+    "blog updated successfully"
+  );
+});
 
-const deleteBlog = async (req, res) => {
-  const deletedBlog = await blogService.destroyBlog(req, res);
+const deleteBlog = catchAsync(async (req, res) => {
+  const deletedBlog = await blogService.destroyBlog(req);
 
-  return deletedBlog;
-};
+  return setSuccessResponse(
+    res,
+    StatusCodes.OK,
+    true,
+    deletedBlog,
+    "Blog deleted!"
+  );
+});
 
 module.exports = {
   createBlog,

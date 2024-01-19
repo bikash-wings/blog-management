@@ -1,58 +1,72 @@
+const { StatusCodes } = require("http-status-codes");
 const { notFound } = require("../helpers/errorHandlers");
 const db = require("../models");
+const CustomError = require("../utills/CustomError");
 
-const createBlog = async (req, res) => {
+const createBlog = async (req) => {
   try {
     const { title, description } = req.body;
 
     if (!title) {
-      return notFound(res, "Blog title required!");
+      throw new CustomError(StatusCodes.NOT_FOUND, "blog title required!");
     }
     if (!description) {
-      return notFound(res, "Blog description required!");
+      throw new CustomError(
+        StatusCodes.NOT_FOUND,
+        "blog description required!"
+      );
     }
 
     const newBlog = await db.Blog.create(req.body);
 
-    return res.json(newBlog);
+    return newBlog;
   } catch (error) {
-    console.log(error);
+    throw new CustomError(
+      error.status || StatusCodes.INTERNAL_SERVER_ERROR,
+      error.errorMessage || "Internal Server Error"
+    );
   }
 };
 
-const fetchSingleBlog = async (req, res) => {
+const fetchSingleBlog = async (req) => {
   try {
     const { blogid } = req.params;
 
     const blog = await db.Blog.findOne({ where: { id: blogid } });
     if (!blog) {
-      return notFound(res, "no blog found!");
+      throw new CustomError(StatusCodes.NOT_FOUND, "no blog found!");
     }
 
-    return res.json(blog);
+    return blog;
   } catch (error) {
-    console.log(error);
+    throw new CustomError(
+      error.status || StatusCodes.INTERNAL_SERVER_ERROR,
+      error.errorMessage || "Internal Server Error"
+    );
   }
 };
 
-const fetchAllBlogs = async (req, res) => {
+const fetchAllBlogs = async () => {
   try {
-    const blogs = await db.Blog.findAll();
+    const allBlogs = await db.Blog.findAll();
 
-    return res.json(blogs);
+    return allBlogs;
   } catch (error) {
-    console.log(error);
+    throw new CustomError(
+      error.status || StatusCodes.INTERNAL_SERVER_ERROR,
+      error.errorMessage || "Internal Server Error"
+    );
   }
 };
 
-const updateBlog = async (req, res) => {
+const updateBlog = async (req) => {
   try {
     const { blogid } = req.params;
     const { title, description } = req.body;
 
     const blog = await db.Blog.findOne({ where: { id: blogid } });
     if (!blog) {
-      return notFound(res, "no blog found!");
+      throw new CustomError(StatusCodes.NOT_FOUND, "no blog found!");
     }
 
     if (title) {
@@ -63,30 +77,32 @@ const updateBlog = async (req, res) => {
       blog.description = description;
     }
 
-    const updatedBlog = await db.User.update(
-      { ...blog },
-      { where: { id: blogid } }
-    );
-    console.log(updatedBlog);
+    await blog.save();
 
-    return res.json(updatedBlog);
+    return blog;
   } catch (error) {
-    console.log(error);
+    throw new CustomError(
+      error.status || StatusCodes.INTERNAL_SERVER_ERROR,
+      error.errorMessage || "Internal Server Error"
+    );
   }
 };
 
-const destroyBlog = async (req, res) => {
+const destroyBlog = async (req) => {
   try {
     const { blogid } = req.params;
 
     const blog = await db.Blog.destroy({ where: { id: blogid } });
     if (!blog) {
-      return notFound(res, "no blog found!");
+      throw new CustomError(StatusCodes.NOT_FOUND, "no blog found!");
     }
 
-    return res.json(blog);
+    return blog;
   } catch (error) {
-    console.log(error);
+    throw new CustomError(
+      error.status || StatusCodes.INTERNAL_SERVER_ERROR,
+      error.errorMessage || "Internal Server Error"
+    );
   }
 };
 

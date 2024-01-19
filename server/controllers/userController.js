@@ -15,13 +15,29 @@ const signup = catchAsync(async (req, res) => {
       StatusCodes.OK,
       true,
       signup,
-      "signed up successfully"
+      "Email Registered! Please Verify Email"
     );
   }
 });
 
 /**
- * This will upload profile image
+ * This controller will verify mail
+ */
+
+const mailVerification = async (req, res) => {
+  const isVerified = await userServices.verifyMail(req);
+
+  return setSuccessResponse(
+    res,
+    StatusCodes.OK,
+    true,
+    isVerified,
+    "Mail Verification Successfull"
+  );
+};
+
+/**
+ * This service will upload profile image
  */
 const uploadProfilePic = catchAsync(async (req, res) => {
   const uploadPicResult = await userServices.uploadPic(req);
@@ -71,4 +87,11 @@ const getAllUsers = catchAsync(async (req, res) => {
   }
 });
 
-module.exports = { signup, login, getAllUsers, uploadProfilePic };
+module.exports = {
+  signup,
+  mailVerification,
+  login,
+  getAllUsers,
+  uploadProfilePic,
+  getProfilePic,
+};

@@ -10,18 +10,18 @@ const {
 const router = express.Router();
 
 /* POST new blog */
-router.route("/add").post(createBlog);
+router.post("/add", createBlog);
 
 /* GET all blogs */
-router.route("/get-all").get(getAllBlogs);
+router.get("/get-all", getAllBlogs);
 
 /* GET single blog */
-router.route("/:blogid").get(getSingleBlog);
+router.get("/:blogid", getSingleBlog);
 
 /* PUT update blog  */
-router.route("/:blogid").put(updateBlog);
+router.put("/:blogid", updateBlog);
 
 /* DELETE blog */
-router.route("/:blogid").delete(deleteBlog);
+router.delete("/:blogid", deleteBlog);
 
 module.exports = router;

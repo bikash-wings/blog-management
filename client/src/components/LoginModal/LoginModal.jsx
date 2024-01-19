@@ -1,28 +1,39 @@
-import styles from "./LoginModal.module.css";
 import { RxCross1 } from "react-icons/rx";
 import { MdOutlineMail } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import ReactDOM from "react-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { loginRoute } from "../../utills/apiRoutes";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../store/userSlice";
+import toast from "react-hot-toast";
+import "./loginmodal.css";
 
 const LoginModal = ({ setModal }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState({ data: "", isVisible: false });
 
+  const dispatch = useDispatch();
+
   const loginUser = async () => {
     try {
-      const { data } = await axios.post(`${loginRoute}`, { email, password });
-      console.log(data);
+      const { data } = await axios.post(`${loginRoute}`, {
+        email,
+        password: password.data,
+      });
+      dispatch(setUser(data.data.user));
+      setModal((p) => ({ ...p, login: false }));
+      console.log(data.data);
     } catch (error) {
-      console.log(error);
+      toast.error(error.response.data.message);
     }
   };
 
   return ReactDOM.createPortal(
     <div
-      className={styles.modalCnt}
+      className="loginModalCnt"
       onClick={() => setModal((p) => ({ ...p, login: false }))}
     >
       <div
@@ -32,19 +43,18 @@ const LoginModal = ({ setModal }) => {
           e.stopPropagation();
         }}
       >
-        <div
-          className={`card-body ${styles.modal}`}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-          onSubmit={(e) => {
-            e.preventDefault();
-            loginUser();
-          }}
-        >
+        <div className={`card-body loginModal`}>
           <h2 className="h2 text-center mb-4">Login to your account</h2>
-          <form action="./" method="get" autoComplete="off" noValidate>
+          <form
+            action="./"
+            method="get"
+            autoComplete="off"
+            // noValidate
+            onSubmit={(e) => {
+              e.preventDefault();
+              loginUser();
+            }}
+          >
             <div className="mb-3">
               <label className="form-label">Email address</label>
               <input
@@ -54,6 +64,7 @@ const LoginModal = ({ setModal }) => {
                 autoComplete="off"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
             <div className="mb-2">
@@ -73,6 +84,7 @@ const LoginModal = ({ setModal }) => {
                   onChange={(e) =>
                     setPassword((p) => ({ ...p, data: e.target.value }))
                   }
+                  required
                 />
                 <span className="input-group-text">
                   <a
@@ -115,58 +127,44 @@ const LoginModal = ({ setModal }) => {
               </label>
             </div>
             <div className="form-footer">
-              <button type="submit" className="btn btn-primary w-100">
+              <button
+                type="submit"
+                className="btn btn-primary w-100"
+                onClick={() => loginUser()}
+              >
                 Sign in
               </button>
             </div>
+            <div className="row" style={{ marginTop: "20px" }}>
+              <div className="col">
+                <Link to="/signup" className="btn w-100">
+                  {/* Download SVG icon from http://tabler-icons.io/i/brand-github */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="icon icon-tabler icon-tabler-user-scan"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="currentColor"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M10 9a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                    <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
+                    <path d="M4 16v2a2 2 0 0 0 2 2h2" />
+                    <path d="M16 4h2a2 2 0 0 1 2 2v2" />
+                    <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
+                    <path d="M8 16a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2" />
+                  </svg>
+                  Register New User
+                </Link>
+              </div>
+            </div>
           </form>
         </div>
-        {/* <div className={styles.top}>
-          <div className={styles.heading}>
-            <span>Sign In</span>
-          </div>
-          <RxCross1
-            cursor="pointer"
-            onClick={() => setModal((p) => ({ ...p, login: false }))}
-          />
-        </div>
-
-        <div className={styles.field}>
-          <input
-            type="text"
-            placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-            required
-          />
-          <MdOutlineMail />
-        </div>
-
-        <div className={styles.field}>
-          <input
-            type={password.isVisible ? "text" : "password"}
-            placeholder="Password"
-            onChange={(e) =>
-              setPassword((p) => ({ ...p, data: e.target.value }))
-            }
-            value={password.data}
-            required
-          />
-          <RiLockPasswordLine
-            onClick={() =>
-              setPassword((p) => ({ ...p, isVisible: !p.isVisible }))
-            }
-          />
-        </div>
-
-        {/* Sign in button is below */}
-        {/* <div
-          className={`${styles.field} ${styles.signBtn}`}
-          onClick={() => loginUser()}
-        >
-          Sign In
-        </div>{" "}
-        */}
       </div>
     </div>,
     document.getElementById("modal-root")
