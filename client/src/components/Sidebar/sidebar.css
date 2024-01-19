@@ -17,3 +17,7 @@
 .catActive {
   background-color: #223348;
 }
+
+.navbar-vertical.navbar-expand-lg .navbar-nav {
+  flex-grow: 0;
+}

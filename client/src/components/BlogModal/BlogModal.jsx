@@ -58,7 +58,7 @@ const BlogModal = ({ blogid, modal, setModal }) => {
       >
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">New report</h5>
+            <h5 className="modal-title">Edit Blog</h5>
             <button
               type="button"
               className="btn-close"

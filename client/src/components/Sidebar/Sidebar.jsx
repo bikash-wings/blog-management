@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./sidebar.css";
 
 const Sidebar = ({ category, setCategory }) => {
@@ -8,81 +9,18 @@ const Sidebar = ({ category, setCategory }) => {
         data-bs-theme="dark"
       >
         <div className="container-fluid">
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#sidebar-menu"
-            aria-controls="sidebar-menu"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon" />
-          </button>
           <h1 className="navbar-brand navbar-brand-autodark">
-            <a href="#">
+            <Link to="/">
               <img
                 src="./static/logo.svg"
                 width={110}
                 height={32}
-                alt="Tabler"
+                alt="BlogCraft"
                 className="navbar-brand-image"
               />
-            </a>
+            </Link>
           </h1>
           <div className="navbar-nav flex-row d-lg-none">
-            <div className="nav-item d-none d-lg-flex me-3">
-              <div className="btn-list">
-                <a
-                  href="https://github.com/tabler/tabler"
-                  className="btn"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {/* Download SVG icon from http://tabler-icons.io/i/brand-github */}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="icon"
-                    width={24}
-                    height={24}
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                    stroke="currentColor"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
-                  </svg>
-                  Source code
-                </a>
-                <a
-                  href="https://github.com/sponsors/codecalm"
-                  className="btn"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {/* Download SVG icon from http://tabler-icons.io/i/heart */}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="icon text-pink"
-                    width={24}
-                    height={24}
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                    stroke="currentColor"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
-                  </svg>
-                  Sponsor
-                </a>
-              </div>
-            </div>
             <div className="d-none d-lg-flex">
               <a
                 href="?theme=dark"
@@ -334,54 +272,17 @@ const Sidebar = ({ category, setCategory }) => {
                 </div>
               </div>
             </div>
-            <div className="nav-item dropdown">
-              <a
-                href="#"
-                className="nav-link d-flex lh-1 text-reset p-0"
-                data-bs-toggle="dropdown"
-                aria-label="Open user menu"
-              >
-                <span
-                  className="avatar avatar-sm"
-                  style={{ backgroundImage: "url(./static/avatars/000m.jpg)" }}
-                />
-                <div className="d-none d-xl-block ps-2">
-                  <div>Paweł Kuna</div>
-                  <div className="mt-1 small text-secondary">UI Designer</div>
-                </div>
-              </a>
-              <div className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                <a href="#" className="dropdown-item">
-                  Status
-                </a>
-                <a href="#" className="dropdown-item">
-                  Profile
-                </a>
-                <a href="#" className="dropdown-item">
-                  Feedback
-                </a>
-                <div className="dropdown-divider" />
-                <a href="#" className="dropdown-item">
-                  Settings
-                </a>
-                <a href="#" className="dropdown-item">
-                  Logout
-                </a>
-              </div>
-            </div>
           </div>
           <div className="collapse navbar-collapse" id="sidebar-menu">
             <ul className="navbar-nav pt-lg-3">
               <li
-                className={`nav-item ${
-                  category === "blogs" ? "catActive" : ""
-                }`}
-                onClick={() => setCategory("blogs")}
+                className={`nav-item ${category === "/" ? "catActive" : ""}`}
+                onClick={() => setCategory("/")}
               >
-                <a
+                <Link
+                  to="/"
                   className="nav-link"
-                  href="./"
-                  onClick={(e) => e.preventDefault()}
+                  // onClick={(e) => e.preventDefault()}
                 >
                   <span className="nav-link-icon d-md-none d-lg-inline-block">
                     {/* Download SVG icon from http://tabler-icons.io/i/home */}
@@ -391,11 +292,11 @@ const Sidebar = ({ category, setCategory }) => {
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
-                      stroke-width="2"
+                      strokeWidth="2"
                       stroke="currentColor"
                       fill="none"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M3 19v-14a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
@@ -405,32 +306,32 @@ const Sidebar = ({ category, setCategory }) => {
                     </svg>
                   </span>
                   <span className="nav-link-title">Blogs</span>
-                </a>
+                </Link>
               </li>
               <li
                 className={`nav-item ${
-                  category === "users" ? "catActive" : ""
+                  category === "/users" ? "catActive" : ""
                 }`}
-                onClick={() => setCategory("users")}
+                onClick={() => setCategory("/users")}
               >
-                <a
+                <Link
+                  to="/users"
                   className="nav-link"
-                  href="./"
-                  onClick={(e) => e.preventDefault()}
+                  // onClick={(e) => e.preventDefault()}
                 >
                   <span className="nav-link-icon d-md-none d-lg-inline-block">
                     {/* Download SVG icon from http://tabler-icons.io/i/home */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      class="icon icon-tabler icon-tabler-user-circle"
+                      className="icon icon-tabler icon-tabler-user-circle"
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
-                      stroke-width="2"
+                      strokeWidth="2"
                       stroke="currentColor"
                       fill="none"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
@@ -439,90 +340,7 @@ const Sidebar = ({ category, setCategory }) => {
                     </svg>
                   </span>
                   <span className="nav-link-title">Users</span>
-                </a>
-              </li>
-              <li className="nav-item active dropdown">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#navbar-layout"
-                  data-bs-toggle="dropdown"
-                  data-bs-auto-close="false"
-                  role="button"
-                  aria-expanded="true"
-                >
-                  <span className="nav-link-icon d-md-none d-lg-inline-block">
-                    {/* Download SVG icon from http://tabler-icons.io/i/layout-2 */}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="icon"
-                      width={24}
-                      height={24}
-                      viewBox="0 0 24 24"
-                      strokeWidth={2}
-                      stroke="currentColor"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <path d="M4 4m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v1a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
-                      <path d="M4 13m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
-                      <path d="M14 4m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
-                      <path d="M14 15m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v1a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
-                    </svg>
-                  </span>
-                  <span className="nav-link-title">Layout</span>
-                </a>
-                <div className="dropdown-menu show">
-                  <div className="dropdown-menu-columns">
-                    <div className="dropdown-menu-column">
-                      <a className="dropdown-item" href="#">
-                        Horizontal
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Boxed
-                        <span className="badge badge-sm bg-green-lt text-uppercase ms-auto">
-                          New
-                        </span>
-                      </a>
-                      <a className="dropdown-item active" href="#">
-                        Vertical
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Vertical transparent
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Right vertical
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Condensed
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Combined
-                      </a>
-                    </div>
-                    <div className="dropdown-menu-column">
-                      <a className="dropdown-item" href="#">
-                        Navbar dark
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Navbar sticky
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Navbar overlap
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        RTL mode
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Fluid
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        Fluid vertical
-                      </a>
-                    </div>
-                  </div>
-                </div>
+                </Link>
               </li>
             </ul>
           </div>

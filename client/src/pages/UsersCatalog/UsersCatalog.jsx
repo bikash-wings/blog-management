@@ -1,12 +1,10 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import DataTables from "../../components/DataTables/DataTables";
-import "./home.css";
 
-const Home = () => {
-  const [category, setCategory] = useState("/");
+const UsersCatalog = () => {
+  const [category, setCategory] = useState("/users");
   const [modal, setModal] = useState({
     blog: false,
     login: false,
@@ -27,4 +25,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default UsersCatalog;
