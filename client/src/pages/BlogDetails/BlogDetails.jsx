@@ -81,9 +81,12 @@ const BlogDetails = () => {
                           {blog?.title}
                         </a>
                       </h2>
-                      <div className="markdown text-muted">
-                        <p itemProp="description">{blog?.description}</p>
-                      </div>
+                      <div
+                        className="markdown text-muted"
+                        dangerouslySetInnerHTML={{ __html: blog?.description }}
+                      />
+                      {/* {blog?.description}
+                      </div> */}
                     </div>
                     <div className="mt-4">
                       <div className="row">
@@ -97,7 +100,7 @@ const BlogDetails = () => {
                           <Link
                             className=""
                             aria-label='Read more about "New Year, New Goals: Tabler Development in 2024"'
-                            to="/blog/edit"
+                            to={`/blog/edit/${blog?.id}`}
                           >
                             Edit Blog{" "}
                             <svg

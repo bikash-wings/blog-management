@@ -3,3 +3,15 @@
   flex-direction: column;
   justify-content: space-between;
 }
+
+.page-main {
+  height: 100vh;
+}
+
+.wrapper-class{
+  height: 330px;
+}
+
+.editor-class {
+  height: 230px;
+}

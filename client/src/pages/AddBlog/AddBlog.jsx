@@ -96,6 +96,7 @@ const AddBlog = () => {
         />
         <label htmlFor="">Blog Description</label>
         <Editor
+          className="editor-input"
           editorState={editorState}
           wrapperClassName="wrapper-class"
           editorClassName="editor-class"

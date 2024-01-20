@@ -104,7 +104,7 @@ const DataTables = ({ category, modal, setModal }) => {
                     <tr>
                       <td className="sort-name">
                         {(item.title &&
-                          item.title.substr(0, 30) +
+                          item.title?.substr(0, 30) +
                             `${item.title.length > 30 && "..."}`) ||
                           item.fullName}
                       </td>
