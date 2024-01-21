@@ -1,5 +1,6 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { singleBlogRoute, updateBlogRoute } from "../../utills/apiRoutes";
+import axios from "axios";
 import {
   ContentState,
   EditorState,
@@ -7,13 +8,12 @@ import {
   convertToRaw,
 } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import { addBlogRoute, singleBlogRoute } from "../../utills/apiRoutes";
-import draftToHtml from "draftjs-to-html";
 import { useParams } from "react-router-dom";
+import draftToHtml from "draftjs-to-html";
 import Navbar from "../../components/Navbar/Navbar";
-import "./addblog.css";
+import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
 
-const Add = () => {
+const EditBlog = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState(EditorState.createEmpty());
 
@@ -38,7 +38,7 @@ const Add = () => {
         blocksFromHTML.entityMap
       );
 
-      setTitle(data.data.title)
+      setTitle(data.data.title);
       setDescription(EditorState.createWithContent(contentState));
     } catch (error) {
       console.log(error);
@@ -46,30 +46,21 @@ const Add = () => {
   };
 
   useEffect(() => {
-    if (blogid) {
-      fetchBlog();
-    }
-  }, [blogid]);
-
-  useEffect(() => {
-    // console.log(title, userInfo.description);
-    console.log(
-      draftToHtml(convertToRaw(description.getCurrentContent())).innerHTML
-    );
-  }, [description, title]);
+    fetchBlog();
+  }, []);
 
   const onEditorStateChange = (editorState) => {
     setDescription(editorState);
   };
 
-  const addBlog = async () => {
+  const onBlogUpdate = async () => {
     try {
-      const { data } = await axios.post(addBlogRoute, {
-        title: title,
-        description: draftToHtml(convertToRaw(description.getCurrentContent()))
-          .innerHTML,
+      const { data } = await axios.put(`${updateBlogRoute}/${blogid}`, {
+        title,
+        description: draftToHtml(convertToRaw(description.getCurrentContent())),
       });
-      console.log(data);
+      console.log(draftToHtml(convertToRaw(description.getCurrentContent())));
+      //   console.log(data.data)
     } catch (error) {
       console.log(error);
     }
@@ -77,45 +68,69 @@ const Add = () => {
 
   return (
     <div className="page-main">
-      {/* <Navbar modal={modal} setModal={setModal}/> */}
+      <Navbar modal={modal} setModal={setModal} />
+
       <form
         className="card card-md"
         onSubmit={(e) => {
           e.preventDefault();
-          addBlog();
+          //   onBlogUpdate();
+          setModal((p) => ({ ...p, updateConfirm: true }));
         }}
         autocomplete="off"
         novalidate=""
       >
         <div className="card-body">
-          <h1 className="card-title text-center mb-2">Create New Blog</h1>
+          <h1
+            className="card-title text-center mb-2"
+            style={{ fontSize: "1.6rem", fontWeight: "600" }}
+          >
+            Update Blog
+          </h1>
           <div className="mb-2">
-            <label className="form-label">Blog Title</label>
+            <label className="form-label" style={{ fontSize: "1.2rem" }}>
+              Title
+            </label>
             <input
               type="text"
               className="form-control"
               placeholder="Enter blog title here"
               onChange={(e) => setTitle(e.target.value)}
               value={title}
+              required
             />
           </div>
 
-          <Editor
-            // className="form-control"
-            editorState={description}
-            onEditorStateChange={onEditorStateChange}
-            wrapperClassName="wrapper-class"
-            editorClassName="editor-class form-control"
-          />
+          <div className="mb-2">
+            <label className="form-label" style={{ fontSize: "1.2rem" }}>
+              Description
+            </label>
+            <Editor
+              // className="form-control"
+              editorState={description}
+              onEditorStateChange={onEditorStateChange}
+              wrapperClassName="wrapper-class"
+              editorClassName="editor-class form-control"
+              toolbarClassName="toolbar-class"
+            />
+          </div>
+
           <div className="form-footer">
-            <button type="submit" className="btn btn-primary w-100">
-              Create new blog
+            <button type="submit" className="btn btn-primary">
+              Update blog
             </button>
           </div>
         </div>
+        {modal.updateConfirm && (
+          <ConfirmModal
+            modal={modal}
+            setModal={setModal}
+            onBlogUpdate={onBlogUpdate}
+          />
+        )}
       </form>
     </div>
   );
 };
 
-export default Add;
+export default EditBlog;

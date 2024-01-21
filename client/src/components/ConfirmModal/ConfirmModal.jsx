@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom";
 
-const ConfirmModal = ({ modal, setModal, deleteBlog, updateBlog }) => {
+const ConfirmModal = ({ modal, setModal, deleteBlog, onBlogUpdate }) => {
   return ReactDOM.createPortal(
     <div
       className="modal modal-blur fade show"
@@ -33,7 +33,6 @@ const ConfirmModal = ({ modal, setModal, deleteBlog, updateBlog }) => {
           />
           <div className="modal-status bg-danger" />
           <div className="modal-body text-center py-4">
-            {/* Download SVG icon from http://tabler-icons.io/i/alert-triangle */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="icon mb-2 text-danger icon-lg"
@@ -98,7 +97,7 @@ const ConfirmModal = ({ modal, setModal, deleteBlog, updateBlog }) => {
                     className="col"
                     onClick={() => {
                       setModal((p) => ({ ...p, updateConfirm: false }));
-                      updateBlog();
+                      onBlogUpdate();
                     }}
                   >
                     <a

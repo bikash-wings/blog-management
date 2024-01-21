@@ -1,13 +1,25 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import axios from "axios";
-import { singleBlogRoute } from "../../utills/apiRoutes";
+import { allBlogsRoute, singleBlogRoute } from "../../utills/apiRoutes";
 import { Link, useParams } from "react-router-dom";
 import banner from "../../assets/banner.png";
 import moment from "moment";
+import "./blogdetails.css";
+import Navbar from "../../components/Navbar/Navbar";
 
 const BlogDetails = () => {
+  const [similarBlogs, setSimilarBlogs] = useState([]);
   const [blog, setBlog] = useState({});
+  const [isHovered, setIsHovered] = useState(false);
+
+  const [modal, setModal] = useState({
+    blog: false,
+    login: false,
+    updateConfirm: false,
+    edit: false,
+    confirm: false,
+  });
 
   const { blogid } = useParams();
 
@@ -20,87 +32,129 @@ const BlogDetails = () => {
     }
   };
 
+  const fetchSimilarBlogs = async () => {
+    try {
+      const { data } = await axios.get(allBlogsRoute);
+      setSimilarBlogs(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     fetchBlogDetails();
+    fetchSimilarBlogs();
   }, []);
 
   return (
-    <div className="container-xl">
-      <Sidebar />
+    <main className="main details-main">
+      <Navbar modal={modal} setModal={setModal} />
+      <section className="section">
+        <div className="blog-banner"></div>
+        {/* <img src={banner} alt="blog banner" /> */}
 
-      <main className="main">
-        <section className="section">
-          <div className="page-header">
-            <div className="hero-gradient">
-              <h2 className="page-title page-title-lg">Blog</h2>
-              <p className="page-description">
-                Stay in the loop with all things{" "}
-                <a className="active" href="/">
-                  Tabler
-                </a>{" "}
-                and{" "}
-                <a className="" href="/icons">
-                  Tabler Icons
-                </a>
-                . Regular updates on new features, changelogs, and news,
-                ensuring you never miss any of our software developments.
-              </p>
-            </div>
-          </div>
-          <div className="container">
-            <div className="row justify-center">
-              <div className="col-slim">
-                <div className="divider-y-8">
-                  <div itemScope itemType="https://schema.org/NewsArticle">
-                    <a className="d-block mb-4" href="#">
+        {/* <div className="sidebar col-lg-4 col-md-12">
+          <aside>
+            <div
+              id="similar-posts-widget"
+              className="sidebar-item widget recent-post"
+            >
+              <div className="title">
+                <h4>Similar Blogs</h4>
+              </div>
+              <ul>
+                {similarBlogs?.map((blog) => (
+                  <li>
+                    <div className="thumb">
                       <img
-                        alt="New Year, New Goals: Tabler Development in 2024"
-                        itemProp="image"
-                        loading="lazy"
-                        width={750}
-                        height={361}
+                        width={80}
+                        height={80}
+                        src="https://residentconnect.com/wp-content/uploads/2024/01/Streamlining-Vendor-Management-Simplify-Your-Workflow-with-1-Property-Management-Software-In-Canada-80x80.jpg"
+                        className="attachment-appku_80X80 size-appku_80X80 wp-post-image"
+                        alt="Vendor Management System In Canada"
                         decoding="async"
-                        data-nimg={1}
-                        className="img-markdown"
-                        style={{ color: "transparent" }}
-                        // srcSet="/_next/image?url=%2Fimg%2Fblog%2Fnew-year-new-goals.png&w=750&q=75 1x, /_next/image?url=%2Fimg%2Fblog%2Fnew-year-new-goals.png&w=1920&q=75 2x"
-                        src={banner}
+                        srcSet="https://residentconnect.com/wp-content/uploads/2024/01/Streamlining-Vendor-Management-Simplify-Your-Workflow-with-1-Property-Management-Software-In-Canada-80x80.jpg 80w, https://residentconnect.com/wp-content/uploads/2024/01/Streamlining-Vendor-Management-Simplify-Your-Workflow-with-1-Property-Management-Software-In-Canada-150x150.jpg 150w"
+                        sizes="(max-width: 80px) 100vw, 80px"
                       />
-                    </a>
-                    <div>
-                      <h2>
-                        <meta
-                          itemProp="headline"
-                          content="New Year, New Goals: Tabler Development in 2024"
-                        />
-                        <meta
-                          itemProp="url"
-                          content="/blog/new-year-new-goals"
-                        />
-                        <a className="" href="#">
-                          {blog?.title}
-                        </a>
-                      </h2>
-                      <div
-                        className="markdown text-muted"
-                        dangerouslySetInnerHTML={{ __html: blog?.description }}
-                      />
-                      {/* {blog?.description}
-                      </div> */}
                     </div>
-                    <div className="mt-4">
+                    <div className="info">
+                      <span className="post-date">19 January, 2024</span>
+                      <a href="https://residentconnect.com/blogs/impact-of-vendor-management-system-in-canada/">
+                        Streamlining Vendor Management: Simplify
+                      </a>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </aside>
+        </div> */}
+
+        <div className="container">
+          <div className="row justify-center">
+            <div className="col-slim">
+              <div className="divider-y-8">
+                <div itemScope itemType="https://schema.org/NewsArticle">
+                  <a className="d-block mb-4" href="#"></a>
+                  <div className="">
+                    <h2
+                      style={{
+                        fontSize: "2rem",
+                        cursor: "pointer",
+                        color: isHovered ? "#1e73be" : "black",
+                        transition: "color 0.5s ease",
+                      }}
+                      onMouseEnter={() => setIsHovered(true)}
+                      onMouseLeave={() => setIsHovered(false)}
+                    >
+                      {blog?.title}
+                    </h2>
+
+                    {/* Edit button and blog date */}
+                    <div className="mt-4 ">
                       <div className="row">
-                        <div className="col">
-                          <meta itemProp="datePublished" content="2024-01-01" />
-                          <div className="text-muted">
+                        <div
+                          className="col"
+                          style={{
+                            color: "#1e73be",
+                            fontSize: "1rem",
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="icon icon-tabler icon-tabler-calendar-month"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            fill="none"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+                            <path d="M16 3v4" />
+                            <path d="M8 3v4" />
+                            <path d="M4 11h16" />
+                            <path d="M7 14h.013" />
+                            <path d="M10.01 14h.005" />
+                            <path d="M13.01 14h.005" />
+                            <path d="M16.015 14h.005" />
+                            <path d="M13.015 17h.005" />
+                            <path d="M7.01 17h.005" />
+                            <path d="M10.01 17h.005" />
+                          </svg>
+                          <span>
                             {moment(blog?.createdAt).format("DD MMM YYYY")}
-                          </div>
+                          </span>
                         </div>
                         <div className="col text-right">
                           <Link
-                            className=""
-                            aria-label='Read more about "New Year, New Goals: Tabler Development in 2024"'
                             to={`/blog/edit/${blog?.id}`}
+                            aria-label="edit blog link"
                           >
                             Edit Blog{" "}
                             <svg
@@ -123,23 +177,30 @@ const BlogDetails = () => {
                         </div>
                       </div>
                     </div>
+
+                    {/* Blog Description is below */}
+                    <div
+                      className="markdown text-muted mt-4"
+                      style={{ fontSize: "1rem" }}
+                      dangerouslySetInnerHTML={{ __html: blog?.description }}
+                    />
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </section>
-        <section className="section section-light">
-          <svg
-            className="section-divider section-divider-auto"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 1200 34"
-          >
-            <path d="M0 34h1200V0S929.487 24.5 726.977 24.5C524.467 24.5 363.459 0 187.951 0 12.442 0 0 34 0 34Z" />
-          </svg>
-        </section>
-      </main>
-    </div>
+        </div>
+      </section>
+      <section className="section section-light mt-5">
+        <svg
+          className="section-divider section-divider-auto"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1200 34"
+        >
+          <path d="M0 34h1200V0S929.487 24.5 726.977 24.5C524.467 24.5 363.459 0 187.951 0 12.442 0 0 34 0 34Z" />
+        </svg>
+      </section>
+    </main>
   );
 };
 

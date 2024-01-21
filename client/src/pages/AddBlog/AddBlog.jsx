@@ -1,110 +1,168 @@
-import React, { useState } from "react";
-import { EditorState } from "draft-js";
-import { Editor, ContentState, convertToRaw } from "react-draft-wysiwyg";
-import htmlToDraft from "html-to-draftjs";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import axios from "axios";
-import "./addblog.css";
-import { addBlogRoute } from "../../utills/apiRoutes";
+import React, { useEffect, useState } from "react";
+import {
+  ContentState,
+  EditorState,
+  convertFromHTML,
+  convertToRaw,
+} from "draft-js";
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { addBlogRoute, singleBlogRoute } from "../../utills/apiRoutes";
 import draftToHtml from "draftjs-to-html";
-import Sidebar from "../../components/Sidebar/Sidebar";
+import Navbar from "../../components/Navbar/Navbar";
+import "./addblog.css";
 
 const AddBlog = () => {
   const [title, setTitle] = useState("");
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [showEditorCode, setShowEditorCode] = useState(false);
-  const [editorHTML, setEditorHTML] = useState("");
+  const [description, setDescription] = useState(EditorState.createEmpty());
+  const [isError, setIsError] = useState(null);
 
-  //   const onEditorStateChange = (state) => {
-  //     console.log(state);
-  //     setEditorState(state);
-  //     editorState.getCurrentContent().getPlainText();
-  //     // const stringState = JSON.stringify(editorState);
-  //     // console.log(stringState);
-  //     console.log(editorState);
-  //   };
+  const [modal, setModal] = useState({
+    blog: false,
+    login: false,
+    updateConfirm: false,
+    edit: false,
+    confirm: false,
+  });
 
-  const onEditorStateChange = (editor) => {
-    const editorHTML = draftToHtml(
-      convertToRaw(editor.getCurrentContent()),
-      null,
-      false,
-      entityMapper
+  useEffect(() => {
+    // console.log(title, userInfo.description);
+
+    setIsError(null);
+
+    const htmlContent = draftToHtml(
+      convertToRaw(description.getCurrentContent())
     );
-    setEditorState(editor);
-    setEditorHTML(editorHTML);
+    const tempElement = document.createElement("div");
+    tempElement.innerHTML = htmlContent;
+    const blogDescription = tempElement.textContent || tempElement.innerText;
+    console.log(blogDescription);
+  }, [description, title]);
+
+  useEffect(() => {
+    setIsError(null);
+  }, [description, title]);
+
+  const onEditorStateChange = (editorState) => {
+    setDescription(editorState);
   };
 
-  const onEditEditorHTML = (e) => {
-    const editorHTML = e.target.value;
-    setEditorHTML(editorHTML);
-  };
-
-  const toggleEditorCode = () => {
-    if (!showEditorCode) {
-      onEditorStateChange(editorState);
-    }
-    setShowEditorCode((prev) => !prev);
-  };
-
-  const addHtmlToEditor = (props) => {
-    const contentBlock = htmlToDraft(editorHTML, customChunkRenderer);
-    let editor;
-    if (contentBlock) {
-      const contentState = ContentState.createFromBlockArray(
-        contentBlock.contentBlocks
-      );
-      editor = EditorState.createWithContent(contentState);
-    } else {
-      editor = EditorState.createEmpty();
-    }
-    onEditorStateChange(editor);
-  };
-
-  const ShowEditorCode = () => (
-    <div className="rdw-option-wrapper" onClick={toggleEditorCode}>
-      {showEditorCode ? "Hide Code" : "Show Code"}
-    </div>
-  );
-
-  const addNewBlog = async () => {
+  const onAddBlog = async () => {
     try {
-      const rawContentState = editorState.getCurrentContent();
-      const contentAsString = convertToRaw(rawContentState);
-      console.log(contentAsString);
-      //   const { data } = await axios.post(addBlogRoute, {
-      //     title,
-      //     description: editorState,
-      //   });
-      console.log(contentAsString);
+      if (!title) {
+        setIsError("Title required!");
+        return;
+      } else {
+        setIsError(null);
+      }
+
+      const htmlContent = draftToHtml(
+        convertToRaw(description.getCurrentContent())
+      );
+      const tempElement = document.createElement("div");
+      tempElement.innerHTML = htmlContent;
+      const blogDescription = tempElement.textContent || tempElement.innerText;
+
+      if (blogDescription.length < 50) {
+        setIsError("Description must be atleast of 50 characters!");
+        return;
+      } else {
+        setIsError(null);
+      }
+
+      const { data } = await axios.post(addBlogRoute, {
+        title: title,
+        description: blogDescription,
+      });
+      console.log(data);
     } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <div className="">
-      <Sidebar />
-      <div className="container-xl blog-cnt">
-        <label htmlFor="title">Blog Title</label>
-        <input
-          id="title"
-          type="text"
-          placeholder="Enter blog title"
-          onChange={(e) => setTitle(e.target.value)}
-          value={title}
-        />
-        <label htmlFor="">Blog Description</label>
-        <Editor
-          className="editor-input"
-          editorState={editorState}
-          wrapperClassName="wrapper-class"
-          editorClassName="editor-class"
-          toolbarClassName="toolbar-class"
-          onEditorStateChange={onEditorStateChange}
-        />
-        <button onClick={() => addNewBlog()}>Add Blog</button>
-      </div>
+    <div className="page-main">
+      <Navbar modal={modal} setModal={setModal} />
+
+      <form
+        className="card card-md"
+        onSubmit={(e) => {
+          e.preventDefault();
+          onAddBlog();
+        }}
+        autocomplete="off"
+        novalidate=""
+      >
+        <div className="card-body">
+          <h1
+            className="card-title text-center mb-2"
+            style={{ fontSize: "1.6rem", fontWeight: "600" }}
+          >
+            Create New Blog
+          </h1>
+          <div className="mb-2">
+            <label className="form-label" style={{ fontSize: "1.2rem" }}>
+              Title
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Enter blog title here"
+              onChange={(e) => setTitle(e.target.value)}
+              value={title}
+              required
+            />
+          </div>
+
+          <div className="mb-2">
+            <label className="form-label" style={{ fontSize: "1.2rem" }}>
+              Description
+            </label>
+            <Editor
+              // className="form-control"
+              editorState={description}
+              onEditorStateChange={onEditorStateChange}
+              wrapperClassName="wrapper-class"
+              editorClassName="editor-class form-control"
+              toolbarClassName="toolbar-class"
+            />
+          </div>
+
+          {isError && (
+            <div className="alert alert-warning alert-dismissible" role="alert">
+              <div className="d-flex">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon alert-icon"
+                    width={24}
+                    height={24}
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M12 9v4" />
+                    <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" />
+                    <path d="M12 16h.01" />
+                  </svg>
+                </div>
+                <div>{isError}</div>
+              </div>
+            </div>
+          )}
+
+          <div className="form-footer">
+            <button type="submit" className="btn btn-primary ">
+              Create new blog
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
   );
 };

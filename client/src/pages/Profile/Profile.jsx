@@ -1,9 +1,15 @@
-import React from 'react'
+import React, { useState } from "react";
+import Navbar from "../../components/Navbar/Navbar";
 
 const Profile = () => {
-  return (
-    <div>Profile</div>
-  )
-}
+  const [modal, setModal] = useState({});
 
-export default Profile
+  return (
+    <div>
+      <Navbar modal={modal} setModal={setModal} />
+      Profile
+    </div>
+  );
+};
+
+export default Profile;

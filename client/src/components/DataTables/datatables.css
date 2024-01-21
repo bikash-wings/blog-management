@@ -2,3 +2,7 @@
   max-width: 1040px;
   margin-right: 0;
 }
+
+.cta-btn svg:hover {
+  color: #206bc4 !important;
+}

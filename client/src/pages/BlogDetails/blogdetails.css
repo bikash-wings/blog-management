@@ -1,0 +1,30 @@
+.details-main {
+  /* color: #e9e9ea;
+  background-color: #191f2d; */
+
+  /* display: flex; */
+}
+
+.section img {
+  width: 750px;
+  height: auto;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.blog-banner {
+  width: 98vw;
+  height: 100vh;
+  background-image: url("../../assets/banner.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #151f2c;
+}
+
+.text-muted {
+  color: #1e73be;
+}
+
+.text-right a:hover {
+  color: #1e73be;
+}

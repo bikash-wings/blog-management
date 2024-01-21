@@ -1,6 +1,3 @@
-import { RxCross1 } from "react-icons/rx";
-import { MdOutlineMail } from "react-icons/md";
-import { RiLockPasswordLine } from "react-icons/ri";
 import ReactDOM from "react-dom";
 import { Link } from "react-router-dom";
 import { useState } from "react";
