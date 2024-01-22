@@ -9,6 +9,7 @@ import moment from "moment";
 import "./datatables.css";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import { Link, useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const DataTables = ({ category, modal, setModal }) => {
   const [selectedData, setSelectedData] = useState([]);
@@ -20,7 +21,6 @@ const DataTables = ({ category, modal, setModal }) => {
     try {
       const { data } = await axios.get(allBlogsRoute);
       setSelectedData(data.data);
-      console.log(data.data);
     } catch (error) {
       console.log(error);
     }
@@ -30,7 +30,6 @@ const DataTables = ({ category, modal, setModal }) => {
     try {
       const { data } = await axios.get(allUsersRoute);
       setSelectedData(data.data);
-      console.log(data.data);
     } catch (error) {
       console.log(error);
     }
@@ -48,7 +47,7 @@ const DataTables = ({ category, modal, setModal }) => {
     try {
       const { data } = await axios.delete(`${deleteBlogRoute}/${selectedId}`);
       fetchAllBlogs();
-      console.log(data.data);
+      toast.success(data.message);
     } catch (error) {
       console.log(error);
     }
@@ -111,10 +110,15 @@ const DataTables = ({ category, modal, setModal }) => {
                   {selectedData.map((item) => (
                     <tr>
                       <td className="sort-name">
-                        {(item.title &&
-                          item.title?.substr(0, 30) +
-                            `${item.title.length > 30 ? "..." : ""}`) ||
-                          item.fullName}
+                        {item.title ? (
+                          <Link to={`/blog/${item.id}`}>
+                            {" "}
+                            {item.title?.substr(0, 30) +
+                              `${item.title.length > 30 ? "..." : ""}`}
+                          </Link>
+                        ) : (
+                          item.fullName
+                        )}
                       </td>
                       {item.email && (
                         <>

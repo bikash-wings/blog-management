@@ -8,6 +8,12 @@ export const signupRoute = `${host}/api/v1/users/signup`;
 /* method: POST */
 export const loginRoute = `${host}/api/v1/users/login`;
 
+/* method : POST */
+export const forgotPasswordRoute = `${host}/api/v1/users/forgot-password`;
+
+/* method: PUT, params: userid */
+export const updateUserRoute = `${host}/api/v1/users/update`;
+
 /* method: GET */
 export const allUsersRoute = `${host}/api/v1/users/get-all`;
 

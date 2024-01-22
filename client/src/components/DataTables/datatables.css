@@ -6,3 +6,11 @@
 .cta-btn svg:hover {
   color: #206bc4 !important;
 }
+
+.sort-name a {
+  text-decoration: none;
+}
+
+.sort-name a:hover {
+  color: #206bc4 !important;
+}

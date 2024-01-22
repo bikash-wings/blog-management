@@ -27,16 +27,11 @@ const Sidebar = ({ category, setCategory }) => {
                 className={`nav-item ${category === "/" ? "catActive" : ""}`}
                 onClick={() => setCategory("/")}
               >
-                <Link
-                  to="/"
-                  className="nav-link"
-                  // onClick={(e) => e.preventDefault()}
-                >
+                <Link to="/" className="nav-link">
                   <span
                     className="nav-link-icon d-md-none d-lg-inline-block"
-                    style={{ color: "#fff" }}
+                    style={{ color: "#ffffffa5" }}
                   >
-                    {/* Download SVG icon from http://tabler-icons.io/i/home */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       class="icon icon-tabler icon-tabler-align-box-center-stretch"
@@ -56,7 +51,7 @@ const Sidebar = ({ category, setCategory }) => {
                       <path d="M10 7h4" />
                     </svg>
                   </span>
-                  <span className="nav-link-title" style={{ color: "#fff" }}>
+                  <span className="nav-link-title" style={{ color: "#ffffffa5" }}>
                     Blogs
                   </span>
                 </Link>
@@ -70,13 +65,11 @@ const Sidebar = ({ category, setCategory }) => {
                 <Link
                   to="/users"
                   className="nav-link"
-                  // onClick={(e) => e.preventDefault()}
                 >
                   <span
                     className="nav-link-icon d-md-none d-lg-inline-block"
-                    style={{ color: "#fff" }}
+                    style={{ color: "#ffffffa5" }}
                   >
-                    {/* Download SVG icon from http://tabler-icons.io/i/home */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="icon icon-tabler icon-tabler-user-circle"
@@ -95,7 +88,7 @@ const Sidebar = ({ category, setCategory }) => {
                       <path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855" />
                     </svg>
                   </span>
-                  <span className="nav-link-title" style={{ color: "#fff" }}>
+                  <span className="nav-link-title" style={{ color: "#ffffffa5" }}>
                     Users
                   </span>
                 </Link>

@@ -5,7 +5,7 @@
 }
 
 .wrapper-class {
-  height: 250px;
+  height: 300px;
 }
 
 .rdw-editor-main {
@@ -13,9 +13,6 @@
 }
 
 .form-control {
-  border: 1px solid grey;
+  /* border: 1px solid grey; */
 }
 
-/* .editor-class{
-  height: 100px;
-} */

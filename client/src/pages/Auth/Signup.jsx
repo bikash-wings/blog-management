@@ -1,13 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signupRoute, uploadAvatarRoute } from "../../utills/apiRoutes";
 import toast from "react-hot-toast";
+import logo from "../../assets/logo.png";
 
 const Signup = () => {
   const [auth, setAuth] = useState({
-    fname: "",
-    lname: "",
     email: "",
     password: "",
     answer: "",
@@ -21,33 +20,21 @@ const Signup = () => {
     try {
       const { data } = await axios.post(signupRoute, auth);
       toast.success(data.message);
-      await uploadAvatar(data.data?.id);
-        navigate("/");
+      navigate("/");
       console.log(data);
     } catch (error) {
       toast.error(error.response.data.message);
     }
   };
 
-  const uploadAvatar = async (userid) => {
-    try {
-      const formData = new FormData("avatar", avatar);
-      const { data } = await axios.post(
-        `${uploadAvatarRoute}/${userid}`,
-        formData
-      );
-      console.log(data);
-    } catch (error) {
-      console.log(error.response);
-    }
-  };
-
-  useEffect(() => {
-    console.log(auth);
-  }, [auth]);
-
   return (
-    <div className="container-tight py-4">
+    <div className="container-tight py-2">
+      <div className="text-center mb-2">
+        <Link to="/">
+          <img src={logo} alt="site logo" height={50} />
+        </Link>
+      </div>
+
       <form
         className="card card-md"
         autoComplete="off"
@@ -59,39 +46,19 @@ const Signup = () => {
         }}
       >
         <div className="card-body">
-          <h2 className="card-title text-center mb-4">Create new account</h2>
-          <div className="row">
-            <div className="mb-3 col">
-              <label className="form-label">First Name</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Enter first name"
-                onChange={(e) =>
-                  setAuth((p) => ({ ...p, fname: e.target.value }))
-                }
-                value={auth?.fname}
-              />
-            </div>
-            <div className="mb-3 col">
-              <label className="form-label">Last Name</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Enter last name"
-                onChange={(e) =>
-                  setAuth((p) => ({ ...p, lname: e.target.value }))
-                }
-                value={auth?.lname}
-              />
-            </div>
-          </div>
+          <h2
+            className="card-title text-center mb-4"
+            style={{ fontSize: "1.2rem", fontWeight: "600" }}
+          >
+            Create new account
+          </h2>
+
           <div className="mb-3">
             <label className="form-label">Email address</label>
             <input
               type="email"
               className="form-control"
-              placeholder="Enter email"
+              placeholder="Enter email address"
               onChange={(e) =>
                 setAuth((p) => ({ ...p, email: e.target.value }))
               }
@@ -104,7 +71,7 @@ const Signup = () => {
               <input
                 type={isPassVisible ? "text" : "password"}
                 className="form-control"
-                placeholder="Password"
+                placeholder="Type Password"
                 autoComplete="off"
                 onChange={(e) =>
                   setAuth((p) => ({ ...p, password: e.target.value }))
@@ -120,7 +87,6 @@ const Signup = () => {
                   data-bs-original-title="Show password"
                   onClick={() => setIsPassVisible((p) => !p)}
                 >
-                  {/* Download SVG icon from http://tabler-icons.io/i/eye */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="icon"
@@ -153,22 +119,14 @@ const Signup = () => {
               value={auth?.answer}
             />
           </div>
-          <div className="mb-3">
-            <label className="form-label">Select Profile Pic</label>
-            <input
-              type="file"
-              className="form-control"
-              onChange={(e) => setAvatar(e.target.files[0])}
-            />
-          </div>
-          <div className="mb-3">
+          <div className="">
             <label className="form-check">
               <input type="checkbox" className="form-check-input" />
               <span className="form-check-label">
                 Agree the{" "}
-                <a href="./terms-of-service.html" tabIndex={-1}>
+                <span tabIndex={-1} style={{ color: "#206bc4" }}>
                   terms and policy
-                </a>
+                </span>
                 .
               </span>
             </label>
@@ -180,6 +138,13 @@ const Signup = () => {
           </div>
         </div>
       </form>
+
+      <div class="text-center text-secondary mt-3">
+        Already have account?{" "}
+        <Link to="/login" tabindex="-1" style={{ color: "#206bc4" }}>
+          Sign in
+        </Link>
+      </div>
     </div>
   );
 };

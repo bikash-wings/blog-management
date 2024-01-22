@@ -8,8 +8,6 @@ import "./home.css";
 const Home = () => {
   const [category, setCategory] = useState("/");
   const [modal, setModal] = useState({
-    blog: false,
-    login: false,
     updateConfirm: false,
     edit: false,
     confirm: false,
@@ -20,7 +18,7 @@ const Home = () => {
       <Sidebar category={category} setCategory={setCategory} />
 
       <div>
-        <Navbar modal={modal} setModal={setModal} />
+        <Navbar />
         <DataTables category={category} modal={modal} setModal={setModal} />
       </div>
     </div>

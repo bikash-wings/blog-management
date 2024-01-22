@@ -8,18 +8,19 @@ import {
   convertToRaw,
 } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import draftToHtml from "draftjs-to-html";
 import Navbar from "../../components/Navbar/Navbar";
 import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
+import toast from "react-hot-toast";
 
 const EditBlog = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState(EditorState.createEmpty());
 
+  const navigate = useNavigate();
+
   const [modal, setModal] = useState({
-    blog: false,
-    login: false,
     updateConfirm: false,
     edit: false,
     confirm: false,
@@ -59,76 +60,78 @@ const EditBlog = () => {
         title,
         description: draftToHtml(convertToRaw(description.getCurrentContent())),
       });
-      console.log(draftToHtml(convertToRaw(description.getCurrentContent())));
-      //   console.log(data.data)
+      toast.success(data.message);
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <div className="page-main">
-      <Navbar modal={modal} setModal={setModal} />
+    <div className="page-main pb-4">
+      <Navbar />
 
-      <form
-        className="card card-md"
-        onSubmit={(e) => {
-          e.preventDefault();
-          //   onBlogUpdate();
-          setModal((p) => ({ ...p, updateConfirm: true }));
-        }}
-        autocomplete="off"
-        novalidate=""
-      >
-        <div className="card-body">
-          <h1
-            className="card-title text-center mb-2"
-            style={{ fontSize: "1.6rem", fontWeight: "600" }}
+      <div className="container mt-4">
+        <div className="card ">
+          <form
+            className="card-md"
+            onSubmit={(e) => {
+              e.preventDefault();
+              setModal((p) => ({ ...p, updateConfirm: true }));
+            }}
+            autocomplete="off"
+            novalidate=""
           >
-            Update Blog
-          </h1>
-          <div className="mb-2">
-            <label className="form-label" style={{ fontSize: "1.2rem" }}>
-              Title
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Enter blog title here"
-              onChange={(e) => setTitle(e.target.value)}
-              value={title}
-              required
-            />
-          </div>
+            <div className="card-body">
+              <h1
+                className="card-title text-center mb-2"
+                style={{ fontSize: "1.6rem", fontWeight: "600" }}
+              >
+                Update Blog
+              </h1>
+              <div className="mb-2">
+                <label className="form-label" style={{ fontSize: "1.2rem" }}>
+                  Title
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter blog title here"
+                  onChange={(e) => setTitle(e.target.value)}
+                  value={title}
+                  required
+                />
+              </div>
 
-          <div className="mb-2">
-            <label className="form-label" style={{ fontSize: "1.2rem" }}>
-              Description
-            </label>
-            <Editor
-              // className="form-control"
-              editorState={description}
-              onEditorStateChange={onEditorStateChange}
-              wrapperClassName="wrapper-class"
-              editorClassName="editor-class form-control"
-              toolbarClassName="toolbar-class"
-            />
-          </div>
+              <div className="mb-2">
+                <label className="form-label" style={{ fontSize: "1.2rem" }}>
+                  Description
+                </label>
+                <Editor
+                  editorState={description}
+                  onEditorStateChange={onEditorStateChange}
+                  wrapperClassName="wrapper-class"
+                  editorClassName="editor-class form-control"
+                  toolbarClassName="toolbar-class"
+                />
+              </div>
 
-          <div className="form-footer">
-            <button type="submit" className="btn btn-primary">
-              Update blog
-            </button>
-          </div>
+              <div className="form-footer text-center">
+                <button type="submit" className="btn btn-primary">
+                  Update
+                </button>
+              </div>
+            </div>
+            {modal.updateConfirm && (
+              <ConfirmModal
+                modal={modal}
+                setModal={setModal}
+                onBlogUpdate={onBlogUpdate}
+              />
+            )}
+          </form>
         </div>
-        {modal.updateConfirm && (
-          <ConfirmModal
-            modal={modal}
-            setModal={setModal}
-            onBlogUpdate={onBlogUpdate}
-          />
-        )}
-      </form>
+      </div>
     </div>
   );
 };

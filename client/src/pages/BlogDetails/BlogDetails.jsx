@@ -51,44 +51,6 @@ const BlogDetails = () => {
       <Navbar modal={modal} setModal={setModal} />
       <section className="section">
         <div className="blog-banner"></div>
-        {/* <img src={banner} alt="blog banner" /> */}
-
-        {/* <div className="sidebar col-lg-4 col-md-12">
-          <aside>
-            <div
-              id="similar-posts-widget"
-              className="sidebar-item widget recent-post"
-            >
-              <div className="title">
-                <h4>Similar Blogs</h4>
-              </div>
-              <ul>
-                {similarBlogs?.map((blog) => (
-                  <li>
-                    <div className="thumb">
-                      <img
-                        width={80}
-                        height={80}
-                        src="https://residentconnect.com/wp-content/uploads/2024/01/Streamlining-Vendor-Management-Simplify-Your-Workflow-with-1-Property-Management-Software-In-Canada-80x80.jpg"
-                        className="attachment-appku_80X80 size-appku_80X80 wp-post-image"
-                        alt="Vendor Management System In Canada"
-                        decoding="async"
-                        srcSet="https://residentconnect.com/wp-content/uploads/2024/01/Streamlining-Vendor-Management-Simplify-Your-Workflow-with-1-Property-Management-Software-In-Canada-80x80.jpg 80w, https://residentconnect.com/wp-content/uploads/2024/01/Streamlining-Vendor-Management-Simplify-Your-Workflow-with-1-Property-Management-Software-In-Canada-150x150.jpg 150w"
-                        sizes="(max-width: 80px) 100vw, 80px"
-                      />
-                    </div>
-                    <div className="info">
-                      <span className="post-date">19 January, 2024</span>
-                      <a href="https://residentconnect.com/blogs/impact-of-vendor-management-system-in-canada/">
-                        Streamlining Vendor Management: Simplify
-                      </a>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </aside>
-        </div> */}
 
         <div className="container">
           <div className="row justify-center">
