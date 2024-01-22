@@ -24,10 +24,12 @@ function App() {
         {/* Private Routes */}
         <Route path="/" element={<PrivateRoute></PrivateRoute>}>
           <Route path="/" element={<Home />} />
-          <Route path="/blog/add" element={<AddBlog />} />
-          <Route path="/blog/:blogid" element={<BlogDetails />} />
-          <Route path="/blog/edit/:blogid" element={<EditBlog />} />
-          <Route path="/users" element={<UsersCatalog />} />
+          <Route path="/blog">
+            <Route path="add" element={<AddBlog />} />
+            <Route path=":blogid" element={<BlogDetails />} />
+            <Route path="edit/:blogid" element={<EditBlog />} />
+          </Route>
+          <Route path="/users" element={<UsersCatalog />}></Route>
           <Route path="/profile" element={<Profile />} />
         </Route>
       </Routes>

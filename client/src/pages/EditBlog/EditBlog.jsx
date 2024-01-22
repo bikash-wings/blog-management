@@ -13,6 +13,7 @@ import draftToHtml from "draftjs-to-html";
 import Navbar from "../../components/Navbar/Navbar";
 import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const EditBlog = () => {
   const [title, setTitle] = useState("");
@@ -27,6 +28,10 @@ const EditBlog = () => {
   });
 
   const { blogid } = useParams();
+
+  let { user } = useSelector((state) => state.user);
+
+  console.log(user);
 
   const fetchBlog = async () => {
     try {
@@ -56,10 +61,16 @@ const EditBlog = () => {
 
   const onBlogUpdate = async () => {
     try {
-      const { data } = await axios.put(`${updateBlogRoute}/${blogid}`, {
-        title,
-        description: draftToHtml(convertToRaw(description.getCurrentContent())),
-      });
+      const { data } = await axios.put(
+        `${updateBlogRoute}/${blogid}`,
+        {
+          title,
+          description: draftToHtml(
+            convertToRaw(description.getCurrentContent())
+          ),
+        },
+        { headers: { authorization: user?.token } }
+      );
       toast.success(data.message);
       navigate("/");
     } catch (error) {

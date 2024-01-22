@@ -1,15 +1,23 @@
 import { useDispatch, useSelector } from "react-redux";
 import "./navbar.css";
-import { removeUser } from "../../store/userSlice";
+import { removeUser, setUser } from "../../store/userSlice";
 import { Link, useLocation } from "react-router-dom";
 import { host } from "../../utills/apiRoutes";
 import userImg from "../../assets/profile.png";
 import { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
 
 const Navbar = () => {
+  const [isLogout, setIsLogout] = useState(false);
+
   const path = useLocation().pathname;
 
-  const { user } = useSelector((state) => state.user);
+  let { user } = useSelector((state) => state.user);
+  user = user.user;
+
+  const onLogOut = () => {
+    dispatch(setUser(null));
+  };
 
   const dispatch = useDispatch();
 
@@ -22,9 +30,7 @@ const Navbar = () => {
               path === "/" || path === "/users" ? "container-xl" : "container"
             }
           >
-            <div
-              className="row flex-fill align-items-center"
-            >
+            <div className="row flex-fill align-items-center">
               <div
                 className="col"
                 style={{
@@ -33,11 +39,14 @@ const Navbar = () => {
                   alignItems: "center",
                 }}
               >
-                <ul className="navbar-nav" >
+                <ul className="navbar-nav">
                   {/* Home page link is below */}
-                  <li className={`nav-item ${path === "/" ? "active" : ""}`} >
-                    <Link to="/" className="nav-link"
-              style={{ minHeight: "3.5rem" }}>
+                  <li className={`nav-item ${path === "/" ? "active" : ""}`}>
+                    <Link
+                      to="/"
+                      className="nav-link"
+                      // style={{ minHeight: "3.5rem" }}
+                    >
                       <span className="nav-link-icon d-md-none d-lg-inline-block">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -126,12 +135,68 @@ const Navbar = () => {
                       <a
                         href="#"
                         className="dropdown-item"
-                        onClick={() => {
-                          dispatch(removeUser());
-                        }}
+                        onClick={() => setIsLogout(true)}
                       >
                         Logout
                       </a>
+
+                      {isLogout &&
+                        ReactDOM.createPortal(
+                          <div
+                            className="modal modal-blur fade show"
+                            id="modal-small"
+                            tabIndex={-1}
+                            role="dialog"
+                            aria-modal="true"
+                            style={{
+                              display: "block",
+                              backgroundColor: "rgba(5, 5, 5, 0.10)",
+                            }}
+                            onClick={() => setIsLogout(false)}
+                          >
+                            <div
+                              className="modal-dialog modal-sm modal-dialog-centered"
+                              role="document"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                            >
+                              <div className="modal-content">
+                                <div className="modal-body">
+                                  <div className="modal-title">
+                                    Do you really want to logout?
+                                  </div>
+                                </div>
+                                <div
+                                  className="modal-footer pt-3"
+                                  style={{
+                                    backgroundColor: "rgba(2, 2, 2, 0.030)",
+                                    borderTop:'1px solid rgba(2, 2, 2, 0.055)'
+                                  }}
+                                >
+                                  <button
+                                    type="button"
+                                    className="btn btn-link link-secondary me-auto"
+                                    data-bs-dismiss="modal"
+                                    onClick={() => setIsLogout(false)}
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="btn btn-danger"
+                                    data-bs-dismiss="modal"
+                                    onClick={() => dispatch(setUser(null))}
+                                  >
+                                    Logout
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>,
+                          document.getElementById("modal-root")
+                        )}
                     </div>
                   )}
                 </div>

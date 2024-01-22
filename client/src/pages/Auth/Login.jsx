@@ -22,7 +22,8 @@ const Login = () => {
         email,
         password: password?.data,
       });
-      dispatch(setUser(data.data.user));
+
+      dispatch(setUser({ user: data.data.user, token: data.data.token }));
       toast.success(data.message);
       navigate("/");
     } catch (error) {

@@ -117,7 +117,7 @@ const AddBlog = () => {
 
               {isError && (
                 <div
-                  className="alert alert-warning alert-dismissible"
+                  className="alert alert-warning alert-dismissible mt-4"
                   role="alert"
                 >
                   <div className="d-flex">

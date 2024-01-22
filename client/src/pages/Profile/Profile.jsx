@@ -18,7 +18,8 @@ const Profile = () => {
   const [avatar, setAvatar] = useState(null);
   const [isPassVisible, setIsPassVisible] = useState(false);
 
-  const { user } = useSelector((state) => state.user);
+  let { user } = useSelector((state) => state.user);
+  user = user.user;
 
   const dispatch = useDispatch();
 
@@ -30,7 +31,6 @@ const Profile = () => {
         phone: user?.phone,
         answer: user?.answer,
         address: user?.address,
-        password: user?.password,
       });
     }
   }, [user]);
@@ -45,7 +45,7 @@ const Profile = () => {
         answer: auth.answer,
         password: auth.password,
       });
-      dispatch(setUser(data.data.user));
+      dispatch(setUser({ user: data.data.user, token: data.data.token }));
       if (avatar !== null) {
         await onUploadAvatar();
       }
