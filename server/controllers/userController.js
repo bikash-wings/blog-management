@@ -24,7 +24,7 @@ const signup = catchAsync(async (req, res) => {
  * This controller will verify mail
  */
 
-const mailVerification = async (req, res) => {
+const mailVerification = catchAsync(async (req, res) => {
   const isVerified = await userServices.verifyMail(req);
 
   return setSuccessResponse(
@@ -34,7 +34,7 @@ const mailVerification = async (req, res) => {
     isVerified,
     "Mail Verification Successfull"
   );
-};
+});
 
 /**
  * This service will upload profile image
@@ -71,6 +71,40 @@ const login = catchAsync(async (req, res) => {
 });
 
 /**
+ * This controller is to reset password when forgotten
+ */
+const forgotPassword = catchAsync(async (req, res) => {
+  const user = await userServices.forgotPassword(req.body);
+
+  if (user) {
+    setSuccessResponse(
+      res,
+      StatusCodes.OK,
+      true,
+      user,
+      "Password reset successfully"
+    );
+  }
+});
+
+/**
+ * This controller will update user info
+ */
+const updateUser = catchAsync(async (req, res) => {
+  const user = await userServices.updateUserInfo(req);
+
+  if (user) {
+    setSuccessResponse(
+      res,
+      StatusCodes.OK,
+      true,
+      user,
+      "User info updated successfully"
+    );
+  }
+});
+
+/**
  * This controller will fetch all users
  */
 const getAllUsers = catchAsync(async (req, res) => {
@@ -87,11 +121,30 @@ const getAllUsers = catchAsync(async (req, res) => {
   }
 });
 
+/**
+ * This Controller will return true if user is admin
+ */
+const isUserAdmin = catchAsync(async (req, res) => {
+  const isAdmin = await userServices.checkUserRole(req);
+
+  if (isAdmin) {
+    return setSuccessResponse(
+      res,
+      StatusCodes.OK,
+      true,
+      isAdmin,
+      "User checked successfully"
+    );
+  }
+});
+
 module.exports = {
   signup,
   mailVerification,
   login,
+  forgotPassword,
+  updateUser,
   getAllUsers,
   uploadProfilePic,
-  getProfilePic,
+  isUserAdmin,
 };

@@ -20,6 +20,9 @@ export const allUsersRoute = `${host}/api/v1/users/get-all`;
 /* method: POST, params: userid  */
 export const uploadAvatarRoute = `${host}/api/v1/users/upload`;
 
+/* method: GET */
+export const checkUserRoleRoute = `${host}/api/v1/users/is-admin`;
+
 /**
  * Below api routes is for Blogs
  *
@@ -39,3 +42,6 @@ export const updateBlogRoute = `${host}/api/v1/blogs`;
 
 /* params: blogid , method: DELETE */
 export const deleteBlogRoute = `${host}/api/v1/blogs`;
+
+/* method: GET */
+export const blogsCountRoute = `${host}/api/v1/blogs/total-count`;

@@ -3,6 +3,9 @@ const blogService = require("../services/blogService");
 const { setSuccessResponse } = require("../utills/sendResponse");
 const { catchAsync } = require("../utills/catchAsync");
 
+/**
+ * This controller is to create blog
+ */
 const createBlog = catchAsync(async (req, res) => {
   const blog = await blogService.createBlog(req);
 
@@ -15,6 +18,9 @@ const createBlog = catchAsync(async (req, res) => {
   );
 });
 
+/**
+ * This controller is to fetch single blog
+ */
 const getSingleBlog = catchAsync(async (req, res) => {
   const blog = await blogService.fetchSingleBlog(req);
 
@@ -27,18 +33,43 @@ const getSingleBlog = catchAsync(async (req, res) => {
   );
 });
 
+/**
+ * This will fetch all blogs
+ */
 const getAllBlogs = catchAsync(async (req, res) => {
-  const allBlogs = await blogService.fetchAllBlogs();
+  const allBlogs = await blogService.fetchAllBlogs(req);
 
-  return setSuccessResponse(
-    res,
-    StatusCodes.OK,
-    true,
-    allBlogs,
-    "Fetched all blogs"
-  );
+  if (allBlogs) {
+    return setSuccessResponse(
+      res,
+      StatusCodes.OK,
+      true,
+      allBlogs,
+      "Fetched all blogs"
+    );
+  }
 });
 
+/**
+ * This controller will return total blog count
+ */
+const getBlogsCount = catchAsync(async (req, res) => {
+  const blogCount = await blogService.totalBlogCount();
+
+  if (blogCount) {
+    setSuccessResponse(
+      res,
+      StatusCodes.OK,
+      true,
+      blogCount,
+      "Total blogs count fetched"
+    );
+  }
+});
+
+/**
+ * This will update the blog
+ */
 const updateBlog = catchAsync(async (req, res) => {
   const updatedBlog = await blogService.updateBlog(req);
 
@@ -51,6 +82,9 @@ const updateBlog = catchAsync(async (req, res) => {
   );
 });
 
+/**
+ * This will delete the blog
+ */
 const deleteBlog = catchAsync(async (req, res) => {
   const deletedBlog = await blogService.destroyBlog(req);
 
@@ -67,6 +101,7 @@ module.exports = {
   createBlog,
   getSingleBlog,
   getAllBlogs,
+  getBlogsCount,
   updateBlog,
   deleteBlog,
 };

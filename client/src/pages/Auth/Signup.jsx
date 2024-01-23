@@ -7,6 +7,8 @@ import logo from "../../assets/logo.png";
 
 const Signup = () => {
   const [auth, setAuth] = useState({
+    fname: "",
+    lname: "",
     email: "",
     password: "",
     answer: "",
@@ -16,7 +18,7 @@ const Signup = () => {
 
   const navigate = useNavigate();
 
-  const registerUser = async () => {
+  const onRegisterUser = async () => {
     try {
       const { data } = await axios.post(signupRoute, auth);
       toast.success(data.message);
@@ -38,11 +40,11 @@ const Signup = () => {
       <form
         className="card card-md"
         autoComplete="off"
-        noValidate
+        // noValidate
         onSubmit={(e) => {
           e.preventDefault();
-          e.stopPropagation();
-          registerUser();
+          // e.stopPropagation();
+          onRegisterUser();
         }}
       >
         <div className="card-body">
@@ -52,6 +54,35 @@ const Signup = () => {
           >
             Create new account
           </h2>
+
+          <div className="row">
+            <div className="mb-3 col">
+              <label className="form-label">First Name</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter first name"
+                onChange={(e) =>
+                  setAuth((p) => ({ ...p, fname: e.target.value }))
+                }
+                value={auth?.fname}
+                required
+              />
+            </div>
+            <div className="mb-3 col">
+              <label className="form-label">Last Name</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter last name"
+                onChange={(e) =>
+                  setAuth((p) => ({ ...p, lname: e.target.value }))
+                }
+                value={auth?.lname}
+                required
+              />
+            </div>
+          </div>
 
           <div className="mb-3">
             <label className="form-label">Email address</label>
@@ -63,6 +94,7 @@ const Signup = () => {
                 setAuth((p) => ({ ...p, email: e.target.value }))
               }
               value={auth?.email}
+              required
             />
           </div>
           <div className="mb-3">
@@ -77,6 +109,7 @@ const Signup = () => {
                   setAuth((p) => ({ ...p, password: e.target.value }))
                 }
                 value={auth?.password}
+                required
               />
               <span className="input-group-text">
                 <a
@@ -110,16 +143,17 @@ const Signup = () => {
           <div className="mb-3">
             <label className="form-label">Favorite Sport?</label>
             <input
-              type="email"
+              type="text"
               className="form-control"
               placeholder="Enter favorite sport"
               onChange={(e) =>
                 setAuth((p) => ({ ...p, answer: e.target.value }))
               }
               value={auth?.answer}
+              required
             />
           </div>
-          <div className="">
+          {/* <div className="">
             <label className="form-check">
               <input type="checkbox" className="form-check-input" />
               <span className="form-check-label">
@@ -130,7 +164,7 @@ const Signup = () => {
                 .
               </span>
             </label>
-          </div>
+          </div> */}
           <div className="form-footer">
             <button type="submit" className="btn btn-primary w-100">
               Create new account

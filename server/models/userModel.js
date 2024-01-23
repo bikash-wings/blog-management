@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // User.hasMany(models.Blog, { foreignKey: "userId" });
+      User.hasMany(models.Blog, { foreignKey: "userId" });
     }
   }
 
@@ -66,6 +66,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       avatar: {
         type: DataTypes.STRING,
+      },
+      role: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
     },
     {

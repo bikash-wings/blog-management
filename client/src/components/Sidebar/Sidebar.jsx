@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
 import "./sidebar.css";
 import logo from "../../assets/logo.png";
+import { useSelector } from "react-redux";
 
 const Sidebar = ({ category, setCategory }) => {
+  const { user } = useSelector((state) => state.user.user);
+
   return (
     <div className="page">
       <aside
@@ -34,7 +37,7 @@ const Sidebar = ({ category, setCategory }) => {
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      class="icon icon-tabler icon-tabler-align-box-center-stretch"
+                      className="icon icon-tabler icon-tabler-align-box-center-stretch"
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
@@ -51,48 +54,53 @@ const Sidebar = ({ category, setCategory }) => {
                       <path d="M10 7h4" />
                     </svg>
                   </span>
-                  <span className="nav-link-title" style={{ color: "#ffffffa5" }}>
+                  <span
+                    className="nav-link-title"
+                    style={{ color: "#ffffffa5" }}
+                  >
                     Blogs
                   </span>
                 </Link>
               </li>
-              <li
-                className={`nav-item ${
-                  category === "/users" ? "catActive" : ""
-                }`}
-                onClick={() => setCategory("/users")}
-              >
-                <Link
-                  to="/users"
-                  className="nav-link"
+              {user?.role && (
+                <li
+                  className={`nav-item ${
+                    category === "/users" ? "catActive" : ""
+                  }`}
+                  onClick={() => setCategory("/users")}
                 >
-                  <span
-                    className="nav-link-icon d-md-none d-lg-inline-block"
-                    style={{ color: "#ffffffa5" }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="icon icon-tabler icon-tabler-user-circle"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      strokeWidth="2"
-                      stroke="currentColor"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                  <Link to="/users" className="nav-link">
+                    <span
+                      className="nav-link-icon d-md-none d-lg-inline-block"
+                      style={{ color: "#ffffffa5" }}
                     >
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                      <path d="M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
-                      <path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855" />
-                    </svg>
-                  </span>
-                  <span className="nav-link-title" style={{ color: "#ffffffa5" }}>
-                    Users
-                  </span>
-                </Link>
-              </li>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="icon icon-tabler icon-tabler-user-circle"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        strokeWidth="2"
+                        stroke="currentColor"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                        <path d="M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                        <path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855" />
+                      </svg>
+                    </span>
+                    <span
+                      className="nav-link-title"
+                      style={{ color: "#ffffffa5" }}
+                    >
+                      Users
+                    </span>
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
         </div>

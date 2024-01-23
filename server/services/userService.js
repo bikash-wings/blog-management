@@ -165,9 +165,14 @@ const uploadPic = async (req) => {
 
     await user.save();
 
+    user.avatar = `/${user.avatar}`;
+
+    user.password = "******";
+    user.verifyToken = "****";
+
     console.log(user);
 
-    return { success: true, message: "Image uploaded successfully" };
+    return { user: user };
   } catch (error) {
     throw new CustomError(
       error.status || StatusCodes.INTERNAL_SERVER_ERROR,
@@ -176,14 +181,120 @@ const uploadPic = async (req) => {
   }
 };
 
-
 /**
  * This service is to forgot password
  */
 
-const forgotPassword = async (req, res) => {
+const forgotPassword = async (body) => {
   try {
-    const { email, newPassword } = req.body;
+    const { email, newPassword, confirmPassword, answer } = body;
+
+    if (!email) {
+      return new CustomError(StatusCodes.NOT_FOUND, "Email required!");
+    }
+    if (!newPassword) {
+      return new CustomError(StatusCodes.NOT_FOUND, "New password required");
+    }
+    console.log(
+      newPassword + typeof newPassword,
+      confirmPassword + typeof confirmPassword
+    );
+    if (!confirmPassword && newPassword !== confirmPassword) {
+      return new CustomError(
+        StatusCodes.BAD_REQUEST,
+        "Password and Confirm password must be same!"
+      );
+    }
+    if (!answer) {
+      return new CustomError(
+        StatusCodes.NOT_FOUND,
+        "Enter your favorite sport"
+      );
+    }
+
+    const user = await db.User.findOne({ where: { email: email } });
+    if (!user) {
+      return new CustomError(StatusCodes.NOT_FOUND, "No user found!");
+    }
+
+    if (user.answer !== answer) {
+      return new CustomError(
+        StatusCodes.BAD_REQUEST,
+        "Wrong answer, permission denied"
+      );
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    user.password = hashedPassword;
+
+    await user.save();
+
+    user.password = "****";
+    user.verifyToken = "****";
+
+    return user;
+  } catch (error) {
+    throw new CustomError(
+      error.status || StatusCodes.INTERNAL_SERVER_ERROR,
+      error.message || "Internal Server Error"
+    );
+  }
+};
+
+/**
+ * This service will update user info
+ */
+
+const updateUserInfo = async (req) => {
+  try {
+    const { fname, lname, password, phone, address, answer } = req.body;
+
+    const { userid } = req.params;
+
+    const user = await db.User.findOne({ where: { id: userid } });
+
+    if (!user) {
+      throw new CustomError(StatusCodes.NOT_FOUND, "No user found!");
+    }
+
+    if (fname) {
+      user.fname = fname;
+      user.fullName = fname + " " + user.lname;
+    }
+    if (lname) {
+      user.lname = lname;
+      user.fullName = user.fname + " " + lname;
+    }
+
+    if (password) {
+      const hashedPassword = await hashPassword(password);
+      user.password = hashedPassword;
+    }
+
+    if (phone) {
+      user.phone = phone;
+    }
+
+    if (address) {
+      user.address = address;
+    }
+
+    if (answer) {
+      user.answer = answer;
+    }
+
+    await user.save();
+
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET_KEY, {
+      expiresIn: "30m",
+    });
+
+    user.password = "******";
+    user.verifyToken = "****";
+    user.avatar = `/${user.avatar}`;
+
+    return { user: user, token: token };
   } catch (error) {
     throw new CustomError(
       error.status || StatusCodes.INTERNAL_SERVER_ERROR,
@@ -211,12 +322,33 @@ const fetchAllUsers = async () => {
   }
 };
 
+/**
+ * This service will check if user is admin
+ */
+const checkUserRole = async (req) => {
+  try {
+    const user = req.user;
+
+    if (!user.role) {
+      throw new CustomError(StatusCodes.UNAUTHORIZED, "Unauthorized access!");
+    }
+
+    return true;
+  } catch (error) {
+    throw new CustomError(
+      error.status || StatusCodes.INTERNAL_SERVER_ERROR,
+      error.errorMessage || "Internal Server error"
+    );
+  }
+};
+
 module.exports = {
   signup,
   verifyMail,
   login,
   forgotPassword,
+  updateUserInfo,
   fetchAllUsers,
   uploadPic,
-  fetchProfilePic,
+  checkUserRole,
 };

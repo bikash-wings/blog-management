@@ -1,24 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import DataTables from "../../components/DataTables/DataTables";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { checkUserRoleRoute } from "../../utills/apiRoutes";
 
 const UsersCatalog = () => {
   const [category, setCategory] = useState("/users");
   const [modal, setModal] = useState({
-    blog: false,
-    login: false,
     updateConfirm: false,
-    edit: false,
     confirm: false,
   });
+
+  const { user } = useSelector((state) => state.user);
+
+  const navigate = useNavigate();
+
+  const checkUserAccessibility = async () => {
+    try {
+      const { data } = await axios.get(checkUserRoleRoute, {
+        headers: { authorization: user?.token },
+      });
+    } catch (error) {
+      toast.error(error.response.data.message);
+      navigate("/");
+    }
+  };
+
+  useEffect(() => {
+    checkUserAccessibility();
+  }, []);
 
   return (
     <div className="home-cnt">
       <Sidebar category={category} setCategory={setCategory} />
 
       <div>
-        <Navbar modal={modal} setModal={setModal} />
+        <Navbar />
         <DataTables category={category} modal={modal} setModal={setModal} />
       </div>
     </div>

@@ -14,6 +14,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import Sidebar from "../../components/Sidebar/Sidebar";
 
 const EditBlog = () => {
   const [title, setTitle] = useState("");
@@ -23,15 +24,12 @@ const EditBlog = () => {
 
   const [modal, setModal] = useState({
     updateConfirm: false,
-    edit: false,
     confirm: false,
   });
 
   const { blogid } = useParams();
 
   let { user } = useSelector((state) => state.user);
-
-  console.log(user);
 
   const fetchBlog = async () => {
     try {
@@ -80,67 +78,79 @@ const EditBlog = () => {
 
   return (
     <div className="page-main pb-4">
-      <Navbar />
+      <Sidebar />
 
-      <div className="container mt-4">
-        <div className="card ">
-          <form
-            className="card-md"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setModal((p) => ({ ...p, updateConfirm: true }));
-            }}
-            autocomplete="off"
-            novalidate=""
-          >
-            <div className="card-body">
-              <h1
-                className="card-title text-center mb-2"
-                style={{ fontSize: "1.6rem", fontWeight: "600" }}
+      <div>
+        <Navbar />
+
+        <div className="container-xl ">
+          <div className="container">
+            <div className="card ">
+              <form
+                className="card-md"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setModal((p) => ({ ...p, updateConfirm: true }));
+                }}
+                autocomplete="off"
+                novalidate=""
               >
-                Update Blog
-              </h1>
-              <div className="mb-2">
-                <label className="form-label" style={{ fontSize: "1.2rem" }}>
-                  Title
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter blog title here"
-                  onChange={(e) => setTitle(e.target.value)}
-                  value={title}
-                  required
-                />
-              </div>
+                <div className="card-body">
+                  <h1
+                    className="card-title text-center mb-4"
+                    style={{ fontSize: "1.6rem", fontWeight: "600" }}
+                  >
+                    Update Blog
+                  </h1>
+                  <div className="mb-2">
+                    <label
+                      className="form-label"
+                      style={{ fontSize: "1rem" }}
+                    >
+                      Title
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Enter blog title here"
+                      onChange={(e) => setTitle(e.target.value)}
+                      value={title}
+                      required
+                    />
+                  </div>
 
-              <div className="mb-2">
-                <label className="form-label" style={{ fontSize: "1.2rem" }}>
-                  Description
-                </label>
-                <Editor
-                  editorState={description}
-                  onEditorStateChange={onEditorStateChange}
-                  wrapperClassName="wrapper-class"
-                  editorClassName="editor-class form-control"
-                  toolbarClassName="toolbar-class"
-                />
-              </div>
+                  <div className="mb-2">
+                    <label
+                      className="form-label"
+                      style={{ fontSize: "1rem" }}
+                    >
+                      Description
+                    </label>
+                    <Editor
+                      editorState={description}
+                      onEditorStateChange={onEditorStateChange}
+                      wrapperClassName="wrapper-class"
+                      editorClassName="editor-class form-control"
+                      toolbarClassName="toolbar-class"
+                    />
+                  </div>
 
-              <div className="form-footer text-center">
-                <button type="submit" className="btn btn-primary">
-                  Update
-                </button>
-              </div>
+                  <div className="form-footer text-center">
+                    <button type="submit" className="btn btn-primary">
+                      Update
+                    </button>
+                  </div>
+                </div>
+                {modal.updateConfirm && (
+                  <ConfirmModal
+                    modal={modal}
+                    setModal={setModal}
+                    onBlogUpdate={onBlogUpdate}
+                  />
+                )}
+              </form>
             </div>
-            {modal.updateConfirm && (
-              <ConfirmModal
-                modal={modal}
-                setModal={setModal}
-                onBlogUpdate={onBlogUpdate}
-              />
-            )}
-          </form>
+          </div>
         </div>
       </div>
     </div>

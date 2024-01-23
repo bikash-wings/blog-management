@@ -1,11 +1,15 @@
 const { StatusCodes } = require("http-status-codes");
-const { notFound } = require("../helpers/errorHandlers");
 const db = require("../models");
 const CustomError = require("../utills/CustomError");
 
+/**
+ * This service will create new blog
+ */
 const createBlog = async (req) => {
   try {
     const { title, description } = req.body;
+
+    const user = req.user;
 
     if (!title) {
       throw new CustomError(StatusCodes.NOT_FOUND, "blog title required!");
@@ -17,7 +21,7 @@ const createBlog = async (req) => {
       );
     }
 
-    const newBlog = await db.Blog.create(req.body);
+    const newBlog = await db.Blog.create({ ...req.body, userId: user.id });
 
     return newBlog;
   } catch (error) {
@@ -28,6 +32,9 @@ const createBlog = async (req) => {
   }
 };
 
+/**
+ * This service will fetch single blog
+ */
 const fetchSingleBlog = async (req) => {
   try {
     const { blogid } = req.params;
@@ -46,9 +53,23 @@ const fetchSingleBlog = async (req) => {
   }
 };
 
-const fetchAllBlogs = async () => {
+/**
+ * This service will fetch all blogs with limits
+ */
+const fetchAllBlogs = async (req) => {
   try {
-    const allBlogs = await db.Blog.findAll();
+    const { page = 1, limit = 15 } = req.query;
+    const offset = (page - 1) * limit;
+
+    const allBlogs = await db.Blog.findAll({
+      include: {
+        model: db.User,
+        attributes: ["fullName"],
+        as: "User",
+      },
+      limit: Number(limit),
+      offset: Number(offset),
+    });
 
     return allBlogs;
   } catch (error) {
@@ -59,6 +80,25 @@ const fetchAllBlogs = async () => {
   }
 };
 
+/**
+ * This service count total number of blogs
+ */
+const totalBlogCount = async () => {
+  try {
+    const blogCount = await db.Blog.count();
+
+    return blogCount;
+  } catch (error) {
+    throw new CustomError(
+      error.status || StatusCodes.INTERNAL_SERVER_ERROR,
+      error.errorMessage || "Internal Server Error"
+    );
+  }
+};
+
+/**
+ * This service will update blog
+ */
 const updateBlog = async (req) => {
   try {
     const { blogid } = req.params;
@@ -88,6 +128,9 @@ const updateBlog = async (req) => {
   }
 };
 
+/**
+ * This service will delete the blog
+ */
 const destroyBlog = async (req) => {
   try {
     const { blogid } = req.params;
@@ -110,6 +153,7 @@ module.exports = {
   createBlog,
   fetchSingleBlog,
   fetchAllBlogs,
+  totalBlogCount,
   updateBlog,
   destroyBlog,
 };

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import {
   allBlogsRoute,
   allUsersRoute,
+  blogsCountRoute,
   deleteBlogRoute,
 } from "../../utills/apiRoutes";
 import moment from "moment";
@@ -10,42 +11,97 @@ import "./datatables.css";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import { Link, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const DataTables = ({ category, modal, setModal }) => {
   const [selectedData, setSelectedData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState({ blogs: 12, fetched: 0 });
+
+  let { user } = useSelector((state) => state.user);
 
   const path = useLocation().pathname;
 
   const fetchAllBlogs = async () => {
+    if (path !== "/") {
+      return;
+    }
+
     try {
-      const { data } = await axios.get(allBlogsRoute);
-      setSelectedData(data.data);
+      const { data } = await axios.get(`${allBlogsRoute}?page=${page}`);
+
+      if (data.data.length > 0) {
+        window.scroll({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+
+      setSelectedData((p) => [...p, ...data.data]);
+      setTotal((p) => ({ ...p, fetched: p.fetched + data.data.length }));
     } catch (error) {
       console.log(error);
     }
   };
 
   const fetchAllUsers = async () => {
+    if (path !== "/users") {
+      return;
+    }
+
     try {
-      const { data } = await axios.get(allUsersRoute);
+      const { data } = await axios.get(allUsersRoute, {
+        headers: { authorization: user?.token },
+      });
       setSelectedData(data.data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    if (path === "/") {
-      fetchAllBlogs();
-    } else if (path === "/users") {
-      fetchAllUsers();
+  const fetchTotalBlogsCount = async () => {
+    try {
+      const { data } = await axios.get(blogsCountRoute);
+      setTotal((p) => ({ ...p, blogs: data.data }));
+    } catch (error) {
+      console.error(error);
     }
-  }, [path]);
+  };
+
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop + 1 >=
+      document.documentElement.scrollHeight
+    ) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  useEffect(() => {
+    fetchTotalBlogsCount();
+
+    // handleScroll event listener on scroll event
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (total.fetched < total.blogs) {
+      fetchAllBlogs();
+    }
+
+    fetchAllUsers();
+  }, [page]);
 
   const deleteBlog = async () => {
     try {
-      const { data } = await axios.delete(`${deleteBlogRoute}/${selectedId}`);
+      const { data } = await axios.delete(`${deleteBlogRoute}/${selectedId}`, {
+        headers: { authorization: user.token },
+      });
       fetchAllBlogs();
       toast.success(data.message);
     } catch (error) {
@@ -92,6 +148,13 @@ const DataTables = ({ category, modal, setModal }) => {
                       </>
                     )}
 
+                    {path === "/" && (
+                      <th>
+                        <button className="table-sort" data-sort="sort-date">
+                          Created by
+                        </button>
+                      </th>
+                    )}
                     <th>
                       <button className="table-sort" data-sort="sort-date">
                         Date
@@ -106,6 +169,7 @@ const DataTables = ({ category, modal, setModal }) => {
                     )}
                   </tr>
                 </thead>
+
                 <tbody>
                   {selectedData.map((item) => (
                     <tr>
@@ -122,10 +186,18 @@ const DataTables = ({ category, modal, setModal }) => {
                       </td>
                       {item.email && (
                         <>
-                          <td className="sort-quantity">{item?.phone}</td>
+                          <td className="sort-quantity">
+                            {item?.phone || "-"}
+                          </td>
                           <td className="sort-type">{item?.email}</td>
-                          <td className="sort-score">{item?.address}</td>
+                          <td className="sort-score">{item?.address || "-"}</td>
                         </>
+                      )}
+
+                      {path === "/" && (
+                        <td className="sort-date" data-date={1536285945}>
+                          {item.User ? item.User.fullName : "-"}
+                        </td>
                       )}
 
                       <td className="sort-date" data-date={1536285945}>
@@ -146,15 +218,15 @@ const DataTables = ({ category, modal, setModal }) => {
                                 setSelectedId(item.id);
                               }}
                               xmlns="http://www.w3.org/2000/svg"
-                              class="icon icon-tabler icon-tabler-eye"
+                              className="icon icon-tabler icon-tabler-eye"
                               width="24"
                               height="24"
                               viewBox="0 0 24 24"
-                              stroke-width="2"
+                              strokeWidth="2"
                               stroke="currentColor"
                               fill="none"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             >
                               <path
                                 stroke="none"
@@ -173,15 +245,15 @@ const DataTables = ({ category, modal, setModal }) => {
                                 <svg
                                   cursor="pointer"
                                   xmlns="http://www.w3.org/2000/svg"
-                                  class="icon icon-tabler icon-tabler-edit"
+                                  className="icon icon-tabler icon-tabler-edit"
                                   width="24"
                                   height="24"
                                   viewBox="0 0 24 24"
-                                  stroke-width="2"
+                                  strokeWidth="2"
                                   stroke="currentColor"
                                   fill="none"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
                                   onClick={() => {
                                     setModal((p) => ({ ...p, edit: true }));
                                     setSelectedId(item.id);
@@ -202,15 +274,15 @@ const DataTables = ({ category, modal, setModal }) => {
                               {/* Delete icon/button */}
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                class="icon icon-tabler icon-tabler-trash"
+                                className="icon icon-tabler icon-tabler-trash"
                                 width="24"
                                 height="24"
                                 viewBox="0 0 24 24"
-                                stroke-width="2"
+                                strokeWidth="2"
                                 stroke="currentColor"
                                 fill="none"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                                 cursor="pointer"
                                 onClick={() => {
                                   setModal((p) => ({ ...p, confirm: true }));
@@ -232,18 +304,18 @@ const DataTables = ({ category, modal, setModal }) => {
                           )}
                         </td>
                       )}
-
-                      {modal.confirm && (
-                        <ConfirmModal
-                          modal={modal}
-                          setModal={setModal}
-                          deleteBlog={deleteBlog}
-                        />
-                      )}
                     </tr>
                   ))}
                 </tbody>
               </table>
+
+              {modal.confirm && (
+                <ConfirmModal
+                  modal={modal}
+                  setModal={setModal}
+                  deleteBlog={deleteBlog}
+                />
+              )}
             </div>
           </div>
         </div>

@@ -22,14 +22,13 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   return (
-    <header className="navbar-expand-md">
+    <header
+      className="navbar-expand-md sticky-top d-print-none"
+      style={{ zIndex: 1000, backgroundColor: "#fff" }}
+    >
       <div className="collapse navbar-collapse" id="navbar-menu">
         <div className="navbar">
-          <div
-            className={
-              path === "/" || path === "/users" ? "container-xl" : "container"
-            }
-          >
+          <div className="container-xl">
             <div className="row flex-fill align-items-center">
               <div
                 className="col"
@@ -117,13 +116,16 @@ const Navbar = () => {
                       className="avatar avatar-sm"
                       style={{
                         backgroundImage:
-                          (user?.avatar && `url(${host}${user?.avatar})`) ||
-                          `url(${userImg})`,
+                          user?.avatar !== "/NULL" && user?.avatar !== "/null"
+                            ? `url(${host}${user?.avatar})`
+                            : `url(${userImg})`,
                       }}
                     />
                     <div className="d-none d-xl-block ps-2">
                       <div>{user?.fullName ? user?.fullName : "User Name"}</div>
-                      <div class="mt-1 small text-secondary">UI Developer</div>
+                      <div className="mt-1 small text-secondary">
+                        UI Developer
+                      </div>
                     </div>
                   </a>
                   {user && (
@@ -140,6 +142,7 @@ const Navbar = () => {
                         Logout
                       </a>
 
+                      {/* Logout confirmation dialog box */}
                       {isLogout &&
                         ReactDOM.createPortal(
                           <div
@@ -172,7 +175,7 @@ const Navbar = () => {
                                   className="modal-footer pt-3"
                                   style={{
                                     backgroundColor: "rgba(2, 2, 2, 0.030)",
-                                    borderTop:'1px solid rgba(2, 2, 2, 0.055)'
+                                    borderTop: "1px solid rgba(2, 2, 2, 0.055)",
                                   }}
                                 >
                                   <button
@@ -180,6 +183,7 @@ const Navbar = () => {
                                     className="btn btn-link link-secondary me-auto"
                                     data-bs-dismiss="modal"
                                     onClick={() => setIsLogout(false)}
+                                    style={{ backgroundColor: "#fff" }}
                                   >
                                     Cancel
                                   </button>
@@ -187,7 +191,7 @@ const Navbar = () => {
                                     type="button"
                                     className="btn btn-danger"
                                     data-bs-dismiss="modal"
-                                    onClick={() => dispatch(setUser(null))}
+                                    onClick={onLogOut}
                                   >
                                     Logout
                                   </button>
