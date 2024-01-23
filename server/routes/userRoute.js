@@ -26,7 +26,7 @@ router.post("/forgot-password", forgotPassword);
 /* PUT update user info */
 router.put("/update/:userid", updateUser);
 
-/* GET all users */
+/* GET all users, queries: page & limit */
 router.get("/get-all", isSignIn, isAdmin, getAllUsers);
 
 /* POST pic upload */
@@ -37,5 +37,6 @@ router.get("/mail-verification", mailVerification);
 
 /* GET is user admin */
 router.get("/is-admin", isSignIn, isUserAdmin);
+
 
 module.exports = router;

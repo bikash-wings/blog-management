@@ -105,10 +105,10 @@ const updateUser = catchAsync(async (req, res) => {
 });
 
 /**
- * This controller will fetch all users
+ * This controller will fetch all users with pagination
  */
 const getAllUsers = catchAsync(async (req, res) => {
-  const allUsers = await userServices.fetchAllUsers();
+  const allUsers = await userServices.fetchAllUsers(req);
 
   if (allUsers) {
     setSuccessResponse(

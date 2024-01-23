@@ -14,7 +14,7 @@ const router = express.Router();
 /* POST new blog */
 router.post("/add", isSignIn, createBlog);
 
-/* GET all blogs */
+/* GET all blogs, query: page & limit */
 router.get("/get-all", getAllBlogs);
 
 /* GET blogs count */

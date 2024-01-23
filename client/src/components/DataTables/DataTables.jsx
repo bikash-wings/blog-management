@@ -51,10 +51,11 @@ const DataTables = ({ category, modal, setModal }) => {
     }
 
     try {
-      const { data } = await axios.get(allUsersRoute, {
+      const { data } = await axios.get(`${allUsersRoute}?page=${page}`, {
         headers: { authorization: user?.token },
       });
-      setSelectedData(data.data);
+      console.log(data.data);
+      setSelectedData((p) => [...p, ...data.data]);
     } catch (error) {
       console.log(error);
     }
@@ -141,6 +142,12 @@ const DataTables = ({ category, modal, setModal }) => {
                         </th>
 
                         <th>
+                          <button className="table-sort" data-sort="sort-type">
+                            Verified
+                          </button>
+                        </th>
+
+                        <th>
                           <button className="table-sort" data-sort="sort-score">
                             Address
                           </button>
@@ -190,6 +197,9 @@ const DataTables = ({ category, modal, setModal }) => {
                             {item?.phone || "-"}
                           </td>
                           <td className="sort-type">{item?.email}</td>
+                          <td className="sort-type">
+                            {item?.isVerified ? "True" : "False"}
+                          </td>
                           <td className="sort-score">{item?.address || "-"}</td>
                         </>
                       )}

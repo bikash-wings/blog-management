@@ -307,10 +307,15 @@ const updateUserInfo = async (req) => {
  * This service will fetch all users
  */
 
-const fetchAllUsers = async () => {
+const fetchAllUsers = async (req) => {
   try {
+    const { page = 1, limit = 11 } = req.query;
+    const offset = (page - 1) * limit;
+
     const allUsers = await db.User.findAll({
       attributes: { exclude: ["password"] },
+      limit: Number(limit),
+      offset: Number(offset),
     });
 
     return allUsers;
