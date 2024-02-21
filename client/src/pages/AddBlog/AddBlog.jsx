@@ -1,39 +1,31 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import {
-  ContentState,
-  EditorState,
-  convertFromHTML,
-  convertToRaw,
-} from "draft-js";
+import { EditorState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { addBlogRoute, singleBlogRoute } from "../../utills/apiRoutes";
 import draftToHtml from "draftjs-to-html";
-import Navbar from "../../components/Navbar/Navbar";
-import "./addblog.css";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+
+import Navbar from "../../components/Navbar/Navbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
 
+import { addBlogRoute, singleBlogRoute } from "../../utills/apiRoutes";
+
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import "./addblog.css";
+
 const AddBlog = () => {
+  const navigate = useNavigate();
+  let { user } = useSelector((state) => state.user);
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState(EditorState.createEmpty());
   const [isError, setIsError] = useState({ title: null, description: null });
-
   const [modal, setModal] = useState({
     updateConfirm: false,
     confirm: false,
   });
-
-  const navigate = useNavigate();
-
-  let { user } = useSelector((state) => state.user);
-
-  useEffect(() => {
-    setIsError({ title: null, description: null });
-  }, [description, title]);
 
   const onEditorStateChange = (editorState) => {
     setDescription(editorState);
@@ -79,6 +71,10 @@ const AddBlog = () => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    setIsError({ title: null, description: null });
+  }, [description, title]);
 
   return (
     <div className="page-main pb-4">

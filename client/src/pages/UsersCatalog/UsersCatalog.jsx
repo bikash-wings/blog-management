@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../../components/Sidebar/Sidebar";
-import Navbar from "../../components/Navbar/Navbar";
-import DataTables from "../../components/DataTables/DataTables";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
+
+import Sidebar from "../../components/Sidebar/Sidebar";
+import Navbar from "../../components/Navbar/Navbar";
+import DataTables from "../../components/DataTables/DataTables";
+
 import { checkUserRoleRoute } from "../../utills/apiRoutes";
 
 const UsersCatalog = () => {
+  const { user } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+
   const [category, setCategory] = useState("/users");
   const [modal, setModal] = useState({
     updateConfirm: false,
     confirm: false,
   });
-
-  const { user } = useSelector((state) => state.user);
-
-  const navigate = useNavigate();
 
   const checkUserAccessibility = async () => {
     try {

@@ -21,3 +21,10 @@
 .text-right a:hover {
   color: #1e73be;
 }
+
+.loader {
+  position: fixed;
+  top: 50vh;
+  left: 50%;
+  z-index: 99999;
+}

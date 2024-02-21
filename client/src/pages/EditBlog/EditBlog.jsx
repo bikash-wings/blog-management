@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { singleBlogRoute, updateBlogRoute } from "../../utills/apiRoutes";
 import axios from "axios";
 import {
   ContentState,
@@ -10,31 +9,30 @@ import {
 import { Editor } from "react-draft-wysiwyg";
 import { useNavigate, useParams } from "react-router-dom";
 import draftToHtml from "draftjs-to-html";
-import Navbar from "../../components/Navbar/Navbar";
-import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+
+import Navbar from "../../components/Navbar/Navbar";
+import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
 import Sidebar from "../../components/Sidebar/Sidebar";
 
+import { singleBlogRoute, updateBlogRoute } from "../../utills/apiRoutes";
+
 const EditBlog = () => {
+  const navigate = useNavigate();
+  const { blogid } = useParams();
+  let { user } = useSelector((state) => state.user);
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState(EditorState.createEmpty());
-
-  const navigate = useNavigate();
-
   const [modal, setModal] = useState({
     updateConfirm: false,
     confirm: false,
   });
 
-  const { blogid } = useParams();
-
-  let { user } = useSelector((state) => state.user);
-
   const fetchBlog = async () => {
     try {
       const { data } = await axios.get(`${singleBlogRoute}/${blogid}`);
-      console.log(data.data);
       const htmlContent = data.data.description;
       const blocksFromHTML = convertFromHTML(htmlContent);
       const contentState = ContentState.createFromBlockArray(
@@ -48,10 +46,6 @@ const EditBlog = () => {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    fetchBlog();
-  }, []);
 
   const onEditorStateChange = (editorState) => {
     setDescription(editorState);
@@ -75,6 +69,10 @@ const EditBlog = () => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    fetchBlog();
+  }, []);
 
   return (
     <div className="page-main pb-4">
@@ -103,10 +101,7 @@ const EditBlog = () => {
                     Update Blog
                   </h1>
                   <div className="mb-2">
-                    <label
-                      className="form-label"
-                      style={{ fontSize: "1rem" }}
-                    >
+                    <label className="form-label" style={{ fontSize: "1rem" }}>
                       Title
                     </label>
                     <input
@@ -120,10 +115,7 @@ const EditBlog = () => {
                   </div>
 
                   <div className="mb-2">
-                    <label
-                      className="form-label"
-                      style={{ fontSize: "1rem" }}
-                    >
+                    <label className="form-label" style={{ fontSize: "1rem" }}>
                       Description
                     </label>
                     <Editor

@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../../components/Navbar/Navbar";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserRoute, uploadAvatarRoute } from "../../utills/apiRoutes";
 import axios from "axios";
-import { setUser } from "../../store/userSlice";
 import toast from "react-hot-toast";
+
+import Navbar from "../../components/Navbar/Navbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
 
+import { updateUserRoute, uploadAvatarRoute } from "../../utills/apiRoutes";
+import { setUser } from "../../store/userSlice";
+
 const Profile = () => {
+  let { user } = useSelector((state) => state.user);
+  user = user.user;
+  const dispatch = useDispatch();
+
   const [auth, setAuth] = useState({
     fname: "",
     lname: "",
@@ -18,23 +24,6 @@ const Profile = () => {
   });
   const [avatar, setAvatar] = useState(null);
   const [isPassVisible, setIsPassVisible] = useState(false);
-
-  let { user } = useSelector((state) => state.user);
-  user = user.user;
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (user) {
-      setAuth({
-        fname: user?.fname,
-        lname: user?.lname,
-        phone: user?.phone,
-        answer: user?.answer,
-        address: user?.address,
-      });
-    }
-  }, [user]);
 
   const onUpdateUserInfo = async () => {
     try {
@@ -73,6 +62,18 @@ const Profile = () => {
       console.error(error.response.data.message);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      setAuth({
+        fname: user?.fname,
+        lname: user?.lname,
+        phone: user?.phone,
+        answer: user?.answer,
+        address: user?.address,
+      });
+    }
+  }, [user]);
 
   return (
     <div className="">

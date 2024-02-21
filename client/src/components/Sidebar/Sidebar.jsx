@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
-import "./sidebar.css";
-import logo from "../../assets/logo.png";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+
+import logo from "../../assets/logo.png";
+import "./sidebar.css";
 
 const Sidebar = ({ category, setCategory }) => {
   const { user } = useSelector((state) => state.user.user);
@@ -13,6 +14,7 @@ const Sidebar = ({ category, setCategory }) => {
         data-bs-theme="dark"
       >
         <div className="container-fluid">
+          {/* Side bar logo is below */}
           <h1 className="navbar-brand navbar-brand-autodark">
             <Link to="/">
               <img
@@ -24,8 +26,47 @@ const Sidebar = ({ category, setCategory }) => {
               />
             </Link>
           </h1>
+
           <div className="collapse navbar-collapse" id="sidebar-menu">
             <ul className="navbar-nav pt-lg-3">
+              <li
+                className={`nav-item ${
+                  category === "/dashboard" ? "catActive" : ""
+                }`}
+                onClick={() => setCategory("/dashboard")}
+              >
+                <Link to="/dashboard" className="nav-link">
+                  <span
+                    className="nav-link-icon d-md-none d-lg-inline-block"
+                    style={{ color: "#ffffffa5" }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="icon icon-tabler icon-tabler-layout-dashboard"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      stroke="currentColor"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M4 4h6v8h-6z" />
+                      <path d="M4 16h6v4h-6z" />
+                      <path d="M14 12h6v8h-6z" />
+                      <path d="M14 4h6v4h-6z" />
+                    </svg>
+                  </span>
+                  <span
+                    className="nav-link-title"
+                    style={{ color: "#ffffffa5" }}
+                  >
+                    Dashboard
+                  </span>
+                </Link>
+              </li>
               <li
                 className={`nav-item ${category === "/" ? "catActive" : ""}`}
                 onClick={() => setCategory("/")}

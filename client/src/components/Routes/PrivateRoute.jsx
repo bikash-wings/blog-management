@@ -4,11 +4,10 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { ClockLoader } from "react-spinners";
 
 const PrivateRoute = () => {
-  const [counter, setCounter] = useState(0);
-
   const { user } = useSelector((state) => state.user);
-
   const navigate = useNavigate();
+
+  const [counter, setCounter] = useState(0);
 
   useEffect(() => {
     if (!user) {

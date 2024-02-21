@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom";
 
-const ConfirmModal = ({ modal, setModal, deleteBlog, onBlogUpdate }) => {
+const ConfirmModal = ({ modal, setModal, onDeleteBlog, onBlogUpdate }) => {
   return ReactDOM.createPortal(
     <div
       style={{
@@ -100,7 +100,7 @@ const ConfirmModal = ({ modal, setModal, deleteBlog, onBlogUpdate }) => {
                     <div
                       className="col"
                       onClick={() => {
-                        deleteBlog();
+                        onDeleteBlog();
                         setModal((p) => ({ ...p, confirm: false }));
                       }}
                     >

@@ -1,25 +1,27 @@
-import { useDispatch, useSelector } from "react-redux";
-import "./navbar.css";
-import { removeUser, setUser } from "../../store/userSlice";
-import { Link, useLocation } from "react-router-dom";
-import { host } from "../../utills/apiRoutes";
-import userImg from "../../assets/profile.png";
 import { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
+import { removeUser } from "../../store/userSlice";
+import { host } from "../../utills/apiRoutes";
+
+import userImg from "../../assets/profile.png";
+import "./navbar.css";
 
 const Navbar = () => {
-  const [isLogout, setIsLogout] = useState(false);
-
   const path = useLocation().pathname;
-
   let { user } = useSelector((state) => state.user);
   user = user.user;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [isLogout, setIsLogout] = useState(false);
 
   const onLogOut = () => {
-    dispatch(setUser(null));
+    navigate("/login");
+    dispatch(removeUser());
   };
-
-  const dispatch = useDispatch();
 
   return (
     <header

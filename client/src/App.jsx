@@ -1,8 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home/Home";
 import { Toaster } from "react-hot-toast";
+
+import Home from "./pages/Home/Home";
 import Signup from "./pages/Auth/Signup";
-import Login from "./pages/Auth/login";
+import Login from "./pages/Auth/Login";
 import UsersCatalog from "./pages/UsersCatalog/UsersCatalog";
 import BlogDetails from "./pages/BlogDetails/BlogDetails";
 import Profile from "./pages/Profile/Profile";
@@ -10,6 +11,7 @@ import AddBlog from "./pages/AddBlog/AddBlog";
 import EditBlog from "./pages/EditBlog/EditBlog";
 import PrivateRoute from "./components/Routes/PrivateRoute";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
+import Dashboard from "./pages/Dashboard/Dashboard";
 
 function App() {
   return (
@@ -31,6 +33,7 @@ function App() {
           </Route>
           <Route path="/users" element={<UsersCatalog />}></Route>
           <Route path="/profile" element={<Profile />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>
