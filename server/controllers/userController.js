@@ -138,6 +138,23 @@ const isUserAdmin = catchAsync(async (req, res) => {
   }
 });
 
+/**
+ * This controller is to invalidate token on logout
+ */
+const logoutController = catchAsync(async (req, res) => {
+  const logout = await userServices.logout(req);
+
+  if (logout) {
+    return setSuccessResponse(
+      res,
+      StatusCodes.OK,
+      true,
+      logout,
+      "Logged out successfully"
+    );
+  }
+});
+
 module.exports = {
   signup,
   mailVerification,
@@ -147,4 +164,5 @@ module.exports = {
   getAllUsers,
   uploadProfilePic,
   isUserAdmin,
+  logoutController,
 };

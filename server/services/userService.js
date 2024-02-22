@@ -131,10 +131,11 @@ const login = async (req) => {
     }
 
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: "30m",
+      expiresIn: "300m",
     });
 
-    user.password = "*******";
+    delete user.password;
+    delete user.verifyToken;
     user.avatar = `/${user.avatar}`;
 
     return { user: user, token: token };
@@ -334,7 +335,7 @@ const checkUserRole = async (req) => {
   try {
     const user = req.user;
 
-    if (!user.role) {
+    if (user.role !== "admin") {
       throw new CustomError(StatusCodes.UNAUTHORIZED, "Unauthorized access!");
     }
 
@@ -347,6 +348,22 @@ const checkUserRole = async (req) => {
   }
 };
 
+/**
+ * This service will add token to blacklist
+ */
+const logout = async (req) => {
+  const token = req.headers.authorization;
+
+  const user = req.user;
+
+  const blacklistToken = await db.invalidated_tokens.create({
+    userId: user.id,
+    token: token,
+  });
+
+  return blacklistToken;
+};
+
 module.exports = {
   signup,
   verifyMail,
@@ -356,4 +373,5 @@ module.exports = {
   fetchAllUsers,
   uploadPic,
   checkUserRole,
+  logout,
 };

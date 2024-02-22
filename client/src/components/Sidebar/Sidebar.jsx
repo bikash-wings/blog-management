@@ -103,7 +103,7 @@ const Sidebar = ({ category, setCategory }) => {
                   </span>
                 </Link>
               </li>
-              {user?.role && (
+              {user?.role === "admin" && (
                 <li
                   className={`nav-item ${
                     category === "/users" ? "catActive" : ""

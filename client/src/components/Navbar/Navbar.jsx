@@ -4,23 +4,33 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { removeUser } from "../../store/userSlice";
-import { host } from "../../utills/apiRoutes";
+import { host, logoutRoute } from "../../utills/apiRoutes";
 
 import userImg from "../../assets/profile.png";
 import "./navbar.css";
+import axios from "axios";
 
 const Navbar = () => {
   const path = useLocation().pathname;
   let { user } = useSelector((state) => state.user);
+  const token = user?.token;
   user = user.user;
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [isLogout, setIsLogout] = useState(false);
 
-  const onLogOut = () => {
-    navigate("/login");
-    dispatch(removeUser());
+  const onLogOut = async () => {
+    try {
+      const { data } = await axios.post(logoutRoute, null, {
+        headers: { authorization: token },
+      });
+
+      navigate("/login");
+      dispatch(removeUser());
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

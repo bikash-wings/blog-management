@@ -20,6 +20,10 @@ import "./datatables.css";
 const DataTables = ({ category, modal, setModal }) => {
   let { user } = useSelector((state) => state.user);
   const path = useLocation().pathname;
+  const url = path.split("/").filter((p, i) => {
+    if (i !== 0) return p;
+  });
+  console.log("path: ", path, " url: ", url);
 
   const [selectedData, setSelectedData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
@@ -57,10 +61,13 @@ const DataTables = ({ category, modal, setModal }) => {
     }
 
     try {
+      setIsLoading(true);
       const { data } = await axios.get(`${allUsersRoute}?page=${page}`, {
         headers: { authorization: user?.token },
       });
       setSelectedData((p) => [...p, ...data.data]);
+      setTotal((p) => ({ ...p, fetched: p.fetched + data.data.length }));
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -127,6 +134,18 @@ const DataTables = ({ category, modal, setModal }) => {
 
       <div className="page-body">
         <div className="container-xl">
+          <div className="bread-crumb">
+            <Link to="/">Home </Link>
+            {url?.map((u) => (
+              <>
+                <span>/</span>
+                <Link to={`/${u}`}>
+                  {" "}
+                  {u.substr(0, 1).toUpperCase() + u.substr(1)}
+                </Link>
+              </>
+            ))}
+          </div>
           <div className="card">
             <div className="card-body">
               <div id="table-default" className="table-responsive">

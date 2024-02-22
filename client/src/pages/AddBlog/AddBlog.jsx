@@ -14,6 +14,7 @@ import { addBlogRoute, singleBlogRoute } from "../../utills/apiRoutes";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./addblog.css";
+import { ClockLoader } from "react-spinners";
 
 const AddBlog = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const AddBlog = () => {
     updateConfirm: false,
     confirm: false,
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const onEditorStateChange = (editorState) => {
     setDescription(editorState);
@@ -57,6 +59,7 @@ const AddBlog = () => {
         setIsError((p) => ({ ...p, description: null }));
       }
 
+      setIsLoading(true);
       const { data } = await axios.post(
         addBlogRoute,
         {
@@ -65,6 +68,7 @@ const AddBlog = () => {
         },
         { headers: { authorization: user.token } }
       );
+      setIsLoading(false);
       toast.success(data.message);
       navigate("/");
     } catch (error) {
@@ -79,6 +83,8 @@ const AddBlog = () => {
   return (
     <div className="page-main pb-4">
       <Sidebar />
+
+      {isLoading && <ClockLoader />}
 
       <div>
         <Navbar />

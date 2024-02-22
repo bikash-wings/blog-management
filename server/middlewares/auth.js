@@ -13,7 +13,18 @@ const isSignIn = catchAsync(async (req, res, next) => {
 
     const { userId } = await jwt.verify(token, process.env.JWT_SECRET_KEY);
 
-    const user = await db.User.findOne({ where: { id: userId } });
+    const user = await db.User.findOne({
+      where: { id: userId },
+      include: {
+        model: db.invalidated_tokens,
+        where: { token: token },
+        required: false,
+      },
+    });
+
+    if (user.invalidated_tokens.length) {
+      throw new CustomError(StatusCodes.UNAUTHORIZED, "jwt expired");
+    }
 
     if (!user) {
       throw new CustomError(StatusCodes.UNAUTHORIZED, "Unauthenticated!");
@@ -33,8 +44,9 @@ const isSignIn = catchAsync(async (req, res, next) => {
 const isAdmin = catchAsync(async (req, res, next) => {
   try {
     const user = req.user;
+    console.log(user.role, ";;;;;;;;;;;;;");
 
-    if (!user.role) {
+    if (user.role !== "admin") {
       throw new CustomError(StatusCodes.UNAUTHORIZED, "Unauthorized access!");
     }
 

@@ -7,6 +7,7 @@ const {
   forgotPassword,
   updateUser,
   isUserAdmin,
+  logoutController,
 } = require("../controllers/userController");
 const { isSignIn, isAdmin } = require("../middlewares/auth");
 
@@ -38,5 +39,7 @@ router.get("/mail-verification", mailVerification);
 /* GET is user admin */
 router.get("/is-admin", isSignIn, isUserAdmin);
 
+/* POST log out */
+router.post("/logout", isSignIn, logoutController);
 
 module.exports = router;

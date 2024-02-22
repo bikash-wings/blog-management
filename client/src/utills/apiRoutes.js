@@ -8,6 +8,9 @@ export const signupRoute = `${host}/api/v1/users/signup`;
 /* method: POST */
 export const loginRoute = `${host}/api/v1/users/login`;
 
+/* method: POST */
+export const logoutRoute = `${host}/api/v1/users/logout`;
+
 /* method : POST */
 export const forgotPasswordRoute = `${host}/api/v1/users/forgot-password`;
 

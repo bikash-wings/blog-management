@@ -29,6 +29,7 @@ const BlogDetails = () => {
       setIsLoad(true);
       const { data } = await axios.get(`${singleBlogRoute}/${blogid}`);
       setBlog(data.data);
+      setIsLoad(false);
     } catch (error) {
       console.log(error);
     }
