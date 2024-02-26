@@ -1,0 +1,31 @@
+.section img {
+    width: 750px;
+    height: auto;
+    border-radius: 0.5rem;
+    object-fit: cover;
+  }
+  
+  .blog-banner {
+    width: 1020px;
+    height: 100vh;
+    background-image: url("../../assets/banner.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #151f2c;
+  }
+  
+  .text-muted {
+    color: #1e73be;
+  }
+  
+  .text-right a:hover {
+    color: #1e73be;
+  }
+  
+  .loader {
+    position: fixed;
+    top: 50vh;
+    left: 50%;
+    z-index: 99999;
+  }
+  

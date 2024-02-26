@@ -1,0 +1,27 @@
+header {
+    border-bottom: 1px solid rgba(179, 179, 179, 0.539);
+  }
+  
+  .navbar{
+    min-height: 0;
+    padding: 0;
+  }
+  
+  .nav-link-title,
+  .nav-link-icon {
+    color: rgb(29, 39, 59);
+  }
+  
+  .nav-link:hover,
+  .nav-link-title:hover {
+    color: #182433a2;
+  }
+  
+  .nav-link-icon {
+    color: #182433a2;
+  }
+  
+  .navbar-expand-md .navbar .active {
+    border-bottom: 2px solid #206bc4;
+  }
+  

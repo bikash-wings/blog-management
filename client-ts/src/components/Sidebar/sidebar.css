@@ -1,0 +1,26 @@
+.page .container-fluid {
+    background-color: #182433;
+  }
+  
+  .navbar-brand-image {
+    height: 50px;
+  }
+  
+  .page .navbar .container-fluid .nav-item:hover {
+    background-color: #223348;
+  }
+  
+  .catActive {
+    background-color: #223348;
+  }
+  
+  .navbar-vertical.navbar-expand-lg .navbar-nav {
+    flex-grow: 0;
+  }
+  
+  @media (min-width: 992px) {
+    .navbar-vertical.navbar-expand-lg .navbar-brand {
+      padding: 0.2rem 0;
+    }
+  }
+  

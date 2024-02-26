@@ -1,0 +1,19 @@
+.blog-cnt {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .wrapper-class {
+    height: 300px;
+  }
+  
+  .rdw-editor-main {
+    height: 80%;
+  }
+  
+  .form-control {
+    /* border: 1px solid grey; */
+  }
+  
+  

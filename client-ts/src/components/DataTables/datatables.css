@@ -1,0 +1,28 @@
+.container-xl {
+    max-width: 1040px;
+    margin-right: 0;
+  }
+  
+  .cta-btn svg:hover {
+    color: #206bc4 !important;
+  }
+  
+  .sort-name a {
+    text-decoration: none;
+  }
+  
+  .sort-name a:hover {
+    color: #206bc4 !important;
+  }
+  
+  .bread-crumb {
+    color: grey;
+  }
+  
+  .bread-crumb a{
+    color: grey;
+  }
+  
+  .bread-crumb a:hover{
+    text-decoration: none;
+  }
