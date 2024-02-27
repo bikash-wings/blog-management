@@ -8,7 +8,7 @@ import ForgotPassword from "./pages/Auth/ForgotPassword";
 import UsersCatalog from "./pages/UsersCatalog/UsersCatalog";
 import BlogDetails from "./pages/BlogDetails/BlogDetails";
 import Profile from "./pages/Profile/Profile";
-// import AddBlog from "./pages/AddBlog/AddBlog";
+import AddBlog from "./pages/AddBlog/AddBlog";
 import EditBlog from "./pages/EditBlog/EditBlog";
 import PrivateRoute from "./components/Routes/PrivateRoute";
 import Dashboard from "./pages/Dashboard/Dashboard";
@@ -27,7 +27,7 @@ function App() {
         <Route path="/" element={<PrivateRoute></PrivateRoute>}>
           <Route path="/" element={<Home />} />
           <Route path="/blog">
-            {/* <Route path="add" element={<AddBlog />} /> */}
+            <Route path="add" element={<AddBlog />} />
             <Route path=":blogid" element={<BlogDetails />} />
             <Route path="edit/:blogid" element={<EditBlog />} />
           </Route>

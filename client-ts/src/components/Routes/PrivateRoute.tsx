@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
 import { ClockLoader } from "react-spinners";
 
+import { useAppSelector } from "../../store/hooks";
+
 const PrivateRoute = () => {
-  const { user } = useSelector((state: any) => state.user);
+  const { user } = useAppSelector((state) => state.user);
   const navigate = useNavigate();
 
   const [counter, setCounter] = useState<number>(0);

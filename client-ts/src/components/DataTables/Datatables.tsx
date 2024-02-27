@@ -63,12 +63,11 @@ const DataTables: React.FC<DataTablesProp> = ({
   modal,
   setModal,
 }) => {
-  let { user } = useSelector((state: any) => state.user);
+  let { user } = useSelector((state: any) => state);
   const path = useLocation().pathname;
   const url = path.split("/").filter((p, i) => {
     if (i !== 0) return p;
   });
-  console.log("path: ", path, " url: ", url);
 
   const [selectedData, setSelectedData] = useState<
     [] | BlogType[] | UserType[]

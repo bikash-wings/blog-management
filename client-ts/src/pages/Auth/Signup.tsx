@@ -1,15 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 
 import { signupRoute } from "../../utills/apiRoutes";
+import { useAppSelector } from "../../store/hooks";
 
 import logo from "../../assets/logo.png";
 
 const Signup = () => {
-  const { user } = useSelector((state: any) => state.user);
+  const { user } = useAppSelector((state) => state.user);
   const navigate = useNavigate();
 
   const [auth, setAuth] = useState<{

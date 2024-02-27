@@ -1,35 +1,36 @@
 import { useState } from "react";
 import ReactDOM from "react-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { removeUser } from "../../store/userSlice";
 import { host, logoutRoute } from "../../utills/apiRoutes";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 
 import userImg from "../../assets/profile.png";
 import "./navbar.css";
 
 const Navbar = () => {
   const path = useLocation().pathname;
-  let { user } = useSelector((state: any) => state.user);
+  let { user } = useAppSelector((state) => state);
   const token = user?.token;
-  user = user.user;
-  const dispatch = useDispatch();
+  const loggedUser = user?.user;
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const modalRoot = document.getElementById("modal-root")!;
 
   const [isLogout, setIsLogout] = useState<boolean>(false);
 
   const onLogOut = async () => {
     try {
-      const { data } = await axios.post(logoutRoute, null, {
-        headers: { authorization: token },
+      const { data } = await axios.post(logoutRoute, {
+        token: token,
+        userId: user?.user?.id,
       });
-      console.log(data);
 
       navigate("/login");
       dispatch(removeUser());
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
     }
   };
@@ -129,19 +130,23 @@ const Navbar = () => {
                       className="avatar avatar-sm"
                       style={{
                         backgroundImage:
-                          user?.avatar === null
-                            ? `url(${host}${user?.avatar})`
+                          loggedUser?.avatar !== "NULL"
+                            ? `url(${host}/${loggedUser?.avatar})`
                             : `url(${userImg})`,
                       }}
                     />
                     <div className="d-none d-xl-block ps-2">
-                      <div>{user?.fullName ? user?.fullName : "User Name"}</div>
+                      <div>
+                        {loggedUser?.fullName
+                          ? loggedUser?.fullName
+                          : "User Name"}
+                      </div>
                       <div className="mt-1 small text-secondary">
                         UI Developer
                       </div>
                     </div>
                   </a>
-                  {user && (
+                  {loggedUser && (
                     <div className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                       <Link to="/profile" className="dropdown-item">
                         Profile
@@ -212,7 +217,7 @@ const Navbar = () => {
                               </div>
                             </div>
                           </div>,
-                          document.getElementById("modal-root")!
+                          modalRoot
                         )}
                     </div>
                   )}

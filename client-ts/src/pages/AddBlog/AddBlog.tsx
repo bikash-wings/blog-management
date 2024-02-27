@@ -5,20 +5,20 @@ import { Editor } from "react-draft-wysiwyg";
 import draftToHtml from "draftjs-to-html";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { ClockLoader } from "react-spinners";
 
 import Navbar from "../../components/Navbar/Navbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
 
 import { addBlogRoute } from "../../utills/apiRoutes";
+import { useAppSelector } from "../../store/hooks";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./addblog.css";
 
 const AddBlog = () => {
   const navigate = useNavigate();
-  let { user } = useSelector((state: any) => state.user);
+  let { user } = useAppSelector((state) => state);
 
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<EditorState>(
@@ -67,7 +67,7 @@ const AddBlog = () => {
           title: title,
           description: blogDescription,
         },
-        { headers: { authorization: user.token } }
+        { headers: { authorization: user?.token } }
       );
       setIsLoading(false);
       toast.success(data.message);

@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 
 import { loginRoute } from "../../utills/apiRoutes";
 import { setUser } from "../../store/userSlice";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 
 import logo from "../../assets/logo.png";
 
 const Login = () => {
-  const { user } = useSelector((state: any) => state.user);
-  const dispatch = useDispatch();
+  const { user } = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState<string>("");

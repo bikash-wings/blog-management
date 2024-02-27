@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+
+import { useAppSelector } from "../../store/hooks";
 
 import logo from "../../assets/logo.png";
 import "./sidebar.css";
@@ -10,7 +11,7 @@ type SidebarProps = {
 };
 
 const Sidebar = ({ category, setCategory = () => {} }: SidebarProps) => {
-  const { user } = useSelector((state: any) => state.user.user);
+  const { user } = useAppSelector((state) => state.user);
 
   return (
     <div className="page">
