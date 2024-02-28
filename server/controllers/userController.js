@@ -128,13 +128,7 @@ const isUserAdmin = catchAsync(async (req, res) => {
   const isAdmin = await userServices.checkUserRole(req);
 
   if (isAdmin) {
-    return setSuccessResponse(
-      res,
-      StatusCodes.OK,
-      true,
-      isAdmin,
-      "User checked successfully"
-    );
+    return setSuccessResponse(res, StatusCodes.OK, true, isAdmin, "Admin user");
   }
 });
 
@@ -155,6 +149,17 @@ const logoutController = catchAsync(async (req, res) => {
   }
 });
 
+/**
+ * This controller will return total user count
+ */
+const totalUserCountController = catchAsync(async (req, res) => {
+  const totalUser = await userServices.totalUsersCount();
+
+  if (totalUser) {
+    setSuccessResponse(res, StatusCodes.OK, true, totalUser, "");
+  }
+});
+
 module.exports = {
   signup,
   mailVerification,
@@ -165,4 +170,5 @@ module.exports = {
   uploadProfilePic,
   isUserAdmin,
   logoutController,
+  totalUserCountController,
 };

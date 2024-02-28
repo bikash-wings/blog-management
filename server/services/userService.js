@@ -134,9 +134,15 @@ const login = async (req) => {
       expiresIn: "300m",
     });
 
-    delete user.password;
-    delete user.verifyToken;
-    user.avatar = `/${user.avatar}`;
+    const userPermissions = await db.Permission.findAll({
+      where: { role_id: user.role },
+    });
+    user.dataValues.permissions = userPermissions.map((per) => per.name);
+
+    delete user.dataValues.password;
+    delete user.dataValues.verifyToken;
+    delete user.dataValues.updatedAt;
+    delete user.dataValues.role;
 
     return { user: user, token: token };
   } catch (error) {
@@ -314,7 +320,7 @@ const fetchAllUsers = async (req) => {
     const offset = (page - 1) * limit;
 
     const allUsers = await db.User.findAll({
-      attributes: { exclude: ["password"] },
+      attributes: { exclude: ["password", "verifyToken", "updatedAt"] },
       limit: Number(limit),
       offset: Number(offset),
     });
@@ -335,7 +341,9 @@ const checkUserRole = async (req) => {
   try {
     const user = req.user;
 
-    if (user.role !== "admin") {
+    const userRole = await db.Roles.findOne({ where: { id: user.role } });
+
+    if (userRole.name !== "admin") {
       throw new CustomError(StatusCodes.UNAUTHORIZED, "Unauthorized access!");
     }
 
@@ -352,16 +360,30 @@ const checkUserRole = async (req) => {
  * This service will add token to blacklist
  */
 const logout = async (req) => {
-  const token = req.headers.authorization;
+  const { userId, token } = req.body;
 
-  const user = req.user;
+  if (!token) {
+    throw new CustomError(StatusCodes.CONFLICT, "Token required");
+  }
+  if (!userId) {
+    throw new CustomError(StatusCodes.CONFLICT, "User id required");
+  }
 
   const blacklistToken = await db.invalidated_tokens.create({
-    userId: user.id,
+    userId: userId,
     token: token,
   });
 
   return blacklistToken;
+};
+
+/**
+ * This service will count total users
+ */
+const totalUsersCount = async () => {
+  const totalUsers = db.User.count();
+
+  return totalUsers;
 };
 
 module.exports = {
@@ -374,4 +396,5 @@ module.exports = {
   uploadPic,
   checkUserRole,
   logout,
+  totalUsersCount,
 };

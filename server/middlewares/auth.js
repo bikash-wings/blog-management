@@ -56,4 +56,23 @@ const isAdmin = catchAsync(async (req, res, next) => {
   }
 });
 
-module.exports = { isSignIn, isAdmin };
+const checkPermissions = (reqPermission) => {
+  return catchAsync(async (req, res, next) => {
+    const user = req.user;
+
+    console.log("⬇️_--------------------request method is: ", req.method);
+
+    let permissions = await db.Permission.findAll({
+      where: { role_id: user.role },
+    });
+    permissions = permissions.map((per) => per.name);
+
+    if (!permissions.includes(reqPermission)) {
+      throw new CustomError(StatusCodes.BAD_REQUEST, "Unauthorized access");
+    }
+
+    next();
+  });
+};
+
+module.exports = { isSignIn, isAdmin, checkPermissions };

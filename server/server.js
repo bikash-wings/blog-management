@@ -4,8 +4,10 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 
-var usersRouter = require("./routes/userRoute");
-const blogsRouter = require("./routes/blogRoute");
+var usersRoutes = require("./routes/userRoute");
+const blogsRoutes = require("./routes/blogRoute");
+const rolesRoutes = require("./routes/rolesRoute");
+const permissionRoutes = require("./routes/permissionRoute");
 const db = require("./models");
 const cors = require("cors");
 
@@ -22,8 +24,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
-app.use("/api/v1/users", usersRouter);
-app.use("/api/v1/blogs", blogsRouter);
+app.use("/api/v1/users", usersRoutes);
+app.use("/api/v1/blogs", blogsRoutes);
+app.use("/api/v1/roles", rolesRoutes);
+app.use("/api/v1/permissions", permissionRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
