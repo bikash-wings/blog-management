@@ -172,10 +172,15 @@ const uploadPic = async (req) => {
 
     await user.save();
 
-    user.avatar = `/${user.avatar}`;
+    const userPermissions = await db.Permission.findAll({
+      where: { role_id: user.role },
+    });
+    user.dataValues.permissions = userPermissions.map((per) => per.name);
 
-    user.password = "******";
-    user.verifyToken = "****";
+    delete user.dataValues.password;
+    delete user.dataValues.verifyToken;
+    delete user.dataValues.updatedAt;
+    delete user.dataValues.role;
 
     console.log(user);
 
@@ -258,6 +263,7 @@ const updateUserInfo = async (req) => {
     const { fname, lname, password, phone, address, answer } = req.body;
 
     const { userid } = req.params;
+    console.log("🚀 ~ updateUserInfo ~ userid:", userid);
 
     const user = await db.User.findOne({ where: { id: userid } });
 
@@ -297,9 +303,15 @@ const updateUserInfo = async (req) => {
       expiresIn: "30m",
     });
 
-    user.password = "******";
-    user.verifyToken = "****";
-    user.avatar = `/${user.avatar}`;
+    const userPermissions = await db.Permission.findAll({
+      where: { role_id: user.role },
+    });
+    user.dataValues.permissions = userPermissions.map((per) => per.name);
+
+    delete user.dataValues.password;
+    delete user.dataValues.verifyToken;
+    delete user.dataValues.updatedAt;
+    delete user.dataValues.role;
 
     return { user: user, token: token };
   } catch (error) {

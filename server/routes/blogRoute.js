@@ -6,13 +6,24 @@ const {
   deleteBlog,
   updateBlog,
   getBlogsCount,
+  toggleBlogLikeController,
+  totalBlogLikesController,
+  addCommentController,
+  allCommentsController,
 } = require("../controllers/blogControllers");
 const { isSignIn, checkPermissions } = require("../middlewares/auth");
+const { uploadThumbnail } = require("../middlewares/uploadFile");
 
 const router = express.Router();
 
 /* POST new blog */
-router.post("/add", isSignIn, checkPermissions("add-blog"), createBlog);
+router.post(
+  "/add",
+  isSignIn,
+  checkPermissions("add-blog"),
+  uploadThumbnail.single("thumbnail"),
+  createBlog
+);
 
 /* GET all blogs, query: page & limit */
 router.get("/get-all", isSignIn, checkPermissions("view-blogs"), getAllBlogs);
@@ -38,5 +49,17 @@ router.delete(
   checkPermissions("delete-blog"),
   deleteBlog
 );
+
+/* POST like-blog */
+router.post("/toggle-like/:blogid", isSignIn, toggleBlogLikeController);
+
+/* GET like-count */
+router.get("/count-likes/:blogid", totalBlogLikesController);
+
+/* POST add-comment */
+router.post("/comments/:blogid", isSignIn, addCommentController);
+
+/* GET all-comments */
+router.get("/comments/:blogid", allCommentsController);
 
 module.exports = router;

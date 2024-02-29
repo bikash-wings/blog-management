@@ -7,7 +7,7 @@ const CustomError = require("../utills/CustomError");
  */
 const createBlog = async (req) => {
   try {
-    const { title, description } = req.body;
+    const { title, description, status } = req.body;
 
     const user = req.user;
 
@@ -20,8 +20,17 @@ const createBlog = async (req) => {
         "blog description required!"
       );
     }
+    if (!status) {
+      throw new CustomError(StatusCodes.NOT_FOUND, "blog status required!");
+    }
 
     const newBlog = await db.Blog.create({ ...req.body, userId: user.id });
+
+    const thumbnail = req.thumbnail;
+    if (thumbnail) {
+      newBlog.thumbnail = thumbnail;
+      await newBlog.save();
+    }
 
     return newBlog;
   } catch (error) {
@@ -39,10 +48,20 @@ const fetchSingleBlog = async (req) => {
   try {
     const { blogid } = req.params;
 
-    const blog = await db.Blog.findOne({ where: { id: blogid } });
+    const blog = await db.Blog.findOne({
+      where: { id: blogid },
+      include: {
+        model: db.User,
+        attributes: ["fullName", "avatar"],
+        as: "User",
+      },
+    });
     if (!blog) {
       throw new CustomError(StatusCodes.NOT_FOUND, "no blog found!");
     }
+
+    blog.views++;
+    await blog.save();
 
     return blog;
   } catch (error) {
@@ -64,7 +83,7 @@ const fetchAllBlogs = async (req) => {
     const allBlogs = await db.Blog.findAll({
       include: {
         model: db.User,
-        attributes: ["fullName"],
+        attributes: ["fullName", "avatar"],
         as: "User",
       },
       limit: Number(limit),
@@ -149,6 +168,128 @@ const destroyBlog = async (req) => {
   }
 };
 
+/**
+ * This service is to add like to blog
+ */
+const toggleBlogLike = async (blogId, userId) => {
+  const checkBlog = await db.Blog.findByPk(blogId);
+  if (!checkBlog) {
+    throw new CustomError(
+      StatusCodes.NOT_FOUND,
+      `No blog found with id ${blogId}`
+    );
+  }
+
+  // const checkUser = await db.Blog.findByPk(userId);
+  // if (!checkUser) {
+  //   throw new CustomError(
+  //     StatusCodes.NOT_FOUND,
+  //     `No User found with id ${userId}`
+  //   );
+  // }
+
+  const checkBlogLike = await db.Likes.findOne({
+    where: { blogId: blogId, userId: userId },
+  });
+
+  if (checkBlogLike) {
+    const removedLike = await db.Likes.destroy({
+      where: { blogId: blogId, userId: userId },
+    });
+    if (!removedLike) {
+      throw new CustomError(
+        StatusCodes.CONFLICT,
+        "Failed to remove like from the blog"
+      );
+    }
+
+    return "like removed";
+  }
+
+  const likeBlog = await db.Likes.create({ blogId: blogId, userId: userId });
+
+  if (!likeBlog) {
+    throw new CustomError(
+      StatusCodes.CONFLICT,
+      "Error adding like to the blog"
+    );
+  }
+
+  return "Like added to the blog";
+};
+
+/**
+ * This service is count total likes of a blog
+ */
+const totalBlogLikes = async (blogId) => {
+  try {
+    const totalLikes = await db.Likes.count({ where: { blogId: blogId } });
+
+    return totalLikes;
+  } catch (error) {
+    throw new CustomError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      "Internal server error"
+    );
+  }
+};
+
+/**
+ * This will add comment to blog
+ */
+const addComment = async (req) => {
+  const { comment } = req.body;
+  const userId = req.user.id;
+  const blogId = req.params.blogid;
+
+  if (!comment) {
+    throw new CustomError(StatusCodes.CONFLICT, "Comment content required");
+  }
+
+  const checkBlog = await db.Blog.findByPk(blogId);
+  if (!checkBlog) {
+    throw new CustomError(
+      StatusCodes.CONFLICT,
+      `No blog found with id ${blogId}`
+    );
+  }
+
+  const newComment = await db.Comments.create({
+    userId: userId,
+    blogId: blogId,
+    content: comment,
+  });
+  if (!newComment) {
+    throw new CustomError(StatusCodes.CREATED, "Comment added to the blog");
+  }
+
+  return newComment;
+};
+
+/**
+ * This will fetch all comments
+ */
+const allComments = async (blogId) => {
+  const allComments = await db.Comments.findAll({
+    where: { blogId: blogId },
+    include: {
+      model: db.User,
+      attributes: ["fullName", "avatar"],
+      as: "User",
+    },
+    attributes: ["id", "content", "createdAt"],
+  });
+
+  if (!allComments) {
+    throw new CustomError(
+      StatusCodes.CONFLICT,
+      "No comments found for the blog"
+    );
+  }
+
+  return allComments;
+};
+
 module.exports = {
   createBlog,
   fetchSingleBlog,
@@ -156,4 +297,8 @@ module.exports = {
   totalBlogCount,
   updateBlog,
   destroyBlog,
+  toggleBlogLike,
+  totalBlogLikes,
+  addComment,
+  allComments,
 };

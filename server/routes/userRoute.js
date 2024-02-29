@@ -12,7 +12,7 @@ const {
 } = require("../controllers/userController");
 const { isSignIn, isAdmin, checkPermissions } = require("../middlewares/auth");
 
-const { upload } = require("../middlewares/uploadFile");
+const { uploadAvatar } = require("../middlewares/uploadFile");
 
 const router = require("express").Router();
 
@@ -32,7 +32,7 @@ router.put("/update/:userid", updateUser);
 router.get("/get-all", isSignIn, checkPermissions("view-users"), getAllUsers);
 
 /* POST pic upload */
-router.post("/upload/:userid", upload.single("avatar"), uploadProfilePic);
+router.post("/upload/:userid", uploadAvatar.single("avatar"), uploadProfilePic);
 
 /* GET verify mail */
 router.get("/mail-verification", mailVerification);

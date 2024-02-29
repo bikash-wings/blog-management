@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasMany(models.Blog, { foreignKey: "userId" });
       User.hasMany(models.invalidated_tokens, { foreignKey: "userId" });
+      User.hasMany(models.Likes, { foreignKey: "userId" });
     }
   }
 

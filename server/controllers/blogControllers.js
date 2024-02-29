@@ -97,6 +97,77 @@ const deleteBlog = catchAsync(async (req, res) => {
   );
 });
 
+/**
+ * This controller is to like a blog
+ */
+const toggleBlogLikeController = catchAsync(async (req, res) => {
+  const likeBlog = await blogService.toggleBlogLike(
+    req.params.blogid,
+    req.user.id
+  );
+
+  if (likeBlog) {
+    return setSuccessResponse(
+      res,
+      StatusCodes.CREATED,
+      true,
+      likeBlog,
+      "Blog like toggled"
+    );
+  }
+});
+
+/**
+ * This controller will return total likes count
+ */
+const totalBlogLikesController = catchAsync(async (req, res) => {
+  const totalLikes = await blogService.totalBlogLikes(req.params.blogid);
+
+  if (totalLikes >= 0) {
+    return setSuccessResponse(
+      res,
+      StatusCodes.OK,
+      true,
+      totalLikes,
+      "like count fetched"
+    );
+  }
+});
+
+/**
+ * This controller is to add comments to the blog
+ */
+const addCommentController = catchAsync(async (req, res) => {
+  const addComment = await blogService.addComment(req);
+
+  if (addComment) {
+    return setSuccessResponse(
+      res,
+      StatusCodes.CREATED,
+      true,
+      addComment,
+      "Comment added to the blog"
+    );
+  }
+});
+
+/**
+ * This controller is to fetch all comments of the blog
+ */
+const allCommentsController = catchAsync(async (req, res) => {
+  const allComments = await blogService.allComments(req.params.blogid);
+
+  if (allComments) {
+    return setSuccessResponse(
+      res,
+      StatusCodes.OK,
+      true,
+      allComments,
+      "all comments fetched"
+    );
+  }
+});
+
 module.exports = {
   createBlog,
   getSingleBlog,
@@ -104,4 +175,8 @@ module.exports = {
   getBlogsCount,
   updateBlog,
   deleteBlog,
+  toggleBlogLikeController,
+  totalBlogLikesController,
+  addCommentController,
+  allCommentsController,
 };
