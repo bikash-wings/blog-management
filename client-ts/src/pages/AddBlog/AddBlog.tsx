@@ -83,128 +83,126 @@ const AddBlog = () => {
 
   return (
     <div className="page-main pb-4">
-      <Sidebar />
+      {/* <Sidebar /> */}
 
       {isLoading && <ClockLoader />}
 
       <div>
         <Navbar />
 
-        <div className="container-xl ">
-          <div className="container">
-            <div className="card ">
-              <form
-                className="card-md"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  onAddBlog();
-                }}
-                autoComplete="off"
-              >
-                <div className="card-body">
-                  <h1
-                    className="card-title text-center mb-4"
-                    style={{
-                      fontSize: "1.6rem",
-                      fontWeight: "600",
-                    }}
-                  >
-                    Create New Blog
-                  </h1>
-                  <div className="mb-2">
-                    <label className="form-label" style={{ fontSize: "1rem" }}>
-                      Title
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Enter blog title here"
-                      onChange={(e) => setTitle(e.target.value)}
-                      value={title}
-                      required
-                    />
-                  </div>
-                  {isError.title && (
-                    <div
-                      className="alert alert-warning alert-dismissible mt-4"
-                      role="alert"
-                    >
-                      <div className="d-flex">
-                        <div>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="icon alert-icon"
-                            width={24}
-                            height={24}
-                            viewBox="0 0 24 24"
-                            strokeWidth={2}
-                            stroke="currentColor"
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path d="M12 9v4" />
-                            <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" />
-                            <path d="M12 16h.01" />
-                          </svg>
-                        </div>
-                        <div>{isError.title}</div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="mb-2">
-                    <label className="form-label" style={{ fontSize: "1rem" }}>
-                      Description
-                    </label>
-                    <Editor
-                      editorState={description}
-                      onEditorStateChange={onEditorStateChange}
-                      wrapperClassName="wrapper-class"
-                      editorClassName="editor-class form-control"
-                      toolbarClassName="toolbar-class"
-                    />
-                  </div>
-
-                  {isError.description && (
-                    <div
-                      className="alert alert-warning alert-dismissible mt-4"
-                      role="alert"
-                    >
-                      <div className="d-flex">
-                        <div>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="icon alert-icon"
-                            width={24}
-                            height={24}
-                            viewBox="0 0 24 24"
-                            strokeWidth={2}
-                            stroke="currentColor"
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path d="M12 9v4" />
-                            <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" />
-                            <path d="M12 16h.01" />
-                          </svg>
-                        </div>
-                        <div>{isError.description}</div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="form-footer text-center">
-                    <button type="submit" className="btn btn-primary ">
-                      Publish
-                    </button>
-                  </div>
+        <div className="container">
+          <div className="card ">
+            <form
+              className="card-md"
+              onSubmit={(e) => {
+                e.preventDefault();
+                onAddBlog();
+              }}
+              autoComplete="off"
+            >
+              <div className="card-body">
+                <h1
+                  className="card-title text-center mb-4"
+                  style={{
+                    fontSize: "1.6rem",
+                    fontWeight: "600",
+                  }}
+                >
+                  Create New Blog
+                </h1>
+                <div className="mb-2">
+                  <label className="form-label" style={{ fontSize: "1rem" }}>
+                    Title
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter blog title here"
+                    onChange={(e) => setTitle(e.target.value)}
+                    value={title}
+                    required
+                  />
                 </div>
-              </form>
-            </div>
+                {isError.title && (
+                  <div
+                    className="alert alert-warning alert-dismissible mt-4"
+                    role="alert"
+                  >
+                    <div className="d-flex">
+                      <div>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="icon alert-icon"
+                          width={24}
+                          height={24}
+                          viewBox="0 0 24 24"
+                          strokeWidth={2}
+                          stroke="currentColor"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M12 9v4" />
+                          <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" />
+                          <path d="M12 16h.01" />
+                        </svg>
+                      </div>
+                      <div>{isError.title}</div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="mb-2">
+                  <label className="form-label" style={{ fontSize: "1rem" }}>
+                    Description
+                  </label>
+                  <Editor
+                    editorState={description}
+                    onEditorStateChange={onEditorStateChange}
+                    wrapperClassName="wrapper-class"
+                    editorClassName="editor-class form-control"
+                    toolbarClassName="toolbar-class"
+                  />
+                </div>
+
+                {isError.description && (
+                  <div
+                    className="alert alert-warning alert-dismissible mt-4"
+                    role="alert"
+                  >
+                    <div className="d-flex">
+                      <div>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="icon alert-icon"
+                          width={24}
+                          height={24}
+                          viewBox="0 0 24 24"
+                          strokeWidth={2}
+                          stroke="currentColor"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M12 9v4" />
+                          <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" />
+                          <path d="M12 16h.01" />
+                        </svg>
+                      </div>
+                      <div>{isError.description}</div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="form-footer text-center">
+                  <button type="submit" className="btn btn-primary ">
+                    Publish
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>

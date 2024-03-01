@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -9,9 +8,10 @@ import Navbar from "../../components/Navbar/Navbar";
 import DataTables from "../../components/DataTables/Datatables";
 
 import { checkUserRoleRoute } from "../../utills/apiRoutes";
+import { useAppSelector } from "../../store/hooks";
 
 const UsersCatalog = () => {
-  const { user } = useSelector((state: any) => state);
+  const { user } = useAppSelector((state) => state);
   const navigate = useNavigate();
 
   const [category, setCategory] = useState("/users");
@@ -35,8 +35,14 @@ const UsersCatalog = () => {
   };
 
   useEffect(() => {
-    checkUserAccessibility();
+    // checkUserAccessibility();
   }, []);
+
+  useEffect(() => {
+    if (!user?.user?.permissions.includes("view-users")) {
+      navigate("/");
+    }
+  }, [user?.user]);
 
   return (
     <div className="home-cnt">

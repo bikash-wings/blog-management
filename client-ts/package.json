@@ -24,11 +24,14 @@
     "react-spinners": "^0.13.8"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/draft-js": "^0.11.17",
     "@types/draftjs-to-html": "^0.8.4",
+    "@types/moment": "^2.13.0",
     "@types/react": "^18.2.56",
     "@types/react-dom": "^18.2.19",
     "@types/react-draft-wysiwyg": "^1.13.8",
+    "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
     "@vitejs/plugin-react": "^4.2.1",

@@ -7,7 +7,8 @@ import { ClockLoader } from "react-spinners";
 import Navbar from "../../components/Navbar/Navbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
 
-import { singleBlogRoute } from "../../utills/apiRoutes";
+import { host, singleBlogRoute } from "../../utills/apiRoutes";
+import { useAppSelector } from "../../store/hooks";
 
 import "./blogdetails.css";
 
@@ -18,9 +19,12 @@ type BlogType = {
   createdAt: Date;
   updatedAt: Date;
   userId: number;
+  views: number;
+  thumbnail: string;
 };
 
 const BlogDetails = () => {
+  const { user } = useAppSelector((state) => state);
   const { blogid } = useParams();
 
   const [blog, setBlog] = useState<BlogType | {}>({});
@@ -30,7 +34,9 @@ const BlogDetails = () => {
   const fetchBlogDetails = async () => {
     try {
       setIsLoad(true);
-      const { data } = await axios.get(`${singleBlogRoute}/${blogid}`);
+      const { data } = await axios.get(`${singleBlogRoute}/${blogid}`, {
+        headers: { authorization: user?.token },
+      });
       setBlog(data.data);
       setIsLoad(false);
     } catch (error: any) {
@@ -52,15 +58,23 @@ const BlogDetails = () => {
         />
       )}
       <main className=" details-main">
-        <Sidebar />
+        {/* <Sidebar /> */}
 
         <div>
           <Navbar />
 
-          <section className="section container-xl">
-            <div className="blog-banner"></div>
+          <section className="section container pt-5 mb-2">
+            {/* <div className="blog-banner"></div> */}
+            {"thumbnail" in blog && (
+              <div className="thumbnail-cnt">
+                <img
+                  src={`${host}/thumbnail/${blog?.thumbnail}`}
+                  alt="blog thumbnail"
+                />
+              </div>
+            )}
 
-            <div className="container">
+            <div className="container pt-4">
               <div className="row justify-center">
                 <div className="col-slim">
                   <div className="divider-y-8">
@@ -102,8 +116,8 @@ const BlogDetails = () => {
                                   stroke-width="2"
                                   stroke="currentColor"
                                   fill="none"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
                                 >
                                   <path
                                     stroke="none"
@@ -128,30 +142,69 @@ const BlogDetails = () => {
                                   )}
                                 </span>
                               </div>
-                              <div className="col text-right">
-                                <Link
-                                  to={`/blog/edit/${blog?.id}`}
-                                  aria-label="edit blog link"
+
+                              {/* Views icon & count */}
+                              <div
+                                className="col"
+                                style={{
+                                  color: "#1e73be",
+                                  fontSize: "1rem",
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="icon icon-tabler icon-tabler-eye"
+                                  width="24"
+                                  height="24"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="2"
+                                  stroke="currentColor"
+                                  fill="none"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
                                 >
-                                  Edit Blog{" "}
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="icon icon-tabler icon-tabler-arrow-right icon"
-                                    width={24}
-                                    height={24}
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={2}
-                                    stroke="currentColor"
+                                  <path
+                                    stroke="none"
+                                    d="M0 0h24v24H0z"
                                     fill="none"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  >
-                                    <path d="M5 12l14 0" />
-                                    <path d="M13 18l6 -6" />
-                                    <path d="M13 6l6 6" />
-                                  </svg>
-                                </Link>
+                                  />
+                                  <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                  <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+                                </svg>
+                                <span>{blog?.views} Views</span>
                               </div>
+
+                              {/* Edit Blog button */}
+                              {user.user?.permissions.includes(
+                                "update-blog"
+                              ) && (
+                                <div className="col text-right">
+                                  <Link
+                                    to={`/blog/edit/${blog?.id}`}
+                                    aria-label="edit blog link"
+                                  >
+                                    Edit Blog{" "}
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="icon icon-tabler icon-tabler-arrow-right icon"
+                                      width={24}
+                                      height={24}
+                                      viewBox="0 0 24 24"
+                                      strokeWidth={2}
+                                      stroke="currentColor"
+                                      fill="none"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    >
+                                      <path d="M5 12l14 0" />
+                                      <path d="M13 18l6 -6" />
+                                      <path d="M13 6l6 6" />
+                                    </svg>
+                                  </Link>
+                                </div>
+                              )}
                             </div>
                           </div>
 

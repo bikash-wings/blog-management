@@ -1,0 +1,35 @@
+.blog {
+  /* height: max-content; */
+  max-width: 35rem;
+}
+
+.blog .thumb-cnt {
+  width: 35rem;
+}
+
+.blog .thumb-cnt img {
+  object-fit: cover;
+  height: 20rem;
+  width: 100%;
+  border-radius: 12px 12px 0 0;
+  box-shadow: 1px 4px 20px -2px rgb(0 0 0 / 10%);
+  overflow: hidden;
+}
+
+.blog .blog-details {
+  padding: 20px 50px;
+  box-shadow: 1px 4px 20px -2px rgb(0 0 0 / 10%);
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+}
+
+.blog .det-link {
+  font-weight: 600;
+}
+
+.blog .det-link:hover {
+  text-decoration: none;
+  color: #1e73be;
+  transition: color 0.5s ease;
+  cursor: pointer;
+}

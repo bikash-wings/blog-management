@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { UserState } from "../components/Types/User";
 
 const getInitialState = (): UserState => {
@@ -13,8 +13,9 @@ const userSlice = createSlice({
   name: "user",
   initialState: getInitialState(),
   reducers: {
-    setUser: (state, action) => {
-      state.user = action.payload;
+    setUser: (state, action: PayloadAction<UserState>) => {
+      state.user = action.payload.user;
+      state.token = action.payload.token;
       localStorage.setItem("blog-user", JSON.stringify(action.payload));
     },
     removeUser: (state) => {

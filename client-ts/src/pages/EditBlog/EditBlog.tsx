@@ -21,7 +21,7 @@ import { singleBlogRoute, updateBlogRoute } from "../../utills/apiRoutes";
 const EditBlog = () => {
   const navigate = useNavigate();
   const { blogid } = useParams();
-  let { user } = useSelector((state: any) => state.user);
+  let { user } = useSelector((state: any) => state);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState(EditorState.createEmpty());
@@ -32,7 +32,9 @@ const EditBlog = () => {
 
   const fetchBlog = async () => {
     try {
-      const { data } = await axios.get(`${singleBlogRoute}/${blogid}`);
+      const { data } = await axios.get(`${singleBlogRoute}/${blogid}`, {
+        headers: { authorization: user?.token },
+      });
       const htmlContent = data.data.description;
       const blocksFromHTML = convertFromHTML(htmlContent);
       const contentState = ContentState.createFromBlockArray(
@@ -76,76 +78,76 @@ const EditBlog = () => {
 
   return (
     <div className="page-main pb-4">
-      <Sidebar />
+      {/* <Sidebar /> */}
 
       <div>
         <Navbar />
 
-        <div className="container-xl ">
-          <div className="container">
-            <div className="card ">
-              <form
-                className="card-md"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setModal((p) => ({ ...p, updateConfirm: true }));
-                }}
-                autoComplete="off"
-                noValidate={false}
-              >
-                <div className="card-body">
-                  <h1
-                    className="card-title text-center mb-4"
-                    style={{ fontSize: "1.6rem", fontWeight: "600" }}
-                  >
-                    Update Blog
-                  </h1>
-                  <div className="mb-2">
-                    <label className="form-label" style={{ fontSize: "1rem" }}>
-                      Title
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Enter blog title here"
-                      onChange={(e) => setTitle(e.target.value)}
-                      value={title}
-                      required
-                    />
-                  </div>
-
-                  <div className="mb-2">
-                    <label className="form-label" style={{ fontSize: "1rem" }}>
-                      Description
-                    </label>
-                    <Editor
-                      editorState={description}
-                      onEditorStateChange={onEditorStateChange}
-                      wrapperClassName="wrapper-class"
-                      editorClassName="editor-class form-control"
-                      toolbarClassName="toolbar-class"
-                    />
-                  </div>
-
-                  <div className="form-footer text-center">
-                    <button type="submit" className="btn btn-primary">
-                      Update
-                    </button>
-                  </div>
-                </div>
-                {modal.updateConfirm && (
-                  <ConfirmModal
-                    modal={modal}
-                    setModal={setModal}
-                    onBlogUpdate={onBlogUpdate}
+        {/* <div className="container-xl "> */}
+        <div className="container">
+          <div className="card ">
+            <form
+              className="card-md"
+              onSubmit={(e) => {
+                e.preventDefault();
+                setModal((p) => ({ ...p, updateConfirm: true }));
+              }}
+              autoComplete="off"
+              noValidate={false}
+            >
+              <div className="card-body">
+                <h1
+                  className="card-title text-center mb-4"
+                  style={{ fontSize: "1.6rem", fontWeight: "600" }}
+                >
+                  Update Blog
+                </h1>
+                <div className="mb-2">
+                  <label className="form-label" style={{ fontSize: "1rem" }}>
+                    Title
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter blog title here"
+                    onChange={(e) => setTitle(e.target.value)}
+                    value={title}
+                    required
                   />
-                )}
-              </form>
-            </div>
+                </div>
+
+                <div className="mb-2">
+                  <label className="form-label" style={{ fontSize: "1rem" }}>
+                    Description
+                  </label>
+                  <Editor
+                    editorState={description}
+                    onEditorStateChange={onEditorStateChange}
+                    wrapperClassName="wrapper-class"
+                    editorClassName="editor-class form-control"
+                    toolbarClassName="toolbar-class"
+                  />
+                </div>
+
+                <div className="form-footer text-center">
+                  <button type="submit" className="btn btn-primary">
+                    Update
+                  </button>
+                </div>
+              </div>
+              {modal.updateConfirm && (
+                <ConfirmModal
+                  modal={modal}
+                  setModal={setModal}
+                  onBlogUpdate={onBlogUpdate}
+                />
+              )}
+            </form>
           </div>
         </div>
       </div>
     </div>
+    // </div>
   );
 };
 

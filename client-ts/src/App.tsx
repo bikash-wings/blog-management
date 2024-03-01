@@ -12,6 +12,7 @@ import AddBlog from "./pages/AddBlog/AddBlog";
 import EditBlog from "./pages/EditBlog/EditBlog";
 import PrivateRoute from "./components/Routes/PrivateRoute";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import Admin from "./pages/Admin/Admin";
 
 function App() {
   return (
@@ -22,18 +23,17 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/blogs/:blogid" element={<BlogDetails />} />
+        <Route path="/blogs/add" element={<AddBlog />} />
+        <Route path="/blogs/edit/:blogid" element={<EditBlog />} />
 
         {/* Private Routes */}
-        <Route path="/" element={<PrivateRoute></PrivateRoute>}>
-          <Route path="/" element={<Home />} />
-          <Route path="/blog">
-            <Route path="add" element={<AddBlog />} />
-            <Route path=":blogid" element={<BlogDetails />} />
-            <Route path="edit/:blogid" element={<EditBlog />} />
-          </Route>
-          <Route path="/users" element={<UsersCatalog />}></Route>
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin/*" element={<PrivateRoute />}>
+          <Route path="" element={<Admin />} />
+          <Route path="users" element={<UsersCatalog />} />
+          <Route path="dashboard" element={<Dashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>

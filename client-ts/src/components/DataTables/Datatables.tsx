@@ -3,7 +3,6 @@ import axios from "axios";
 import moment from "moment";
 import { Link, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
 import { ClockLoader } from "react-spinners";
 
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
@@ -13,7 +12,9 @@ import {
   allUsersRoute,
   blogsCountRoute,
   deleteBlogRoute,
+  usersCountRoute,
 } from "../../utills/apiRoutes";
+import { useAppSelector } from "../../store/hooks";
 
 import "./datatables.css";
 
@@ -36,10 +37,11 @@ type BlogType = {
   title: string;
   description: string;
   createdAt: Date;
-  updatedAt: Date;
-  userId: number;
+  views: number;
+  thumbnail: string;
   User: {
     fullName: string;
+    avatar: string;
   };
 };
 
@@ -63,7 +65,7 @@ const DataTables: React.FC<DataTablesProp> = ({
   modal,
   setModal,
 }) => {
-  let { user } = useSelector((state: any) => state);
+  let { user } = useAppSelector((state) => state);
   const path = useLocation().pathname;
   const url = path.split("/").filter((p, i) => {
     if (i !== 0) return p;
@@ -74,20 +76,27 @@ const DataTables: React.FC<DataTablesProp> = ({
   >([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [page, setPage] = useState<number>(1);
-  const [total, setTotal] = useState<{ blogs: number; fetched: number }>({
+  const [total, setTotal] = useState<{
+    blogs: number;
+    users: number;
+    fetched: number;
+  }>({
     blogs: 12,
+    users: 12,
     fetched: 0,
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fetchAllBlogs = async () => {
-    if (path !== "/" || total.fetched >= total.blogs) {
+    if (path !== "/admin" || total.fetched >= total.blogs) {
       return;
     }
 
     try {
       setIsLoading(true);
-      const { data } = await axios.get(`${allBlogsRoute}?page=${page}`);
+      const { data } = await axios.get(`${allBlogsRoute}?page=${page}`, {
+        headers: { authorization: user?.token },
+      });
 
       // if (data.data.length > 0) {
       //   window.scroll({
@@ -99,13 +108,13 @@ const DataTables: React.FC<DataTablesProp> = ({
       setSelectedData((p) => [...p, ...data.data]);
       setTotal((p) => ({ ...p, fetched: p.fetched + data.data.length }));
       setIsLoading(false);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      toast.error(error.response.data.message);
     }
   };
 
   const fetchAllUsers = async () => {
-    if (path !== "/users" || total.fetched >= total.blogs) {
+    if (path !== "/admin/users" || total.fetched >= total.users) {
       return;
     }
 
@@ -117,17 +126,30 @@ const DataTables: React.FC<DataTablesProp> = ({
       setSelectedData((p) => [...p, ...data.data]);
       setTotal((p) => ({ ...p, fetched: p.fetched + data.data.length }));
       setIsLoading(false);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      toast.error(error.response.data.message);
     }
   };
 
   const fetchTotalBlogsCount = async () => {
     try {
-      const { data } = await axios.get(blogsCountRoute);
+      const { data } = await axios.get(blogsCountRoute, {
+        headers: { authorization: user?.token },
+      });
       setTotal((p) => ({ ...p, blogs: data.data }));
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+    }
+  };
+
+  const fetchTotalUsersCount = async () => {
+    try {
+      const { data } = await axios.get(usersCountRoute, {
+        headers: { authorization: user?.token },
+      });
+      setTotal((p) => ({ ...p, users: data.data }));
+    } catch (error: any) {
+      console.log(error);
     }
   };
 
@@ -143,7 +165,7 @@ const DataTables: React.FC<DataTablesProp> = ({
   const onDeleteBlog = async () => {
     try {
       const { data } = await axios.delete(`${deleteBlogRoute}/${selectedId}`, {
-        headers: { authorization: user.token },
+        headers: { authorization: user?.token },
       });
       fetchAllBlogs();
       toast.success(data.message);
@@ -153,7 +175,11 @@ const DataTables: React.FC<DataTablesProp> = ({
   };
 
   useEffect(() => {
-    fetchTotalBlogsCount();
+    if (path === "/") {
+      fetchTotalBlogsCount();
+    } else {
+      fetchTotalUsersCount();
+    }
 
     // handleScroll event listener on scroll event
     window.addEventListener("scroll", handleScroll);
@@ -206,7 +232,7 @@ const DataTables: React.FC<DataTablesProp> = ({
                           {category === "blogs" ? "title" : "Name"}
                         </button>
                       </th>
-                      {path !== "/" && (
+                      {path !== "/admin" && (
                         <>
                           <th>
                             <button
@@ -246,19 +272,32 @@ const DataTables: React.FC<DataTablesProp> = ({
                         </>
                       )}
 
-                      {path === "/" && (
-                        <th>
-                          <button className="table-sort" data-sort="sort-date">
-                            Created by
-                          </button>
-                        </th>
+                      {path === "/admin" && (
+                        <>
+                          <th>
+                            <button
+                              className="table-sort"
+                              data-sort="sort-date"
+                            >
+                              Views
+                            </button>
+                          </th>
+                          <th>
+                            <button
+                              className="table-sort"
+                              data-sort="sort-date"
+                            >
+                              Created by
+                            </button>
+                          </th>
+                        </>
                       )}
                       <th>
                         <button className="table-sort" data-sort="sort-date">
                           Date
                         </button>
                       </th>
-                      {path === "/" && (
+                      {path === "/admin" && (
                         <th>
                           <button className="table-sort" data-sort="sort-city">
                             Actions
@@ -273,7 +312,7 @@ const DataTables: React.FC<DataTablesProp> = ({
                       <tr>
                         <td className="sort-name">
                           {"title" in item ? (
-                            <Link to={`/blog/${item.id}`}>
+                            <Link to={`/blogs/${item.id}`}>
                               {" "}
                               {item.title?.substr(0, 30) +
                                 `${item.title.length > 30 ? "..." : ""}`}
@@ -282,7 +321,16 @@ const DataTables: React.FC<DataTablesProp> = ({
                             item.fullName
                           )}
                         </td>
-                        {"email" in item && (
+
+                        {path === "/admin" && (
+                          <td className="sort-name">
+                            &nbsp; &nbsp;
+                            {"views" in item && item.views}
+                          </td>
+                        )}
+
+                        {/* User's listing page items */}
+                        {path !== "/admin" && "email" in item && (
                           <>
                             <td className="sort-quantity">
                               {item?.phone || "-"}
@@ -297,9 +345,9 @@ const DataTables: React.FC<DataTablesProp> = ({
                           </>
                         )}
 
-                        {path === "/" && (
+                        {path === "/admin" && (
                           <td className="sort-date" data-date={1536285945}>
-                            {"email" in item ? item.fullName : "-"}
+                            {"title" in item ? item.User.fullName : "-"}
                           </td>
                         )}
 
@@ -307,77 +355,22 @@ const DataTables: React.FC<DataTablesProp> = ({
                           {moment(item.createdAt).format("DD MMM YYYY")}
                         </td>
 
-                        {path === "/" && (
+                        {path === "/admin" && (
                           <td className="sort-city cta-btn">
                             {/* View icon/button */}
-                            <Link
-                              to={`/blog/${item.id}`}
-                              style={{ marginRight: "10px" }}
-                            >
-                              <svg
-                                cursor="pointer"
-                                onClick={() => {
-                                  setModal((p) => ({ ...p, blog: true }));
-                                  setSelectedId(item.id);
-                                }}
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="icon icon-tabler icon-tabler-eye"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                strokeWidth="2"
-                                stroke="currentColor"
-                                fill="none"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
+                            {user?.user?.permissions.includes("view-blogs") && (
+                              <Link
+                                to={`/blogs/${item.id}`}
+                                style={{ marginRight: "10px" }}
                               >
-                                <path
-                                  stroke="none"
-                                  d="M0 0h24v24H0z"
-                                  fill="none"
-                                />
-                                <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                                <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
-                              </svg>
-                            </Link>
-
-                            {/* Edit icon/button */}
-                            {category === "/" && (
-                              <>
-                                <Link to={`/blog/edit/${item.id}`}>
-                                  <svg
-                                    cursor="pointer"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="icon icon-tabler icon-tabler-edit"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth="2"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    onClick={() => {
-                                      setModal((p) => ({ ...p, edit: true }));
-                                      setSelectedId(item.id);
-                                    }}
-                                    style={{ marginRight: "10px" }}
-                                  >
-                                    <path
-                                      stroke="none"
-                                      d="M0 0h24v24H0z"
-                                      fill="none"
-                                    />
-                                    <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                    <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                    <path d="M16 5l3 3" />
-                                  </svg>
-                                </Link>
-
-                                {/* Delete icon/button */}
                                 <svg
+                                  cursor="pointer"
+                                  onClick={() => {
+                                    setModal((p) => ({ ...p, blog: true }));
+                                    setSelectedId(item.id);
+                                  }}
                                   xmlns="http://www.w3.org/2000/svg"
-                                  className="icon icon-tabler icon-tabler-trash"
+                                  className="icon icon-tabler icon-tabler-eye"
                                   width="24"
                                   height="24"
                                   viewBox="0 0 24 24"
@@ -386,23 +379,91 @@ const DataTables: React.FC<DataTablesProp> = ({
                                   fill="none"
                                   strokeLinecap="round"
                                   strokeLinejoin="round"
-                                  cursor="pointer"
-                                  onClick={() => {
-                                    setModal((p) => ({ ...p, confirm: true }));
-                                    setSelectedId(item.id);
-                                  }}
                                 >
                                   <path
                                     stroke="none"
                                     d="M0 0h24v24H0z"
                                     fill="none"
                                   />
-                                  <path d="M4 7l16 0" />
-                                  <path d="M10 11l0 6" />
-                                  <path d="M14 11l0 6" />
-                                  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                                  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                  <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                  <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
                                 </svg>
+                              </Link>
+                            )}
+
+                            {category === "/" && (
+                              <>
+                                {/* Edit icon/button */}
+                                {user?.user?.permissions.includes(
+                                  "update-blog"
+                                ) && (
+                                  <Link to={`/blogs/edit/${item.id}`}>
+                                    <svg
+                                      cursor="pointer"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="icon icon-tabler icon-tabler-edit"
+                                      width="24"
+                                      height="24"
+                                      viewBox="0 0 24 24"
+                                      strokeWidth="2"
+                                      stroke="currentColor"
+                                      fill="none"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      onClick={() => {
+                                        setModal((p) => ({ ...p, edit: true }));
+                                        setSelectedId(item.id);
+                                      }}
+                                      style={{ marginRight: "10px" }}
+                                    >
+                                      <path
+                                        stroke="none"
+                                        d="M0 0h24v24H0z"
+                                        fill="none"
+                                      />
+                                      <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
+                                      <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
+                                      <path d="M16 5l3 3" />
+                                    </svg>
+                                  </Link>
+                                )}
+
+                                {/* Delete icon/button */}
+                                {user.user?.permissions.includes(
+                                  "delete-blog"
+                                ) && (
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="icon icon-tabler icon-tabler-trash"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="2"
+                                    stroke="currentColor"
+                                    fill="none"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    cursor="pointer"
+                                    onClick={() => {
+                                      setModal((p) => ({
+                                        ...p,
+                                        confirm: true,
+                                      }));
+                                      setSelectedId(item.id);
+                                    }}
+                                  >
+                                    <path
+                                      stroke="none"
+                                      d="M0 0h24v24H0z"
+                                      fill="none"
+                                    />
+                                    <path d="M4 7l16 0" />
+                                    <path d="M10 11l0 6" />
+                                    <path d="M14 11l0 6" />
+                                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                  </svg>
+                                )}
                               </>
                             )}
                           </td>

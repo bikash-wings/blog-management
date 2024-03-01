@@ -8,7 +8,7 @@ export interface User {
   phone: number;
   avatar: string | null;
   answer: string;
-  role: string;
+  permissions: string[];
   address: string;
   createdAt: Date;
 }

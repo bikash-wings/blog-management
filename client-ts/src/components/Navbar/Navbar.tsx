@@ -7,6 +7,7 @@ import { removeUser } from "../../store/userSlice";
 import { host, logoutRoute } from "../../utills/apiRoutes";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 
+import logo from "../../assets/logo.png";
 import userImg from "../../assets/profile.png";
 import "./navbar.css";
 
@@ -38,11 +39,11 @@ const Navbar = () => {
   return (
     <header
       className="navbar-expand-md sticky-top d-print-none"
-      style={{ zIndex: 1000, backgroundColor: "#fff" }}
+      style={{ zIndex: 1000, backgroundColor: "#fff", maxHeight: "58px" }}
     >
       <div className="collapse navbar-collapse" id="navbar-menu">
         <div className="navbar">
-          <div className="container-xl">
+          <div className="container">
             <div className="row flex-fill align-items-center">
               <div
                 className="col"
@@ -53,8 +54,20 @@ const Navbar = () => {
                 }}
               >
                 <ul className="navbar-nav">
+                  <li className="navbar-brand navbar-brand-autodark">
+                    <Link to="/">
+                      <img
+                        src={logo}
+                        width={300}
+                        height={40}
+                        alt="BlogCraft"
+                        className="navbar-brand-image"
+                      />
+                    </Link>
+                  </li>
+
                   {/* Home page link is below */}
-                  <li className={`nav-item ${path === "/" ? "active" : ""}`}>
+                  {/* <li className={`nav-item ${path === "/" ? "active" : ""}`}>
                     <Link
                       to="/"
                       className="nav-link"
@@ -81,17 +94,17 @@ const Navbar = () => {
                       </span>
                       <span className="nav-link-title">Home</span>
                     </Link>
-                  </li>
+                  </li> */}
 
-                  {/* Add new blog page is below */}
-                  {
+                  {/* Add new blog page is below
+                  {user?.user?.permissions.includes("add-blog") && (
                     <li
                       className={`nav-item dropdown ${
                         path === "/blog/add" ? "active" : ""
                       }`}
                     >
                       <Link
-                        to="/blog/add"
+                        to="/admin/blog/add"
                         className="nav-link"
                         aria-expanded="false"
                       >
@@ -116,8 +129,79 @@ const Navbar = () => {
                         <span className="nav-link-title">Add New</span>
                       </Link>
                     </li>
-                  }
+                  )} */}
                 </ul>
+
+                <div
+                  className="navbar-nav"
+                  style={{ display: "flex", gap: "20px", fontWeight: "600" }}
+                >
+                  {/* Home page link is below */}
+                  <div className={`nav-item ${path === "/" ? "active" : ""}`}>
+                    <Link
+                      to="/"
+                      className="nav-link"
+
+                      // style={{ minHeight: "3.5rem" }}
+                    >
+                      <span className="nav-link-icon d-md-none d-lg-inline-block">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="icon"
+                          width={24}
+                          height={24}
+                          viewBox="0 0 24 24"
+                          strokeWidth={2}
+                          stroke="currentColor"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+                          <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+                          <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+                        </svg>
+                      </span>
+                      <span className="nav-link-title">Home</span>
+                    </Link>
+                  </div>
+
+                  {/* Add new blog page is below */}
+                  {user?.user?.permissions.includes("add-blog") && (
+                    <div
+                      className={`nav-item dropdown ${
+                        path === "/blogs/add" ? "active" : ""
+                      }`}
+                    >
+                      <Link
+                        to="/blogs/add"
+                        className="nav-link"
+                        aria-expanded="false"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="icon icon-tabler icon-tabler-file-plus"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          strokeWidth="2"
+                          stroke="currentColor"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                          <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                          <path d="M12 11l0 6" />
+                          <path d="M9 14l6 0" />
+                        </svg>
+                        <span className="nav-link-title">Add New</span>
+                      </Link>
+                    </div>
+                  )}
+                </div>
 
                 <div className="nav-item dropdown" data-bs-toggle="tooltip">
                   <a
@@ -131,7 +215,7 @@ const Navbar = () => {
                       style={{
                         backgroundImage:
                           loggedUser?.avatar !== "NULL"
-                            ? `url(${host}/${loggedUser?.avatar})`
+                            ? `url(${host}/avatar/${loggedUser?.avatar})`
                             : `url(${userImg})`,
                       }}
                     />
