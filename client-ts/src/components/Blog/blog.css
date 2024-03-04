@@ -23,13 +23,35 @@
   overflow: hidden;
 }
 
-.blog .det-link {
+.det-link {
   font-weight: 600;
 }
 
-.blog .det-link:hover {
+.det-link:hover {
   text-decoration: none;
   color: #1e73be;
   transition: color 0.5s ease;
   cursor: pointer;
+}
+
+.like {
+  max-width: max-content;
+  color: #fff;
+  background-color: #66b2f4;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+
+  display: flex;
+  align-items: center;
+}
+
+.author-img-cnt {
+  width: 20px;
+  height: 20px;
+}
+
+.author-img-cnt img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
 }

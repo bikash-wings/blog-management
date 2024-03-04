@@ -1,38 +1,24 @@
-import React, { useState } from "react";
 import moment from "moment";
 
 import { host } from "../../utills/apiRoutes";
 import { Link } from "react-router-dom";
-import { useAppSelector } from "../../store/hooks";
+import { BlogType } from "../Types/Blogs";
 
+import blogBanner from "../../assets/banner.png";
+import userImg from "../../assets/profile.png";
 import "./blog.css";
 
-type BlogProps = {
-  blog: {
-    id: number;
-    title: string;
-    description: string;
-    thumbnail: string;
-    createdAt: Date;
-    User: {
-      fullName: string;
-      avatar: string;
-    };
-    views: number;
-  };
-};
-
-const Blog = ({ blog }: BlogProps) => {
-  const { user } = useAppSelector((state) => state);
-
-  //   const [isHovered, setIsHovered] = useState<boolean>(false);
-  //   const [isLoad, setIsLoad] = useState<boolean>(false);
-
+const Blog = ({ blog }: { blog: BlogType }) => {
   return (
     <div className="blog">
-      <div className="thumb-cnt">
-        <img src={`${host}/thumbnail/${blog.thumbnail}`} alt="blog thumbnail" />
-      </div>
+      <Link to={`/blogs/${blog.id}`} className="thumb-cnt">
+        <img
+          src={
+            !blog.thumbnail ? blogBanner : `${host}/thumbnail/${blog.thumbnail}`
+          }
+          alt="blog thumbnail"
+        />
+      </Link>
 
       <div className="blog-details">
         <div className="row justify-center">
@@ -112,6 +98,36 @@ const Blog = ({ blog }: BlogProps) => {
                           </svg>
                           <span>{blog?.views} Views</span>
                         </div>
+
+                        {/* Likes icon & count */}
+                        <div className="col like">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="icon icon-tabler icon-tabler-thumb-up-filled"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path
+                              d="M13 3a3 3 0 0 1 2.995 2.824l.005 .176v4h2a3 3 0 0 1 2.98 2.65l.015 .174l.005 .176l-.02 .196l-1.006 5.032c-.381 1.626 -1.502 2.796 -2.81 2.78l-.164 -.008h-8a1 1 0 0 1 -.993 -.883l-.007 -.117l.001 -9.536a1 1 0 0 1 .5 -.865a2.998 2.998 0 0 0 1.492 -2.397l.007 -.202v-1a3 3 0 0 1 3 -3z"
+                              stroke-width="0"
+                              fill="currentColor"
+                            />
+                            <path
+                              d="M5 10a1 1 0 0 1 .993 .883l.007 .117v9a1 1 0 0 1 -.883 .993l-.117 .007h-1a2 2 0 0 1 -1.995 -1.85l-.005 -.15v-7a2 2 0 0 1 1.85 -1.995l.15 -.005h1z"
+                              stroke-width="0"
+                              fill="currentColor"
+                            />
+                          </svg>
+                          &nbsp;
+                          <span> {blog?.likes?.length}</span>
+                        </div>
                       </div>
                     </div>
 
@@ -135,10 +151,27 @@ const Blog = ({ blog }: BlogProps) => {
                       }}
                     />
 
-                    {/* Read more button */}
-                    <Link to={`/blogs/${blog?.id}`} className="det-link">
-                      Read More
-                    </Link>
+                    <div className="d-flex justify-content-between align-items-center mt-4">
+                      {/* Author name & profile photo */}
+                      <div className="d-flex gap-1 align-items-center">
+                        <div className="author-img-cnt">
+                          <img
+                            src={
+                              blog.User.avatar === "NULL"
+                                ? userImg
+                                : `${host}/avatar/${blog.User?.avatar}`
+                            }
+                            alt="author profile photo"
+                          />
+                        </div>
+                        <div>@{blog?.User?.fullName}</div>
+                      </div>
+
+                      {/* Read more button */}
+                      <Link to={`/blogs/${blog?.id}`} className="det-link">
+                        Read More
+                      </Link>
+                    </div>
                   </div>
                 )}
               </div>

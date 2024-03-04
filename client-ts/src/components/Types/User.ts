@@ -1,4 +1,4 @@
-export interface User {
+export interface UserType {
   id: number;
   fname: string;
   lname: string;
@@ -14,6 +14,6 @@ export interface User {
 }
 
 export interface UserState {
-  user: User | null;
+  user: UserType | null;
   token: string;
 }

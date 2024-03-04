@@ -24,7 +24,7 @@ export const allUsersRoute = `${host}/api/v1/users/get-all`;
 export const uploadAvatarRoute = `${host}/api/v1/users/upload`;
 
 /* method: GET */
-export const checkUserRoleRoute = `${host}/api/v1/users/is-admin`;
+export const checkAdminUserRoute = `${host}/api/v1/users/is-admin`;
 
 /* method: GET */
 export const usersCountRoute = `${host}/api/v1/users/total-count`;
@@ -51,3 +51,12 @@ export const deleteBlogRoute = `${host}/api/v1/blogs`;
 
 /* method: GET */
 export const blogsCountRoute = `${host}/api/v1/blogs/total-count`;
+
+/* params: blogid , method: POST */
+export const postCommentRoute = `${host}/api/v1/blogs/comments`;
+
+/* params: blogid , method: GET */
+export const allCommentsRoute = `${host}/api/v1/blogs/comments`;
+
+/* params: blogid , method: POST */
+export const likeToggleRoute = `${host}/api/v1/blogs/toggle-like`;

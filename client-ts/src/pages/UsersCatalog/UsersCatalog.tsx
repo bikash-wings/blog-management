@@ -7,7 +7,7 @@ import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import DataTables from "../../components/DataTables/Datatables";
 
-import { checkUserRoleRoute } from "../../utills/apiRoutes";
+import { checkAdminUserRoute } from "../../utills/apiRoutes";
 import { useAppSelector } from "../../store/hooks";
 
 const UsersCatalog = () => {
@@ -22,7 +22,7 @@ const UsersCatalog = () => {
 
   const checkUserAccessibility = async () => {
     try {
-      const { data } = await axios.get(checkUserRoleRoute, {
+      const { data } = await axios.get(checkAdminUserRoute, {
         headers: { authorization: user?.token },
       });
       if (!data.success) {
@@ -35,7 +35,11 @@ const UsersCatalog = () => {
   };
 
   useEffect(() => {
-    // checkUserAccessibility();
+    checkUserAccessibility();
+
+    return () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
   }, []);
 
   useEffect(() => {

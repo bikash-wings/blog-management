@@ -12,9 +12,12 @@ import {
   allUsersRoute,
   blogsCountRoute,
   deleteBlogRoute,
+  updateBlogRoute,
   usersCountRoute,
 } from "../../utills/apiRoutes";
 import { useAppSelector } from "../../store/hooks";
+import { BlogType } from "../Types/Blogs";
+import { UserType } from "../Types/User";
 
 import "./datatables.css";
 
@@ -30,34 +33,6 @@ type DataTablesProp = {
       confirm: boolean;
     }>
   >;
-};
-
-type BlogType = {
-  id: number;
-  title: string;
-  description: string;
-  createdAt: Date;
-  views: number;
-  thumbnail: string;
-  User: {
-    fullName: string;
-    avatar: string;
-  };
-};
-
-type UserType = {
-  id: number;
-  fname: string;
-  lname: string;
-  fullName: string;
-  email: string;
-  isVerified: boolean;
-  phone: number;
-  address: string;
-  answer: string;
-  avatar: string;
-  role: string;
-  createdAt: Date;
 };
 
 const DataTables: React.FC<DataTablesProp> = ({
@@ -94,9 +69,12 @@ const DataTables: React.FC<DataTablesProp> = ({
 
     try {
       setIsLoading(true);
-      const { data } = await axios.get(`${allBlogsRoute}?page=${page}`, {
-        headers: { authorization: user?.token },
-      });
+      const { data } = await axios.get(
+        `${allBlogsRoute}?page=${page}&order=ASC&status=Published,Drafted,Active,Inactive`,
+        {
+          headers: { authorization: user?.token },
+        }
+      );
 
       // if (data.data.length > 0) {
       //   window.scroll({
@@ -109,7 +87,7 @@ const DataTables: React.FC<DataTablesProp> = ({
       setTotal((p) => ({ ...p, fetched: p.fetched + data.data.length }));
       setIsLoading(false);
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      console.error(error.response.data);
     }
   };
 
@@ -127,18 +105,21 @@ const DataTables: React.FC<DataTablesProp> = ({
       setTotal((p) => ({ ...p, fetched: p.fetched + data.data.length }));
       setIsLoading(false);
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      console.error(error.response.data);
     }
   };
 
   const fetchTotalBlogsCount = async () => {
     try {
-      const { data } = await axios.get(blogsCountRoute, {
-        headers: { authorization: user?.token },
-      });
+      const { data } = await axios.get(
+        `${blogsCountRoute}?status=Active,Inactive,Published,Drafted`,
+        {
+          headers: { authorization: user?.token },
+        }
+      );
       setTotal((p) => ({ ...p, blogs: data.data }));
     } catch (error: any) {
-      console.error(error);
+      console.error(error.response.data);
     }
   };
 
@@ -149,7 +130,7 @@ const DataTables: React.FC<DataTablesProp> = ({
       });
       setTotal((p) => ({ ...p, users: data.data }));
     } catch (error: any) {
-      console.log(error);
+      console.error(error.response.data);
     }
   };
 
@@ -162,6 +143,27 @@ const DataTables: React.FC<DataTablesProp> = ({
     }
   };
 
+  const updateBlogStatus = async (blogId: number, newStatus: string) => {
+    const formData = new FormData();
+    formData.append("status", newStatus);
+
+    try {
+      const { data } = await axios.put(
+        `${updateBlogRoute}/${blogId}`,
+        formData,
+        { headers: { authorization: user?.token } }
+      );
+
+      selectedData.forEach((blog) => {
+        if (blog.id === data.data.id) {
+          blog = data.data;
+        }
+      });
+    } catch (error: any) {
+      console.log(error.response.data);
+    }
+  };
+
   const onDeleteBlog = async () => {
     try {
       const { data } = await axios.delete(`${deleteBlogRoute}/${selectedId}`, {
@@ -169,13 +171,13 @@ const DataTables: React.FC<DataTablesProp> = ({
       });
       fetchAllBlogs();
       toast.success(data.message);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.error(error.response.data);
     }
   };
 
   useEffect(() => {
-    if (path === "/") {
+    if (path === "/admin") {
       fetchTotalBlogsCount();
     } else {
       fetchTotalUsersCount();
@@ -279,6 +281,14 @@ const DataTables: React.FC<DataTablesProp> = ({
                               className="table-sort"
                               data-sort="sort-date"
                             >
+                              Status
+                            </button>
+                          </th>
+                          <th>
+                            <button
+                              className="table-sort"
+                              data-sort="sort-date"
+                            >
                               Views
                             </button>
                           </th>
@@ -323,10 +333,30 @@ const DataTables: React.FC<DataTablesProp> = ({
                         </td>
 
                         {path === "/admin" && (
-                          <td className="sort-name">
-                            &nbsp; &nbsp;
-                            {"views" in item && item.views}
-                          </td>
+                          <>
+                            {"status" in item && (
+                              <td className="sort-name">
+                                <select
+                                  onChange={(event) =>
+                                    updateBlogStatus(
+                                      item.id,
+                                      event.target.value
+                                    )
+                                  }
+                                  defaultValue={item?.status}
+                                >
+                                  <option value="Drafted">Drafted</option>
+                                  <option value="Published">Published</option>
+                                  <option value="Active">Active</option>
+                                  <option value="Inactive">Inactive</option>
+                                </select>
+                              </td>
+                            )}
+                            <td className="sort-name">
+                              &nbsp; &nbsp;
+                              {"views" in item && item.views}
+                            </td>
+                          </>
                         )}
 
                         {/* User's listing page items */}

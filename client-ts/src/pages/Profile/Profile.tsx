@@ -3,7 +3,6 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 import Navbar from "../../components/Navbar/Navbar";
-import Sidebar from "../../components/Sidebar/Sidebar";
 
 import { updateUserRoute, uploadAvatarRoute } from "../../utills/apiRoutes";
 import { setUser } from "../../store/userSlice";
@@ -89,8 +88,6 @@ const Profile = () => {
 
   return (
     <div className="">
-      {/* <Sidebar /> */}
-
       <div>
         <Navbar />
 

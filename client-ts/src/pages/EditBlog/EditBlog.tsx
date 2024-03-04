@@ -10,22 +10,28 @@ import { Editor } from "react-draft-wysiwyg";
 import { useNavigate, useParams } from "react-router-dom";
 import draftToHtml from "draftjs-to-html";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
 
 import Navbar from "../../components/Navbar/Navbar";
 import ConfirmModal from "../../components/ConfirmModal/ConfirmModal";
-import Sidebar from "../../components/Sidebar/Sidebar";
 
 import { singleBlogRoute, updateBlogRoute } from "../../utills/apiRoutes";
+import { useAppSelector } from "../../store/hooks";
 
 const EditBlog = () => {
   const navigate = useNavigate();
   const { blogid } = useParams();
-  let { user } = useSelector((state: any) => state);
+  let { user } = useAppSelector((state) => state);
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState(EditorState.createEmpty());
-  const [modal, setModal] = useState({
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<EditorState>(
+    EditorState.createEmpty()
+  );
+  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [status, setStatus] = useState<string>("Published");
+  const [modal, setModal] = useState<{
+    updateConfirm: boolean;
+    confirm: boolean;
+  }>({
     updateConfirm: false,
     confirm: false,
   });
@@ -44,8 +50,9 @@ const EditBlog = () => {
 
       setTitle(data.data.title);
       setDescription(EditorState.createWithContent(contentState));
-    } catch (error) {
-      console.log(error);
+      setStatus(data.data.status);
+    } catch (error: any) {
+      console.log(error.response.data.message);
     }
   };
 
@@ -54,21 +61,28 @@ const EditBlog = () => {
   };
 
   const onBlogUpdate = async () => {
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append(
+      "description",
+      draftToHtml(convertToRaw(description.getCurrentContent()))
+    );
+    formData.append("status", status);
+
+    if (thumbnail) {
+      formData.append("thumbnail", thumbnail);
+    }
+
     try {
       const { data } = await axios.put(
         `${updateBlogRoute}/${blogid}`,
-        {
-          title,
-          description: draftToHtml(
-            convertToRaw(description.getCurrentContent())
-          ),
-        },
+        formData,
         { headers: { authorization: user?.token } }
       );
       toast.success(data.message);
       navigate("/");
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.log(error.response.data.message);
     }
   };
 
@@ -78,8 +92,6 @@ const EditBlog = () => {
 
   return (
     <div className="page-main pb-4">
-      {/* <Sidebar /> */}
-
       <div>
         <Navbar />
 
@@ -102,6 +114,7 @@ const EditBlog = () => {
                 >
                   Update Blog
                 </h1>
+                {/* Title input */}
                 <div className="mb-2">
                   <label className="form-label" style={{ fontSize: "1rem" }}>
                     Title
@@ -116,6 +129,7 @@ const EditBlog = () => {
                   />
                 </div>
 
+                {/* Description input */}
                 <div className="mb-2">
                   <label className="form-label" style={{ fontSize: "1rem" }}>
                     Description
@@ -127,6 +141,33 @@ const EditBlog = () => {
                     editorClassName="editor-class form-control"
                     toolbarClassName="toolbar-class"
                   />
+                </div>
+
+                {/* Thumbnail input */}
+                <div className="pt-4 mb-2">
+                  <label className="form-label" style={{ fontSize: "1rem" }}>
+                    Select Thumbnail
+                  </label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    placeholder="select thumbnail"
+                    onChange={(e) => {
+                      if (!e.target.files) return;
+                      setThumbnail(e.target.files[0]);
+                    }}
+                  />
+                </div>
+
+                {/* Status input */}
+                <div className="pt-4 mb-2">
+                  <select
+                    onChange={(e) => setStatus(e.target.value)}
+                    value={status}
+                  >
+                    <option value="Drafted">Drafted</option>
+                    <option value="Published">Published</option>
+                  </select>
                 </div>
 
                 <div className="form-footer text-center">

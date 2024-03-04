@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { ClockLoader } from "react-spinners";
 
 import Navbar from "../../components/Navbar/Navbar";
-import Sidebar from "../../components/Sidebar/Sidebar";
 
 import { addBlogRoute } from "../../utills/apiRoutes";
 import { useAppSelector } from "../../store/hooks";
@@ -24,6 +23,8 @@ const AddBlog = () => {
   const [description, setDescription] = useState<EditorState>(
     EditorState.createEmpty()
   );
+  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [status, setStatus] = useState<string>("Drafted");
   const [isError, setIsError] = useState<{
     title: null | string;
     description: null | string;
@@ -60,15 +61,17 @@ const AddBlog = () => {
         setIsError((p) => ({ ...p, description: null }));
       }
 
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("description", blogDescription);
+      formData.append("status", status);
+
+      if (thumbnail) formData.append("thumbnail", thumbnail);
+
       setIsLoading(true);
-      const { data } = await axios.post(
-        addBlogRoute,
-        {
-          title: title,
-          description: blogDescription,
-        },
-        { headers: { authorization: user?.token } }
-      );
+      const { data } = await axios.post(addBlogRoute, formData, {
+        headers: { authorization: user?.token },
+      });
       setIsLoading(false);
       toast.success(data.message);
       navigate("/");
@@ -83,8 +86,6 @@ const AddBlog = () => {
 
   return (
     <div className="page-main pb-4">
-      {/* <Sidebar /> */}
-
       {isLoading && <ClockLoader />}
 
       <div>
@@ -195,6 +196,28 @@ const AddBlog = () => {
                     </div>
                   </div>
                 )}
+
+                <div className="pt-4 mb-2">
+                  <label className="form-label" style={{ fontSize: "1rem" }}>
+                    Select Thumbnail
+                  </label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    placeholder="select thumbnail"
+                    onChange={(e) => {
+                      if (!e.target.files) return;
+                      setThumbnail(e.target.files[0]);
+                    }}
+                  />
+                </div>
+
+                <div className="pt-4 mb-2">
+                  <select onChange={(e) => setStatus(e.target.value)}>
+                    <option value="Drafted">Draft</option>
+                    <option value="Published">Publish</option>
+                  </select>
+                </div>
 
                 <div className="form-footer text-center">
                   <button type="submit" className="btn btn-primary ">
