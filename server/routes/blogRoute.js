@@ -26,21 +26,27 @@ router.post(
 );
 
 /* GET all blogs, query: page & limit */
-router.get("/get-all", isSignIn, checkPermissions("view-blogs"), getAllBlogs);
+router.get("/get-all", getAllBlogs);
 
 /* GET blogs count */
 router.get(
   "/total-count",
-  isSignIn,
-  checkPermissions("view-blogs"),
+  // isSignIn,
+  // checkPermissions("view-blogs"),
   getBlogsCount
 );
 
 /* GET single blog */
-router.get("/:blogid", isSignIn, checkPermissions("view-blogs"), getSingleBlog);
+router.get("/:blogid", getSingleBlog);
 
 /* PUT update blog  */
-router.put("/:blogid", isSignIn, checkPermissions("update-blog"), updateBlog);
+router.put(
+  "/:blogid",
+  isSignIn,
+  checkPermissions("update-blog"),
+  uploadThumbnail.single("thumbnail"),
+  updateBlog
+);
 
 /* DELETE blog */
 router.delete(

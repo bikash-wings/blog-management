@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       blog.belongsTo(models.User, { foreignKey: "userId" });
       blog.hasMany(models.Likes, { foreignKey: "blogId" });
+      blog.hasMany(models.Views, { foreignKey: "blogId" });
     }
   }
   blog.init(
@@ -37,10 +38,10 @@ module.exports = (sequelize, DataTypes) => {
         required: true,
         defaultValue: "Drafted",
       },
-      views: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-      },
+      // views: {
+      //   type: DataTypes.INTEGER,
+      //   defaultValue: 0,
+      // },
       isDeleted: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,

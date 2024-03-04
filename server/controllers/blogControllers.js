@@ -54,9 +54,9 @@ const getAllBlogs = catchAsync(async (req, res) => {
  * This controller will return total blog count
  */
 const getBlogsCount = catchAsync(async (req, res) => {
-  const blogCount = await blogService.totalBlogCount();
+  const blogCount = await blogService.totalBlogCount(req);
 
-  if (blogCount) {
+  if (blogCount >= 0) {
     setSuccessResponse(
       res,
       StatusCodes.OK,
@@ -103,7 +103,8 @@ const deleteBlog = catchAsync(async (req, res) => {
 const toggleBlogLikeController = catchAsync(async (req, res) => {
   const likeBlog = await blogService.toggleBlogLike(
     req.params.blogid,
-    req.user.id
+    req.user.id,
+    req
   );
 
   if (likeBlog) {

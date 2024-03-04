@@ -1,4 +1,5 @@
 const multer = require("multer");
+
 const db = require("../models");
 
 const avatarStorage = multer.diskStorage({
@@ -16,7 +17,7 @@ const avatarStorage = multer.diskStorage({
       ((file.originalname.lastIndexOf(".") - 1) >>> 0) + 2
     );
 
-    const uniqueFilename = `${userId}.${extension}`;
+    const uniqueFilename = `${Date.now()}.${extension}`;
 
     req.avatar = uniqueFilename;
 
@@ -32,13 +33,11 @@ const thumbnailStorage = multer.diskStorage({
   },
 
   filename: async (req, file, cb) => {
-    const userId = req.user.id;
-
     const extension = file.originalname.slice(
       ((file.originalname.lastIndexOf(".") - 1) >>> 0) + 2
     );
 
-    const uniqueFilename = `${userId}.${extension}`;
+    const uniqueFilename = `${Date.now()}.${extension}`;
 
     req.thumbnail = uniqueFilename;
 

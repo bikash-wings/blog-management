@@ -1,6 +1,9 @@
 const { StatusCodes } = require("http-status-codes");
+const jwt = require("jsonwebtoken");
+
 const db = require("../models");
 const CustomError = require("../utills/CustomError");
+const { Op } = require("sequelize");
 
 /**
  * This service will create new blog
@@ -45,106 +48,179 @@ const createBlog = async (req) => {
  * This service will fetch single blog
  */
 const fetchSingleBlog = async (req) => {
-  try {
-    const { blogid } = req.params;
+  const { blogid } = req.params;
 
-    const blog = await db.Blog.findOne({
-      where: { id: blogid },
-      include: {
+  const blog = await db.Blog.findOne({
+    where: { id: blogid, isDeleted: false, status: "Published" },
+    include: [
+      {
         model: db.User,
         attributes: ["fullName", "avatar"],
         as: "User",
       },
+      {
+        model: db.Likes,
+        attributes: ["userId"],
+        as: "Likes",
+      },
+    ],
+  });
+  if (!blog) {
+    throw new CustomError(StatusCodes.NOT_FOUND, "no blog found!");
+  }
+
+  // const userId = req?.user?.id;
+
+  const blogViews = await db.Views.findAll({
+    where: { blogId: blogid },
+  });
+
+  let userid;
+
+  if (req.user) {
+    userid = req.user.id;
+  } else if (req.headers.authorization) {
+    const token = req.headers.authorization;
+    const { userId } = await jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+    const user = await db.User.findOne({
+      where: { id: userId },
+      include: {
+        model: db.invalidated_tokens,
+        where: { token: token },
+        required: false,
+      },
     });
-    if (!blog) {
-      throw new CustomError(StatusCodes.NOT_FOUND, "no blog found!");
+
+    if (!user || user.invalidated_tokens.length) {
+      throw new CustomError(StatusCodes.UNAUTHORIZED, "jwt expired");
     }
 
-    blog.views++;
-    await blog.save();
-
-    return blog;
-  } catch (error) {
-    throw new CustomError(
-      error.status || StatusCodes.INTERNAL_SERVER_ERROR,
-      error.errorMessage || "Internal Server Error"
-    );
+    userid = user.id;
   }
+
+  if (userid) {
+    const userView = blogViews?.filter((view) => view.userId === userid);
+    if (!userView.length) {
+      const newView = await db.Views.create({
+        userId: userid,
+        blogId: blogid,
+      });
+      blogViews.push(newView);
+    }
+  }
+
+  blog.dataValues.views = blogViews.length || 0;
+
+  blog.dataValues.likes = blog.dataValues.Likes?.map((like) => like.userId);
+  delete blog.dataValues.Likes;
+
+  // blog.views++;
+  // await blog.save();
+
+  delete blog.dataValues.isDeleted;
+  delete blog.dataValues.updatedAt;
+  delete blog.dataValues.userId;
+
+  return blog;
 };
 
 /**
  * This service will fetch all blogs with limits
  */
 const fetchAllBlogs = async (req) => {
-  try {
-    const { page = 1, limit = 15 } = req.query;
-    const offset = (page - 1) * limit;
+  const {
+    page = 1,
+    limit = 12,
+    sort = "id",
+    order = "DESC",
+    status = "Published",
+  } = req.query;
+  const offset = (page - 1) * limit;
 
-    const allBlogs = await db.Blog.findAll({
-      include: {
+  let statusReq = status.split(",");
+
+  const allBlogs = await db.Blog.findAll({
+    where: { isDeleted: false, status: { [Op.in]: statusReq } },
+    order: [[sort, order]],
+    include: [
+      {
         model: db.User,
         attributes: ["fullName", "avatar"],
         as: "User",
       },
-      limit: Number(limit),
-      offset: Number(offset),
-    });
+      {
+        model: db.Views,
+        attributes: ["id"],
+        as: "Views",
+      },
+      {
+        model: db.Likes,
+        attributes: ["userId"],
+        as: "Likes",
+      },
+    ],
+    limit: Number(limit),
+    offset: Number(offset),
+  });
 
-    return allBlogs;
-  } catch (error) {
-    throw new CustomError(
-      error.status || StatusCodes.INTERNAL_SERVER_ERROR,
-      error.errorMessage || "Internal Server Error"
-    );
-  }
+  allBlogs.forEach((blog) => {
+    blog.dataValues.views = blog.dataValues.Views?.length;
+    delete blog.dataValues.Views;
+
+    blog.dataValues.likes = blog.dataValues.Likes?.map((like) => like.userId);
+    delete blog.dataValues.Likes;
+  });
+
+  return allBlogs;
 };
 
 /**
  * This service count total number of blogs
  */
-const totalBlogCount = async () => {
-  try {
-    const blogCount = await db.Blog.count();
+const totalBlogCount = async (req) => {
+  let { status = "Published" } = req.query;
 
-    return blogCount;
-  } catch (error) {
-    throw new CustomError(
-      error.status || StatusCodes.INTERNAL_SERVER_ERROR,
-      error.errorMessage || "Internal Server Error"
-    );
-  }
+  const statusReq = status.split(",");
+
+  const blogCount = await db.Blog.count({
+    where: { isDeleted: false, status: { [Op.in]: statusReq } },
+  });
+
+  return blogCount;
 };
 
 /**
  * This service will update blog
  */
 const updateBlog = async (req) => {
-  try {
-    const { blogid } = req.params;
-    const { title, description } = req.body;
+  const { blogid } = req.params;
+  const { title, description, status } = req.body;
 
-    const blog = await db.Blog.findOne({ where: { id: blogid } });
-    if (!blog) {
-      throw new CustomError(StatusCodes.NOT_FOUND, "no blog found!");
-    }
-
-    if (title) {
-      blog.title = title;
-    }
-
-    if (description) {
-      blog.description = description;
-    }
-
-    await blog.save();
-
-    return blog;
-  } catch (error) {
-    throw new CustomError(
-      error.status || StatusCodes.INTERNAL_SERVER_ERROR,
-      error.errorMessage || "Internal Server Error"
-    );
+  const blog = await db.Blog.findOne({ where: { id: blogid } });
+  if (!blog) {
+    throw new CustomError(StatusCodes.NOT_FOUND, "no blog found!");
   }
+
+  if (title) {
+    blog.title = title;
+  }
+
+  if (description) {
+    blog.description = description;
+  }
+
+  if (status) {
+    blog.status = status;
+  }
+
+  if (req.thumbnail) {
+    blog.thumbnail = req.thumbnail;
+  }
+
+  await blog.save();
+
+  return blog;
 };
 
 /**
@@ -171,7 +247,7 @@ const destroyBlog = async (req) => {
 /**
  * This service is to add like to blog
  */
-const toggleBlogLike = async (blogId, userId) => {
+const toggleBlogLike = async (blogId, userId, req) => {
   const checkBlog = await db.Blog.findByPk(blogId);
   if (!checkBlog) {
     throw new CustomError(
@@ -179,14 +255,6 @@ const toggleBlogLike = async (blogId, userId) => {
       `No blog found with id ${blogId}`
     );
   }
-
-  // const checkUser = await db.Blog.findByPk(userId);
-  // if (!checkUser) {
-  //   throw new CustomError(
-  //     StatusCodes.NOT_FOUND,
-  //     `No User found with id ${userId}`
-  //   );
-  // }
 
   const checkBlogLike = await db.Likes.findOne({
     where: { blogId: blogId, userId: userId },
@@ -203,7 +271,7 @@ const toggleBlogLike = async (blogId, userId) => {
       );
     }
 
-    return "like removed";
+    return fetchSingleBlog(req);
   }
 
   const likeBlog = await db.Likes.create({ blogId: blogId, userId: userId });
@@ -215,7 +283,7 @@ const toggleBlogLike = async (blogId, userId) => {
     );
   }
 
-  return "Like added to the blog";
+  return fetchSingleBlog(req);
 };
 
 /**
