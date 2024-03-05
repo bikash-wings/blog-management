@@ -2,7 +2,7 @@ import moment from "moment";
 
 import { host } from "../../utills/apiRoutes";
 import { Link } from "react-router-dom";
-import { BlogType } from "../Types/Blogs";
+import { BlogType } from "../Types/blogs";
 
 import blogBanner from "../../assets/banner.png";
 import userImg from "../../assets/profile.png";

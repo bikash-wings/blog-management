@@ -58,5 +58,8 @@ export const postCommentRoute = `${host}/api/v1/blogs/comments`;
 /* params: blogid , method: GET */
 export const allCommentsRoute = `${host}/api/v1/blogs/comments`;
 
+/* params: commentid, method: DELETE */
+export const deleteCommentRoute = `${host}/api/v1/blogs/comments`;
+
 /* params: blogid , method: POST */
 export const likeToggleRoute = `${host}/api/v1/blogs/toggle-like`;

@@ -7,7 +7,7 @@ import Navbar from "../../components/Navbar/Navbar";
 
 import { allBlogsRoute, blogsCountRoute } from "../../utills/apiRoutes";
 import { useAppSelector } from "../../store/hooks";
-import { BlogType } from "../../components/Types/Blogs";
+import { BlogType } from "../../components/Types/blogs";
 
 import "./home.css";
 

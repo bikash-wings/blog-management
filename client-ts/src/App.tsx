@@ -13,6 +13,7 @@ import EditBlog from "./pages/EditBlog/EditBlog";
 import PrivateRoute from "./components/Routes/PrivateRoute";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Admin from "./pages/Admin/Admin";
+import Chat from "./pages/Chat/Chat";
 
 function App() {
   return (
@@ -28,6 +29,8 @@ function App() {
         <Route path="/blogs/:blogid" element={<BlogDetails />} />
         <Route path="/blogs/add" element={<AddBlog />} />
         <Route path="/blogs/edit/:blogid" element={<EditBlog />} />
+
+        <Route path="/chats" element={<Chat />} />
 
         {/* Private Routes */}
         <Route path="/admin/*" element={<PrivateRoute />}>

@@ -9,18 +9,20 @@ import Navbar from "../../components/Navbar/Navbar";
 import {
   allBlogsRoute,
   allCommentsRoute,
+  deleteCommentRoute,
   host,
   likeToggleRoute,
   postCommentRoute,
   singleBlogRoute,
 } from "../../utills/apiRoutes";
 import { useAppSelector } from "../../store/hooks";
-import { BlogType } from "../../components/Types/Blogs";
-import { CommentType } from "../../components/Types/Comments";
+import { BlogType } from "../../components/Types/blogs";
+import { CommentType } from "../../components/Types/comments";
 
 import blogBanner from "../../assets/banner.png";
 import userImg from "../../assets/profile.png";
 import "./blogdetails.css";
+import toast from "react-hot-toast";
 
 const BlogDetails = () => {
   const { user } = useAppSelector((state) => state);
@@ -40,6 +42,7 @@ const BlogDetails = () => {
       });
       setBlog(data.data);
       setIsLoad(false);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error: any) {
       console.log(error.response.data);
     }
@@ -58,7 +61,7 @@ const BlogDetails = () => {
 
   const postComment = async () => {
     try {
-      const blogid = "id" in blog && blog.id;
+      // const blogid = "id" in blog && blog.id;
       const { data } = await axios.post(
         `${postCommentRoute}/${blogid}`,
         { comment },
@@ -78,7 +81,7 @@ const BlogDetails = () => {
 
   const fetchAllComments = async () => {
     try {
-      const blogid = "id" in blog && blog.id;
+      // const blogid = "id" in blog && blog.id;
       const { data } = await axios.get(`${allCommentsRoute}/${blogid}`);
       setAllComments(data.data);
     } catch (error: any) {
@@ -88,14 +91,28 @@ const BlogDetails = () => {
 
   const toggleBlogLike = async () => {
     try {
-      const blogid = "id" in blog && blog.id;
+      // const blogid = "id" in blog && blog.id;
       const { data } = await axios.post(`${likeToggleRoute}/${blogid}`, null, {
         headers: { authorization: user?.token },
       });
 
       setBlog(data.data);
     } catch (error: any) {
-      console.log(error.response.data.message);
+      console.log(error.response.data);
+    }
+  };
+
+  const deleteComment = async (commentId: number) => {
+    try {
+      const { data } = await axios.delete(
+        `${deleteCommentRoute}/${commentId}`,
+        { headers: { authorization: user?.token } }
+      );
+
+      toast.success(data.message);
+      fetchAllComments();
+    } catch (error: any) {
+      console.error(error.response.data);
     }
   };
 
@@ -109,10 +126,9 @@ const BlogDetails = () => {
   }, []);
 
   useEffect(() => {
-    if (blog) {
-      fetchAllComments();
-    }
-  }, [blog]);
+    fetchAllComments();
+    fetchBlogDetails();
+  }, [blogid]);
 
   return (
     <>
@@ -339,7 +355,11 @@ const BlogDetails = () => {
                             {/* Blog Description is below */}
                             <div
                               className="markdown text-muted mt-4"
-                              style={{ fontSize: "1rem" }}
+                              style={{
+                                fontSize: "1rem",
+                                maxWidth: "45rem",
+                                overflowWrap: "break-word",
+                              }}
                               dangerouslySetInnerHTML={{
                                 __html: blog?.description,
                               }}
@@ -402,25 +422,37 @@ const BlogDetails = () => {
           </div>
         </div>
 
-        {/* Comments section */}
-        <section className="section container pt-4">
-          <h1 className="pb-4">Leave A Comment</h1>
-          <textarea
-            name=""
-            id=""
-            cols={98}
-            rows={5}
-            onChange={(e) => setComment(e.target.value)}
-            value={comment}
-          >
-            {comment}
-          </textarea>
-          <div className="post-btn" onClick={() => postComment()}>
-            Post Comment
-          </div>
-        </section>
+        <div className="row px-4">
+          {/* Comments section */}
+          <section className="section col-md-8 pt-4">
+            <h1 className="pb-4">Leave A Comment</h1>
+            <textarea
+              name=""
+              id=""
+              cols={98}
+              rows={5}
+              onChange={(e) => setComment(e.target.value)}
+              value={comment}
+            >
+              {comment}
+            </textarea>
+            <div className="post-btn" onClick={() => postComment()}>
+              Post Comment
+            </div>
+          </section>
 
-        <div className="d-flex gap-4 flex-column container mt-4">
+          <div className="col-md-4"></div>
+        </div>
+
+        {allComments.length ? (
+          <div className="container mt-4" style={{ color: "grey" }}>
+            {allComments.length} Comments
+          </div>
+        ) : (
+          ""
+        )}
+
+        <div className="d-flex gap-4 flex-column container mt-3">
           {allComments.map((cmnt) => (
             <div key={cmnt.id} style={{ maxWidth: "47rem" }}>
               <div className="d-flex gap-2">
@@ -441,7 +473,34 @@ const BlogDetails = () => {
                       {moment(cmnt.createdAt).fromNow()}
                     </span>
                   </div>
-                  <div>{cmnt.content}</div>
+                  <div
+                    className="d-flex justify-content-between"
+                    style={{ width: "40rem" }}
+                  >
+                    <div style={{ width: "70%", overflowWrap: "break-word" }}>
+                      {cmnt.content}
+                    </div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="icon icon-tabler icon-tabler-trash text-danger cursor-pointer"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      stroke-width="2"
+                      stroke="currentColor"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      onClick={() => deleteComment(cmnt.id)}
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M4 7l16 0" />
+                      <path d="M10 11l0 6" />
+                      <path d="M14 11l0 6" />
+                      <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>

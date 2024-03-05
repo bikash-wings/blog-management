@@ -16,7 +16,7 @@ import {
   usersCountRoute,
 } from "../../utills/apiRoutes";
 import { useAppSelector } from "../../store/hooks";
-import { BlogType } from "../Types/Blogs";
+import { BlogType } from "../Types/blogs";
 import { UserType } from "../Types/User";
 
 import "./datatables.css";

@@ -1,6 +1,7 @@
 .blog {
   /* height: max-content; */
-  max-width: 35rem;
+  max-width: 36rem;
+  overflow-wrap: break-word;
 }
 
 .blog .thumb-cnt {

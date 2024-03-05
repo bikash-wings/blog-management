@@ -1,7 +1,7 @@
 .blogs-cnt {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
+  gap: 30px;
 
   padding: 2rem 2.5rem;
   /* margin-top: 2rem;
