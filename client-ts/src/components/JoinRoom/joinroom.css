@@ -1,0 +1,24 @@
+.room-cnt {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 98vw;
+  height: 60vh;
+}
+
+.join-room {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  padding: 20px;
+  background-color: aquamarine;
+  border-radius: 0.5rem;
+}
+
+.join-room .val-field {
+  width: 200px;
+  height: 30px;
+}

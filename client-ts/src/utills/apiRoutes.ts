@@ -63,3 +63,16 @@ export const deleteCommentRoute = `${host}/api/v1/blogs/comments`;
 
 /* params: blogid , method: POST */
 export const likeToggleRoute = `${host}/api/v1/blogs/toggle-like`;
+
+/**
+ * Below api routes is for messages
+ */
+
+/* method: POST */
+export const addNewMessageRoute = `${host}/api/v1/messages`;
+
+/* body: receiver id, method: GET */
+export const allMessagesRoute = `${host}/api/v1/messages`;
+
+/* params: messageid , method: DELETE */
+export const deleteMessageRoute = `${host}/api/v1/messages`;
