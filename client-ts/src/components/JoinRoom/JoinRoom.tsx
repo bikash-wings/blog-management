@@ -26,6 +26,7 @@ const JoinRoom = ({
       username: user.user?.fullName,
     });
     setIsRoomJoined(true);
+    localStorage.setItem("room", room);
   };
 
   return (

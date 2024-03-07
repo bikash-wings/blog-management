@@ -6,37 +6,74 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import Navbar from "../../components/Navbar/Navbar";
+import JoinRoom from "../../components/JoinRoom/JoinRoom";
 
 import {
   addNewMessageRoute,
   allMessagesRoute,
   host,
+  roomMessageCountRoute,
 } from "../../utills/apiRoutes";
 import { useAppSelector } from "../../store/hooks";
 import { MessageType } from "../../components/Types/messages";
 
 import userImg from "../../assets/profile.png";
-import JoinRoom from "../../components/JoinRoom/JoinRoom";
 
 const Chat = () => {
   const { user } = useAppSelector((state) => state);
   const socketRef: MutableRefObject<Socket | null> = useRef(null);
   const messRef: MutableRefObject<HTMLDivElement | null> = useRef(null);
+  const chatContainerRef: MutableRefObject<HTMLDivElement | null> =
+    useRef(null);
   const navigate = useNavigate();
 
   const [allMessages, setAllMessages] = useState<MessageType[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
   const [room, setRoom] = useState<string>("node");
   const [isRoomJoined, setIsRoomJoined] = useState<boolean>(false);
+  const [isTyping, setIsTyping] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [total, setTotal] = useState<{ fetched: number; messages: number }>({
+    fetched: 0,
+    messages: 1,
+  });
 
-  const fetchAllMessages = async () => {
+  const fetchRoomMessages = async () => {
+    const chatContainer = chatContainerRef.current;
+    if (!chatContainer) {
+      return;
+    }
+
+    if (total.fetched >= total.messages) {
+      return;
+    }
+
     try {
-      const { data } = await axios.get(`${allMessagesRoute}/${room}`, {
-        headers: {
-          authorization: user?.token,
-        },
+      let prevScrollPosition = chatContainer.scrollTop;
+
+      const { data } = await axios.get(
+        `${allMessagesRoute}/${room}?page=${page}&order=DESC`,
+        {
+          headers: {
+            authorization: user?.token,
+          },
+        }
+      );
+      setAllMessages((p) => [...data.data, ...p]);
+      setTotal((p) => ({ ...p, fetched: p.fetched + data.data.length }));
+
+      chatContainer.scrollTop = prevScrollPosition + 900;
+    } catch (error: any) {
+      console.log(error.response.data);
+    }
+  };
+
+  const getRoomMessageCount = async () => {
+    try {
+      const { data } = await axios.get(`${roomMessageCountRoute}/${room}`, {
+        headers: { authorization: user?.token },
       });
-      setAllMessages(data.data);
+      setTotal((p) => ({ ...p, messages: data.data }));
     } catch (error: any) {
       console.log(error.response.data);
     }
@@ -57,32 +94,109 @@ const Chat = () => {
     }
   };
 
-  useEffect(() => {
-    if (!user.token) {
-      navigate("/");
-      toast.error("Unauthorized access");
+  const handleJoinRoom = (roomId: string) => {
+    socketRef.current?.emit("join-room", {
+      room: roomId,
+      username: user.user?.fullName,
+    });
+
+    setIsRoomJoined(true);
+    localStorage.setItem("room", roomId);
+  };
+
+  const handleLeaveRoom = async () => {
+    const username = user.user?.fullName;
+    socketRef.current?.emit("leave-room", { username, room });
+    localStorage.removeItem("room");
+    navigate("/");
+  };
+
+  const handleTyping = () => {
+    const username = user.user?.fullName;
+    socketRef.current?.emit("typing", { username, room });
+    const timeout = setTimeout(() => {
+      socketRef.current?.emit("stop-typing", { room: room });
+    }, 3000);
+    return () => clearTimeout(timeout);
+  };
+
+  const handleStopTyping = () => {
+    socketRef.current?.emit("stop-typing", { room: room });
+  };
+
+  const handleScroll = () => {
+    if (total.fetched >= total.messages) {
+      return;
     }
 
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer) {
+      const { scrollTop } = chatContainer;
+      if (scrollTop === 0) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    }
+  };
+
+  useEffect(() => {
     socketRef.current = io(host);
 
+    const room = localStorage.getItem("room");
+    if (room) {
+      setRoom(room);
+      handleJoinRoom(room);
+    }
+
     socketRef.current.on("rcv-msg", (mess: MessageType) => {
-      toast.success(mess.content);
+      setAllMessages((p) => [...p, mess]);
     });
 
-    socketRef.current.on("user-joined", (mess: MessageType) => {
-      toast.success(mess.content);
+    socketRef.current.on("user-typing", (mess: MessageType) => {
+      setIsTyping(mess.content);
     });
+
+    socketRef.current.on("user-typing-stopped", (mess: MessageType) => {
+      setIsTyping(mess.content);
+    });
+
+    getRoomMessageCount();
+
+    return () => {
+      socketRef.current?.off("rcv-msg");
+      socketRef.current?.off("user-typing");
+      socketRef.current?.off("user-typing-stopped");
+    };
   }, []);
 
   useEffect(() => {
-    fetchAllMessages();
-  }, [room]);
+    if (messRef.current) {
+      messRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [isRoomJoined]);
 
   useEffect(() => {
-    if (messRef.current) {
-      messRef.current.scrollIntoView({ behavior: "smooth" });
+    if (!user.token) {
+      navigate("/");
+      toast.error("Please login to join chats");
     }
-  }, [messRef.current, allMessages]);
+  }, [user]);
+
+  useEffect(() => {
+    fetchRoomMessages();
+  }, [page, chatContainerRef.current]);
+
+  useEffect(() => {
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer) {
+      chatContainer.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (chatContainer) {
+        chatContainer.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [chatContainerRef.current]);
 
   return (
     <>
@@ -94,7 +208,9 @@ const Chat = () => {
             <div className="row g-0">
               <div className="col-xl-2 border-end d-flex gap-5 flex-column justify-content-center align-items-center">
                 <h3 className="">Room: {room}</h3>
-                <div className="btn btn-danger">Leave Room</div>
+                <div className="btn btn-danger" onClick={handleLeaveRoom}>
+                  Leave Room
+                </div>
               </div>
 
               {/* Chats section */}
@@ -105,12 +221,34 @@ const Chat = () => {
                 <div
                   className="card-body scrollable"
                   style={{ height: "30rem" }}
+                  ref={chatContainerRef}
                 >
                   <div className="chat">
                     <div className="chat-bubbles d-flex flex-column gap-3">
                       {allMessages.map((mess) =>
-                        mess.Sender.id === user?.user?.id ? (
-                          //   {/* logged user message */}
+                        mess.Sender.fullName === "ChatBot" ? (
+                          //   {/* Bot user messages */}
+                          <div className="chat-item" ref={messRef}>
+                            <div className="row align-items-center justify-content-center">
+                              <div
+                                className="col col-lg-3"
+                                style={{
+                                  backgroundColor: "#a4d4f8",
+                                  borderRadius: "0.5rem",
+                                  padding: "0.5rem",
+                                  fontSize: "0.8rem",
+                                }}
+                              >
+                                <div className="chat-bubble">
+                                  <div className="chat-bubble-body">
+                                    <div>{mess.content}</div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : mess.Sender.id === user?.user?.id ? (
+                          //   {/* logged user messages */}
                           <div className="chat-item" ref={messRef}>
                             <div className="row align-items-end justify-content-end">
                               <div
@@ -152,7 +290,7 @@ const Chat = () => {
                             </div>
                           </div>
                         ) : (
-                          //   {/* Selected user message */}
+                          //   {/* Other user messages */}
                           <div className="chat-item" ref={messRef}>
                             <div className="row align-items-end">
                               <div className="col-auto">
@@ -179,7 +317,10 @@ const Chat = () => {
                                   </div>
                                   <div className="chat-bubble-title">
                                     <div className="row">
-                                      <div className="col chat-bubble-author">
+                                      <div
+                                        className="col chat-bubble-author"
+                                        style={{ fontSize: "0.8rem" }}
+                                      >
                                         {mess.Sender.fullName}
                                       </div>
                                       <div className="col-auto chat-bubble-date">
@@ -199,12 +340,16 @@ const Chat = () => {
                   </div>
                 </div>
 
+                {/* Typing status message */}
+                {isTyping && <div className="p-3 ">{isTyping}</div>}
+
                 {/* Messages bottom section */}
                 <div className="card-footer">
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
                       handleMessageSend();
+                      handleStopTyping();
                     }}
                     className="input-group input-group-flat"
                   >
@@ -214,7 +359,13 @@ const Chat = () => {
                       autoComplete="off"
                       placeholder="Type message"
                       value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
+                      onChange={(e) => {
+                        setNewMessage(e.target.value);
+                        if (!isTyping) {
+                          handleTyping();
+                        }
+                      }}
+                      onClick={handleTyping}
                     />
                     <span className="input-group-text">
                       <div

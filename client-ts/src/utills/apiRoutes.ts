@@ -71,8 +71,11 @@ export const likeToggleRoute = `${host}/api/v1/blogs/toggle-like`;
 /* method: POST */
 export const addNewMessageRoute = `${host}/api/v1/messages`;
 
-/* body: receiver id, method: GET */
+/* body: room id, method: GET */
 export const allMessagesRoute = `${host}/api/v1/messages`;
 
 /* params: messageid , method: DELETE */
 export const deleteMessageRoute = `${host}/api/v1/messages`;
+
+/* params: room id , method: GET */
+export const roomMessageCountRoute = `${host}/api/v1/messages/total`;

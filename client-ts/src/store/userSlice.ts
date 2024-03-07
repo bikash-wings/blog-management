@@ -20,6 +20,7 @@ const userSlice = createSlice({
     },
     removeUser: (state) => {
       state.user = null;
+      state.token = "";
       localStorage.removeItem("blog-user");
     },
   },
