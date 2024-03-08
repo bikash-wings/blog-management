@@ -9,6 +9,7 @@ const {
   isUserAdmin,
   logoutController,
   totalUserCountController,
+  getRoomIdController,
 } = require("../controllers/userController");
 const { isSignIn, isAdmin, checkPermissions } = require("../middlewares/auth");
 
@@ -29,7 +30,7 @@ router.post("/forgot-password", forgotPassword);
 router.put("/update/:userid", updateUser);
 
 /* GET all users, queries: page & limit */
-router.get("/get-all", isSignIn, checkPermissions("view-users"), getAllUsers);
+router.get("/get-all", getAllUsers);
 
 /* POST pic upload */
 router.post("/upload/:userid", uploadAvatar.single("avatar"), uploadProfilePic);
@@ -50,5 +51,8 @@ router.get(
   checkPermissions("view-users"),
   totalUserCountController
 );
+
+/* GET room-id */
+router.get("/room-id", isSignIn, getRoomIdController);
 
 module.exports = router;

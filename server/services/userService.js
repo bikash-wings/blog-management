@@ -328,14 +328,18 @@ const updateUserInfo = async (req) => {
 
 const fetchAllUsers = async (req) => {
   try {
-    const { page = 1, limit = 11 } = req.query;
+    const { page = 1, limit = 11, user } = req.query;
     const offset = (page - 1) * limit;
 
-    const allUsers = await db.User.findAll({
+    let allUsers = await db.User.findAll({
       attributes: { exclude: ["password", "verifyToken", "updatedAt"] },
       limit: Number(limit),
       offset: Number(offset),
     });
+
+    if (user) {
+      allUsers = allUsers.filter((usr) => usr.id != user);
+    }
 
     return allUsers;
   } catch (error) {
@@ -398,6 +402,19 @@ const totalUsersCount = async () => {
   return totalUsers;
 };
 
+/**
+ * This service will serve room id
+ */
+const getRoomId = async () => {
+  const roomId = process.env.ROOM;
+
+  if (!roomId) {
+    throw new CustomError(StatusCodes.NOT_FOUND, "Room Id not found");
+  }
+
+  return roomId;
+};
+
 module.exports = {
   signup,
   verifyMail,
@@ -409,4 +426,5 @@ module.exports = {
   checkUserRole,
   logout,
   totalUsersCount,
+  getRoomId,
 };

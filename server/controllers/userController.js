@@ -160,6 +160,23 @@ const totalUserCountController = catchAsync(async (req, res) => {
   }
 });
 
+/**
+ * Thsi controller will return room id
+ */
+const getRoomIdController = catchAsync(async (req, res) => {
+  const getRoomId = await userServices.getRoomId();
+
+  if (getRoomId) {
+    return setSuccessResponse(
+      res,
+      StatusCodes.OK,
+      true,
+      getRoomId,
+      "Room Id fetched"
+    );
+  }
+});
+
 module.exports = {
   signup,
   mailVerification,
@@ -171,4 +188,5 @@ module.exports = {
   isUserAdmin,
   logoutController,
   totalUserCountController,
+  getRoomIdController,
 };

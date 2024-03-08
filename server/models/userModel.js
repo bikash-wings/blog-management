@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Blog, { foreignKey: "userId" });
       User.hasMany(models.invalidated_tokens, { foreignKey: "userId" });
       User.hasMany(models.Likes, { foreignKey: "userId" });
+      User.hasMany(models.Messages, {
+        foreignKey: "sender",
+        as: "sentMessages",
+      });
     }
   }
 

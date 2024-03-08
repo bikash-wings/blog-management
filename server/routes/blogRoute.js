@@ -10,6 +10,7 @@ const {
   totalBlogLikesController,
   addCommentController,
   allCommentsController,
+  deleteCommentController,
 } = require("../controllers/blogControllers");
 const { isSignIn, checkPermissions } = require("../middlewares/auth");
 const { uploadThumbnail } = require("../middlewares/uploadFile");
@@ -67,5 +68,8 @@ router.post("/comments/:blogid", isSignIn, addCommentController);
 
 /* GET all-comments */
 router.get("/comments/:blogid", allCommentsController);
+
+/* DELETE delete-comment */
+router.delete("/comments/:commentid", isSignIn, deleteCommentController);
 
 module.exports = router;

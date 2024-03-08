@@ -92,8 +92,8 @@ const deleteBlog = catchAsync(async (req, res) => {
     res,
     StatusCodes.OK,
     true,
-    deletedBlog,
-    "Blog deleted!"
+    "",
+    "Blog deleted successfully!"
   );
 });
 
@@ -169,6 +169,20 @@ const allCommentsController = catchAsync(async (req, res) => {
   }
 });
 
+/**
+ * This controller will delete blog comment
+ */
+const deleteCommentController = catchAsync(async (req, res) => {
+  const deleteComment = await blogService.deleteComment(
+    req.params.commentid,
+    req
+  );
+
+  if (deleteComment) {
+    return setSuccessResponse(res, StatusCodes.OK, true, "", "Comment Deleted");
+  }
+});
+
 module.exports = {
   createBlog,
   getSingleBlog,
@@ -180,4 +194,5 @@ module.exports = {
   totalBlogLikesController,
   addCommentController,
   allCommentsController,
+  deleteCommentController,
 };

@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Comments extends Model {
+  class Messages extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,31 +9,30 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Comments.belongsTo(models.User, { foreignKey: "userId" }),
-        Comments.belongsTo(models.Blog, { foreignKey: "blogId" });
+      Messages.belongsTo(models.User, { foreignKey: "sender", as: "Sender" });
     }
   }
-  Comments.init(
+  Messages.init(
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      blogId: {
+      sender: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         required: true,
+        allowNull: false,
       },
-      userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+      room: {
+        type: DataTypes.ENUM("react", "node", "chitchat"),
         required: true,
+        allowNull: false,
       },
       content: {
         type: DataTypes.STRING,
-        allowNull: false,
         required: true,
+        allowNull: false,
       },
       isDeleted: {
         type: DataTypes.BOOLEAN,
@@ -42,8 +41,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Comments",
+      modelName: "Messages",
     }
   );
-  return Comments;
+  return Messages;
 };

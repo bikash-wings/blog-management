@@ -8,6 +8,7 @@ var usersRoutes = require("./routes/userRoute");
 const blogsRoutes = require("./routes/blogRoute");
 const rolesRoutes = require("./routes/rolesRoute");
 const permissionRoutes = require("./routes/permissionRoute");
+const messagesRoutes = require("./routes/messagesRoute");
 const db = require("./models");
 const cors = require("cors");
 
@@ -28,6 +29,7 @@ app.use("/api/v1/users", usersRoutes);
 app.use("/api/v1/blogs", blogsRoutes);
 app.use("/api/v1/roles", rolesRoutes);
 app.use("/api/v1/permissions", permissionRoutes);
+app.use("/api/v1/messages", messagesRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

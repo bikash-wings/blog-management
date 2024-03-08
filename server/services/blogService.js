@@ -230,10 +230,15 @@ const destroyBlog = async (req) => {
   try {
     const { blogid } = req.params;
 
-    const blog = await db.Blog.destroy({ where: { id: blogid } });
+    const blog = await db.Blog.findOne({
+      where: { id: blogid, isDeleted: false },
+    });
     if (!blog) {
-      throw new CustomError(StatusCodes.NOT_FOUND, "no blog found!");
+      throw new CustomError(StatusCodes.NOT_FOUND, "No blog found!");
     }
+
+    blog.isDeleted = true;
+    await blog.save();
 
     return blog;
   } catch (error) {
@@ -339,13 +344,14 @@ const addComment = async (req) => {
  */
 const allComments = async (blogId) => {
   const allComments = await db.Comments.findAll({
-    where: { blogId: blogId },
+    where: { blogId: blogId, isDeleted: false },
     include: {
       model: db.User,
       attributes: ["fullName", "avatar"],
       as: "User",
     },
     attributes: ["id", "content", "createdAt"],
+    order: [["id", "DESC"]],
   });
 
   if (!allComments) {
@@ -356,6 +362,34 @@ const allComments = async (blogId) => {
   }
 
   return allComments;
+};
+
+const deleteComment = async (commentId, req) => {
+  const findComment = await db.Comments.findOne({
+    where: { id: commentId, isDeleted: false },
+  });
+
+  if (!findComment) {
+    throw new CustomError(
+      StatusCodes.CONFLICT,
+      `No Comment found with id ${commentId}`
+    );
+  }
+
+  const userId = req.user.id;
+
+  if (userId !== findComment.userId) {
+    throw new CustomError(
+      StatusCodes.CONFLICT,
+      "Commented user can delete only"
+    );
+  }
+
+  findComment.isDeleted = true;
+
+  await findComment.save();
+
+  return findComment;
 };
 
 module.exports = {
@@ -369,4 +403,5 @@ module.exports = {
   totalBlogLikes,
   addComment,
   allComments,
+  deleteComment,
 };

@@ -4,9 +4,13 @@
  * Module dependencies.
  */
 
+const { Server } = require("socket.io");
 var app = require("../server");
 var debug = require("debug")("node-app:server");
 var http = require("http");
+const { authenticateSocketUser } = require("../middlewares/socket");
+const CustomError = require("../utills/CustomError");
+const { StatusCodes } = require("http-status-codes");
 
 /**
  * Get port from environment and store in Express.
@@ -20,6 +24,84 @@ app.set("port", port);
  */
 
 var server = http.createServer(app);
+
+/* Socket initialization */
+const io = new Server(server, {
+  cors: { origin: "http://localhost:5173", credentials: true },
+});
+
+// global.room = new Map();
+
+const CHAT_BOT = "ChatBot";
+
+let allUsers = [];
+
+/* Socket connections */
+io.on("connection", (socket) => {
+  socket.on("join-room", async (data) => {
+    const { room, username } = data;
+    await authenticateSocketUser(socket);
+    socket.join(room);
+
+    allUsers.push({ id: socket.id, username, room });
+
+    io.to(room).emit("rcv-msg", {
+      id: Date.now(),
+      Sender: {
+        id: Date.now(),
+        fullName: CHAT_BOT,
+      },
+      content: `${username} has joined the chat!`,
+    });
+
+    io.to(room)
+      .to(socket.id)
+      .emit("room-joined", { users: allUsers, room: room });
+  });
+
+  socket.on("send-msg", (data) => {
+    io.to(data.room).emit("rcv-msg", data);
+  });
+
+  socket.on("leave-room", (data) => {
+    const { username, room } = data;
+    socket.leave(room);
+    allUsers = allUsers.filter((usr) => socket.id !== usr.id);
+    socket.to(room).emit("room-leaved", allUsers);
+    socket.to(room).emit("rcv-msg", {
+      id: Date.now(),
+      Sender: {
+        id: Date.now(),
+        fullName: CHAT_BOT,
+      },
+      content: `${username} has left the chat!`,
+    });
+  });
+
+  socket.on("typing", (data) => {
+    const { room, username } = data;
+
+    socket.to(room).emit("user-typing", {
+      id: Date.now(),
+      content: `${username} is typing...`,
+      Sender: {
+        id: Date.now(),
+        fullName: CHAT_BOT,
+      },
+    });
+  });
+
+  socket.on("stop-typing", (data) => {
+    socket.to(data.room).emit("user-typing-stopped", {
+      id: Date.now(),
+      content: "",
+      Sender: {
+        id: Date.now(),
+        fullName: CHAT_BOT,
+      },
+    });
+  });
+});
 
 /**
  * Listen on provided port, on all network interfaces.
