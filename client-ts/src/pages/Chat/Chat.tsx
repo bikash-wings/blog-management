@@ -95,13 +95,14 @@ const Chat = () => {
   };
 
   const handleJoinRoom = (roomId: string) => {
-    socketRef.current?.emit("join-room", {
-      room: roomId,
-      username: user.user?.fullName,
-    });
-
-    setIsRoomJoined(true);
-    localStorage.setItem("room", roomId);
+    try {
+      socketRef.current?.emit("join-room", {
+        room: roomId,
+        username: user.user?.fullName,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleLeaveRoom = async () => {
@@ -139,13 +140,18 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    socketRef.current = io(host);
+    socketRef.current = io(host, { auth: { token: user?.token } });
 
     const room = localStorage.getItem("room");
     if (room) {
       setRoom(room);
       handleJoinRoom(room);
     }
+
+    socketRef.current.on("room-joined", (data: any) => {
+      setIsRoomJoined(true);
+      localStorage.setItem("room", data.room);
+    });
 
     socketRef.current.on("rcv-msg", (mess: MessageType) => {
       setAllMessages((p) => [...p, mess]);
@@ -162,17 +168,24 @@ const Chat = () => {
     getRoomMessageCount();
 
     return () => {
+      socketRef.current?.off("room-joined");
       socketRef.current?.off("rcv-msg");
       socketRef.current?.off("user-typing");
       socketRef.current?.off("user-typing-stopped");
+
+      socketRef.current?.emit("leave-room", {
+        username: [user.user?.fullName],
+        room,
+      });
+      localStorage.removeItem("room");
     };
   }, []);
 
   useEffect(() => {
-    if (messRef.current) {
+    if (messRef.current && page === 1) {
       messRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [isRoomJoined]);
+  }, [isRoomJoined, allMessages, page]);
 
   useEffect(() => {
     if (!user.token) {
@@ -182,8 +195,10 @@ const Chat = () => {
   }, [user]);
 
   useEffect(() => {
-    fetchRoomMessages();
-  }, [page, chatContainerRef.current]);
+    if (isRoomJoined) {
+      fetchRoomMessages();
+    }
+  }, [page, chatContainerRef.current, isRoomJoined]);
 
   useEffect(() => {
     const chatContainer = chatContainerRef.current;
@@ -450,6 +465,7 @@ const Chat = () => {
           socketRef={socketRef}
           room={room}
           setRoom={setRoom}
+          handleJoinRoom={handleJoinRoom}
         />
       )}
     </>

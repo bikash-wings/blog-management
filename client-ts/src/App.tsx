@@ -14,6 +14,18 @@ import PrivateRoute from "./components/Routes/PrivateRoute";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Admin from "./pages/Admin/Admin";
 import Chat from "./pages/Chat/Chat";
+import Zoom from "./pages/Zoom/Zoom";
+
+const ZoomProps = {
+  meetingNumber: "123456789",
+  role: "0",
+  sdkKey: "",
+  sdkSecret: "",
+  leaveUrl: "http://localhost:5173",
+  userName: "testing",
+  userEmail: "demo.wingstech@gmail.com",
+  password: "",
+};
 
 function App() {
   return (
@@ -30,6 +42,7 @@ function App() {
         <Route path="/blogs/add" element={<AddBlog />} />
         <Route path="/blogs/edit/:blogid" element={<EditBlog />} />
 
+        <Route path="/meeting" element={<Zoom {...ZoomProps} />} />
         <Route path="/chats" element={<Chat />} />
 
         {/* Private Routes */}

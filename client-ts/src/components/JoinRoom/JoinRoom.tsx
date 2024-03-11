@@ -12,22 +12,15 @@ const JoinRoom = ({
   setIsRoomJoined,
   room,
   setRoom,
+  handleJoinRoom,
 }: {
   socketRef: MutableRefObject<Socket | null>;
   setIsRoomJoined: React.Dispatch<React.SetStateAction<boolean>>;
   room: string;
   setRoom: React.Dispatch<React.SetStateAction<string>>;
+  handleJoinRoom: (roomId: string) => void;
 }) => {
   const { user } = useAppSelector((state) => state);
-
-  const joinRoom = () => {
-    socketRef.current?.emit("join-room", {
-      room: room,
-      username: user.user?.fullName,
-    });
-    setIsRoomJoined(true);
-    localStorage.setItem("room", room);
-  };
 
   return (
     <div>
@@ -37,7 +30,7 @@ const JoinRoom = ({
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            joinRoom();
+            handleJoinRoom(room);
           }}
           className="join-room"
         >
