@@ -4,7 +4,11 @@ import toast from "react-hot-toast";
 
 import Navbar from "../../components/Navbar/Navbar";
 
-import { updateUserRoute, uploadAvatarRoute } from "../../utills/apiRoutes";
+import {
+  updateUserRoute,
+  uploadAvatarRoute,
+  userProfileRoute,
+} from "../../utills/apiRoutes";
 import { setUser } from "../../store/userSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 
@@ -29,6 +33,25 @@ const Profile = () => {
   });
   const [avatar, setAvatar] = useState<null | File>(null);
   const [isPassVisible, setIsPassVisible] = useState<boolean>(false);
+
+  const getProfileInfo = async () => {
+    try {
+      const { data } = await axios.get(userProfileRoute, {
+        headers: { authorization: user?.token },
+      });
+
+      setAuth({
+        fname: data.data?.fname,
+        lname: data.data?.lname,
+        phone: data.data?.phone,
+        answer: data.data?.answer,
+        address: data.data?.address,
+        password: "",
+      });
+    } catch (error: any) {
+      console.log(error.response.data);
+    }
+  };
 
   const onUpdateUserInfo = async () => {
     try {
@@ -73,18 +96,22 @@ const Profile = () => {
     }
   };
 
+  // useEffect(() => {
+  //   if (user.user) {
+  //     setAuth({
+  //       fname: user.user?.fname,
+  //       lname: user.user?.lname,
+  //       phone: user.user?.phone,
+  //       answer: user.user?.answer,
+  //       address: user.user?.address,
+  //       password: "",
+  //     });
+  //   }
+  // }, [user.user]);
+
   useEffect(() => {
-    if (user.user) {
-      setAuth({
-        fname: user.user?.fname,
-        lname: user.user?.lname,
-        phone: user.user?.phone,
-        answer: user.user?.answer,
-        address: user.user?.address,
-        password: "",
-      });
-    }
-  }, [user.user]);
+    getProfileInfo();
+  }, []);
 
   return (
     <div className="">

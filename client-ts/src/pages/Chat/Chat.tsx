@@ -155,6 +155,7 @@ const Chat = () => {
 
     socketRef.current.on("rcv-msg", (mess: MessageType) => {
       setAllMessages((p) => [...p, mess]);
+      messRef.current?.scrollIntoView({ behavior: "smooth" });
     });
 
     socketRef.current.on("user-typing", (mess: MessageType) => {
@@ -165,7 +166,7 @@ const Chat = () => {
       setIsTyping(mess.content);
     });
 
-    getRoomMessageCount();
+    // getRoomMessageCount();
 
     return () => {
       socketRef.current?.off("room-joined");
@@ -197,6 +198,10 @@ const Chat = () => {
   useEffect(() => {
     if (isRoomJoined) {
       fetchRoomMessages();
+
+      if (page === 1) {
+        getRoomMessageCount();
+      }
     }
   }, [page, chatContainerRef.current, isRoomJoined]);
 
@@ -297,7 +302,9 @@ const Chat = () => {
                                   className="avatar"
                                   style={{
                                     backgroundImage: user?.user.avatar
-                                      ? `url(${host}/avatar/${user?.user.avatar})`
+                                      ? user?.user.avatar.startsWith("https://")
+                                        ? `url(${user.user.avatar})`
+                                        : `url(${host}/avatar/${user?.user.avatar})`
                                       : `url(${userImg})`,
                                   }}
                                 />
@@ -313,7 +320,11 @@ const Chat = () => {
                                   className="avatar"
                                   style={{
                                     backgroundImage: mess.Sender.avatar
-                                      ? `url(${host}/avatar/${mess.Sender.avatar})`
+                                      ? mess.Sender.avatar.startsWith(
+                                          "https://"
+                                        )
+                                        ? `url(${mess.Sender.avatar})`
+                                        : `url(${host}/avatar/${mess.Sender.avatar})`
                                       : `url(${userImg})`,
                                   }}
                                 />

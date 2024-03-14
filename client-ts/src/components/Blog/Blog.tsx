@@ -157,8 +157,10 @@ const Blog = ({ blog }: { blog: BlogType }) => {
                         <div className="author-img-cnt">
                           <img
                             src={
-                              blog.User.avatar === "NULL"
+                              !blog.User.avatar
                                 ? userImg
+                                : blog.User?.avatar?.startsWith("https://")
+                                ? blog.User?.avatar
                                 : `${host}/avatar/${blog.User?.avatar}`
                             }
                             alt="author profile photo"

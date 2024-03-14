@@ -15,16 +15,17 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Admin from "./pages/Admin/Admin";
 import Chat from "./pages/Chat/Chat";
 import Zoom from "./pages/Zoom/Zoom";
+import OAuth from "./pages/OAuth/OAuth";
 
 const ZoomProps = {
-  meetingNumber: "123456789",
+  meetingNumber: "86522384074",
   role: "0",
-  sdkKey: "",
-  sdkSecret: "",
-  leaveUrl: "http://localhost:5173",
+  sdkKey: "AhS2gsl9See66nrIm84aRg",
+  sdkSecret: "w4S7Uhdhl0jOZ3a408j134s9qurxMhGH",
+  leaveUrl: "https://zoom.us",
   userName: "testing",
   userEmail: "demo.wingstech@gmail.com",
-  password: "",
+  password: "t6hzdY",
 };
 
 function App() {
@@ -42,7 +43,22 @@ function App() {
         <Route path="/blogs/add" element={<AddBlog />} />
         <Route path="/blogs/edit/:blogid" element={<EditBlog />} />
 
-        <Route path="/meeting" element={<Zoom {...ZoomProps} />} />
+        <Route path="/oauth/redirect" element={<OAuth />} />
+        <Route
+          path="/meeting"
+          element={
+            <Zoom
+              password={ZoomProps.password}
+              meetingNumber={ZoomProps.meetingNumber}
+              role={ZoomProps.role}
+              sdkKey={ZoomProps.sdkKey}
+              sdkSecret={ZoomProps.sdkSecret}
+              leaveUrl={ZoomProps.leaveUrl}
+              userName={ZoomProps.userName}
+              userEmail={ZoomProps.userEmail}
+            />
+          }
+        />
         <Route path="/chats" element={<Chat />} />
 
         {/* Private Routes */}

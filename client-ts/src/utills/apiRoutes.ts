@@ -29,6 +29,9 @@ export const checkAdminUserRoute = `${host}/api/v1/users/is-admin`;
 /* method: GET */
 export const usersCountRoute = `${host}/api/v1/users/total-count`;
 
+/* method GET */
+export const userProfileRoute = `${host}/api/v1/users/profile`;
+
 /**
  * Below api routes is for Blogs
  *

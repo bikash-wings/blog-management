@@ -178,6 +178,8 @@ const Navbar = () => {
                         backgroundImage:
                           !loggedUser || !loggedUser?.avatar
                             ? `url(${userImg})`
+                            : loggedUser?.avatar.startsWith("https://")
+                            ? `url(${loggedUser.avatar})`
                             : `url(${host}/avatar/${loggedUser?.avatar})`,
                         cursor: "pointer",
                       }}

@@ -369,8 +369,12 @@ const BlogDetails = () => {
                               <div className="author-img-cnt">
                                 <img
                                   src={
-                                    blog.User.avatar === "NULL"
+                                    !blog.User.avatar
                                       ? userImg
+                                      : blog.User?.avatar?.startsWith(
+                                          "https://"
+                                        )
+                                      ? blog.User?.avatar
                                       : `${host}/avatar/${blog.User?.avatar}`
                                   }
                                   alt="author profile photo"
@@ -459,8 +463,10 @@ const BlogDetails = () => {
                 <div className="img-cnt">
                   <img
                     src={
-                      cmnt.User.avatar === "NULL"
+                      !cmnt.User.avatar
                         ? userImg
+                        : cmnt.User?.avatar?.startsWith("https://")
+                        ? cmnt.User?.avatar
                         : `${host}/avatar/${cmnt.User.avatar}`
                     }
                     alt="user profile photo"
