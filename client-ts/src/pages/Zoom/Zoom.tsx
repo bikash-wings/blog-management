@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect } from "react";
 
 type PropsType = {
@@ -29,6 +31,7 @@ const Zoom: React.FC<PropsType> = (props: PropsType) => {
         success: function (signature: any) {
           ZoomMtg.init({
             leaveUrl: props.leaveUrl,
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             success: function (data: any) {
               ZoomMtg.join({
                 meetingNumber: props.meetingNumber,

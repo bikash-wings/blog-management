@@ -13,7 +13,7 @@ import "./navbar.css";
 
 const Navbar = () => {
   const path = useLocation().pathname;
-  let { user } = useAppSelector((state) => state);
+  const { user } = useAppSelector((state) => state);
   const token = user?.token;
   const loggedUser = user?.user;
   const dispatch = useAppDispatch();
@@ -33,6 +33,7 @@ const Navbar = () => {
         // navigate("/login");
         dispatch(removeUser());
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log(error.response.data);
     }
@@ -179,8 +180,8 @@ const Navbar = () => {
                           !loggedUser || !loggedUser?.avatar
                             ? `url(${userImg})`
                             : loggedUser?.avatar.startsWith("https://")
-                            ? `url(${loggedUser.avatar})`
-                            : `url(${host}/avatar/${loggedUser?.avatar})`,
+                              ? `url(${loggedUser.avatar})`
+                              : `url(${host}/avatar/${loggedUser?.avatar})`,
                         cursor: "pointer",
                       }}
                     />

@@ -88,13 +88,15 @@ const updateBlog = catchAsync(async (req, res) => {
 const deleteBlog = catchAsync(async (req, res) => {
   const deletedBlog = await blogService.destroyBlog(req);
 
-  return setSuccessResponse(
-    res,
-    StatusCodes.OK,
-    true,
-    "",
-    "Blog deleted successfully!"
-  );
+  if (deletedBlog) {
+    return setSuccessResponse(
+      res,
+      StatusCodes.OK,
+      true,
+      "",
+      "Blog deleted successfully!"
+    );
+  }
 });
 
 /**

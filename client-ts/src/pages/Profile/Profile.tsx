@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -13,7 +15,7 @@ import { setUser } from "../../store/userSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 
 const Profile = () => {
-  let { user } = useAppSelector((state) => state);
+  const { user } = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
 
   const [auth, setAuth] = useState<{
@@ -95,19 +97,6 @@ const Profile = () => {
       console.error(error.response.data.message);
     }
   };
-
-  // useEffect(() => {
-  //   if (user.user) {
-  //     setAuth({
-  //       fname: user.user?.fname,
-  //       lname: user.user?.lname,
-  //       phone: user.user?.phone,
-  //       answer: user.user?.answer,
-  //       address: user.user?.address,
-  //       password: "",
-  //     });
-  //   }
-  // }, [user.user]);
 
   useEffect(() => {
     getProfileInfo();

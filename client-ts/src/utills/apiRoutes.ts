@@ -32,6 +32,12 @@ export const usersCountRoute = `${host}/api/v1/users/total-count`;
 /* method GET */
 export const userProfileRoute = `${host}/api/v1/users/profile`;
 
+/* method GET */
+export const gOAuthRoute = `${host}/auth/google`;
+
+/* method GET */
+export const fOAuthRoute = `${host}/auth/facebook`;
+
 /**
  * Below api routes is for Blogs
  *

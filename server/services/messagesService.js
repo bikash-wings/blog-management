@@ -79,7 +79,7 @@ const destroyMessage = async (messageId, sender) => {
   }
 
   if (checkMessage.sender !== sender) {
-    throw new CustomError(StatusCodes.BAD_REQUEST, `Can't delete this message`);
+    throw new CustomError(StatusCodes.BAD_REQUEST, "Can't delete this message");
   }
 
   checkMessage.isDeleted = true;

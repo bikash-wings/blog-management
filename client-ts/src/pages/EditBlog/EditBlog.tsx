@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -20,7 +22,7 @@ import { useAppSelector } from "../../store/hooks";
 const EditBlog = () => {
   const navigate = useNavigate();
   const { blogid } = useParams();
-  let { user } = useAppSelector((state) => state);
+  const { user } = useAppSelector((state) => state);
 
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<EditorState>(

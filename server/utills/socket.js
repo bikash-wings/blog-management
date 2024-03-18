@@ -1,11 +1,11 @@
 const { createServer } = require("http");
-const { instrument } = require("@socket.io/admin-ui");
 const { Server } = require("socket.io");
 
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 // const config = require("../config/config");
 
 const app = require("../server");
+// eslint-disable-next-line no-unused-vars
 const db = require("../models");
 const { authenticateSocketUser } = require("../middlewares/socket");
 
@@ -14,23 +14,23 @@ console.log("Socket file imported $$$$$$$$$$$$$$$$$$$$$$$$ ");
 // const { MESSAGES } = require("./messages");
 // const { sendNotificationsToUsers } = require("./firebaseCommons");
 // const { getComplaintPropertyUsers, getTaskPropertyUsers } = require("./propertyCommons");
-const {
-  SOCKET_EVENTS,
-  NOTIFICATIONS_TYPES,
-  NOTIFICATION_TITLES,
-} = require("./constants");
+// const {
+// 	SOCKET_EVENTS,
+// 	NOTIFICATIONS_TYPES,
+// 	NOTIFICATION_TITLES,
+// } = require("./constants");
 // const { generateUsername } = require("./common");
-const {
-  CONNECTION,
-  JOIN_ROOM,
-  MESSAGE_SENT,
-  MESSAGE_RECEIVE,
-  ERROR,
-  DISCONNECTING,
-  DISCONNECT,
-  USER_DISCONNECTED,
-  CONNECT_ERROR,
-} = SOCKET_EVENTS;
+// const {
+// 	CONNECTION,
+// 	JOIN_ROOM,
+// 	MESSAGE_SENT,
+// 	MESSAGE_RECEIVE,
+// 	ERROR,
+// 	DISCONNECTING,
+// 	DISCONNECT,
+// 	USER_DISCONNECTED,
+// 	CONNECT_ERROR,
+// } = SOCKET_EVENTS;
 // const { getUserDetailsQuery } = require("../utils/dbCommons");
 // const { sendNotifications } = require("../services/notifications");
 

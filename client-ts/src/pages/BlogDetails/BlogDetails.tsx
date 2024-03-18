@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
@@ -28,7 +30,7 @@ const BlogDetails = () => {
   const { user } = useAppSelector((state) => state);
   const { blogid } = useParams();
 
-  const [blog, setBlog] = useState<BlogType | {}>({});
+  const [blog, setBlog] = useState<BlogType | object>({});
   const [recentBlogs, setRecentBlogs] = useState<BlogType[]>([]);
   const [comment, setComment] = useState<string>("");
   const [allComments, setAllComments] = useState<CommentType[]>([]);
@@ -372,10 +374,10 @@ const BlogDetails = () => {
                                     !blog.User.avatar
                                       ? userImg
                                       : blog.User?.avatar?.startsWith(
-                                          "https://"
-                                        )
-                                      ? blog.User?.avatar
-                                      : `${host}/avatar/${blog.User?.avatar}`
+                                            "https://"
+                                          )
+                                        ? blog.User?.avatar
+                                        : `${host}/avatar/${blog.User?.avatar}`
                                   }
                                   alt="author profile photo"
                                   style={{
@@ -437,6 +439,7 @@ const BlogDetails = () => {
               rows={5}
               onChange={(e) => setComment(e.target.value)}
               value={comment}
+              disabled={!user.token}
             >
               {comment}
             </textarea>
@@ -466,8 +469,8 @@ const BlogDetails = () => {
                       !cmnt.User.avatar
                         ? userImg
                         : cmnt.User?.avatar?.startsWith("https://")
-                        ? cmnt.User?.avatar
-                        : `${host}/avatar/${cmnt.User.avatar}`
+                          ? cmnt.User?.avatar
+                          : `${host}/avatar/${cmnt.User.avatar}`
                     }
                     alt="user profile photo"
                   />

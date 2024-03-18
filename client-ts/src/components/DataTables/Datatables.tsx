@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
@@ -40,7 +42,7 @@ const DataTables: React.FC<DataTablesProp> = ({
   modal,
   setModal,
 }) => {
-  let { user } = useAppSelector((state) => state);
+  const { user } = useAppSelector((state) => state);
   const path = useLocation().pathname;
   const url = path.split("/").filter((p, i) => {
     if (i !== 0) return p;

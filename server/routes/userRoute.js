@@ -12,7 +12,7 @@ const {
   getRoomIdController,
   userProfileController,
 } = require("../controllers/userController");
-const { isSignIn, isAdmin, checkPermissions } = require("../middlewares/auth");
+const { isSignIn, checkPermissions } = require("../middlewares/auth");
 
 const { uploadAvatar } = require("../middlewares/uploadFile");
 

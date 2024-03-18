@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Socket, io } from "socket.io-client";
 import axios from "axios";
@@ -49,7 +51,7 @@ const Chat = () => {
     }
 
     try {
-      let prevScrollPosition = chatContainer.scrollTop;
+      const prevScrollPosition = chatContainer.scrollTop;
 
       const { data } = await axios.get(
         `${allMessagesRoute}/${room}?page=${page}&order=DESC`,
@@ -140,7 +142,9 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    socketRef.current = io(host, { auth: { token: user?.token } });
+    socketRef.current = io(`${host}?token=${user?.token}`, {
+      auth: { token: user?.token },
+    });
 
     const room = localStorage.getItem("room");
     if (room) {

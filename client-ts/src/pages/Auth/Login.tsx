@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-import { loginRoute } from "../../utills/apiRoutes";
+import { fOAuthRoute, gOAuthRoute, loginRoute } from "../../utills/apiRoutes";
 import { setUser } from "../../store/userSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 
@@ -13,16 +15,6 @@ const Login = () => {
   const { user } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const googleOAuthUri = `${import.meta.env.VITE_GAUTH_HOST}?client_id=${
-    import.meta.env.VITE_GAUTH_CLIENT_ID
-  }&redirect_uri=${
-    import.meta.env.VITE_GAUTH_REDIRECT_URI
-  }&response_type=code&scope=${
-    import.meta.env.VITE_GAUTH_SCOPE
-  }&access_type=offline&service=lso&o2v=1&theme=mn&flowName=GeneralOAuthFlow`;
-  const facebookOAuthUri = `${import.meta.env.VITE_FAUTH_HOST}?client_id=${
-    import.meta.env.VITE_FAUTH_CLIENT_ID
-  }&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}`;
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<{
@@ -174,7 +166,7 @@ const Login = () => {
           <div className="">
             <div className="row">
               <div className="col">
-                <Link to={googleOAuthUri} className="btn w-100">
+                <Link to={gOAuthRoute} className="btn w-100">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="icon icon-tabler icon-tabler-brand-google-filled text-google"
@@ -198,7 +190,7 @@ const Login = () => {
                 </Link>
               </div>
               <div className="col">
-                <Link to={facebookOAuthUri} className="btn w-100">
+                <Link to={fOAuthRoute} className="btn w-100">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width={24}

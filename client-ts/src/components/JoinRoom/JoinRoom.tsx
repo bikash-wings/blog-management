@@ -1,5 +1,4 @@
-import React, { MutableRefObject } from "react";
-import { Socket } from "socket.io-client";
+import React from "react";
 
 import Navbar from "../Navbar/Navbar";
 
@@ -8,14 +7,10 @@ import { useAppSelector } from "../../store/hooks";
 import "./joinroom.css";
 
 const JoinRoom = ({
-  socketRef,
-  setIsRoomJoined,
   room,
   setRoom,
   handleJoinRoom,
 }: {
-  socketRef: MutableRefObject<Socket | null>;
-  setIsRoomJoined: React.Dispatch<React.SetStateAction<boolean>>;
   room: string;
   setRoom: React.Dispatch<React.SetStateAction<string>>;
   handleJoinRoom: (roomId: string) => void;

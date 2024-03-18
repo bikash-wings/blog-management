@@ -10,7 +10,7 @@ const randomString = require("randomstring");
  * This service is for signup
  */
 const signup = async (req) => {
-  const { fname, lname, email, password, phone, avatar, answer } = req.body;
+  const { fname, lname, email, password, avatar, answer } = req.body;
 
   if (!fname) {
     throw new CustomError(StatusCodes.NOT_FOUND, "First Name required!");
@@ -32,7 +32,7 @@ const signup = async (req) => {
 
   // Only when email is registered
   if (existingUser && !existingUser.isVerified) {
-    const mailSubject = `Mail Verification`;
+    const mailSubject = "Mail Verification";
     const content = `<p>Hi ${fname}, Please <a href="http://localhost:3000/api/v1/users/mail-verification?token=${existingUser.randomToken}">Verify</a> your Mail.</p>`;
     await sendMail(email, mailSubject, content);
 
@@ -257,11 +257,6 @@ const forgotPassword = async (body) => {
 };
 
 /**
- * This service is for google auth
- */
-const googleAuthCallback = async () => {};
-
-/**
  * This service will update user info
  */
 
@@ -270,7 +265,6 @@ const updateUserInfo = async (req) => {
     const { fname, lname, password, phone, address, answer } = req.body;
 
     const { userid } = req.params;
-    console.log("🚀 ~ updateUserInfo ~ userid:", userid);
 
     const user = await db.User.findOne({ where: { id: userid } });
 

@@ -17,7 +17,7 @@ import "./addblog.css";
 
 const AddBlog = () => {
   const navigate = useNavigate();
-  let { user } = useAppSelector((state) => state);
+  const { user } = useAppSelector((state) => state);
 
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<EditorState>(

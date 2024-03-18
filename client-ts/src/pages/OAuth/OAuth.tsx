@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { BarLoader } from "react-spinners";
 
 import { useAppDispatch } from "../../store/hooks";
 import { setUser } from "../../store/userSlice";
@@ -22,9 +23,21 @@ const OAuth = () => {
 
   useEffect(() => {
     setAuthDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <h1>redirecting...</h1>;
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}
+    >
+      <BarLoader height={5} width={200} />
+    </div>
+  );
 };
 
 export default OAuth;
