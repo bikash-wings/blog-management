@@ -7,7 +7,7 @@ const { StatusCodes } = require("http-status-codes");
  * This controller is to register new user
  */
 const signup = catchAsync(async (req, res) => {
-  const signup = await userServices.signup(req, res);
+  const signup = await userServices.signup(req);
 
   if (signup) {
     return setSuccessResponse(
@@ -57,7 +57,7 @@ const uploadProfilePic = catchAsync(async (req, res) => {
  * This controller is to login
  */
 const login = catchAsync(async (req, res) => {
-  const login = await userServices.login(req, res);
+  const login = await userServices.login(req);
 
   if (login) {
     return setSuccessResponse(
@@ -161,7 +161,7 @@ const totalUserCountController = catchAsync(async (req, res) => {
 });
 
 /**
- * Thsi controller will return room id
+ * This controller will return room id
  */
 const getRoomIdController = catchAsync(async (req, res) => {
   const getRoomId = await userServices.getRoomId();
@@ -173,6 +173,23 @@ const getRoomIdController = catchAsync(async (req, res) => {
       true,
       getRoomId,
       "Room Id fetched"
+    );
+  }
+});
+
+/**
+ * This controller will return profile info
+ */
+const userProfileController = catchAsync(async (req, res) => {
+  const userProfile = await userServices.userProfile(req);
+
+  if (userProfile) {
+    return setSuccessResponse(
+      res,
+      StatusCodes.OK,
+      true,
+      userProfile,
+      "Profile info fetched"
     );
   }
 });
@@ -189,4 +206,5 @@ module.exports = {
   logoutController,
   totalUserCountController,
   getRoomIdController,
+  userProfileController,
 };

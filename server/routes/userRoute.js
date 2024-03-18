@@ -10,6 +10,7 @@ const {
   logoutController,
   totalUserCountController,
   getRoomIdController,
+  userProfileController,
 } = require("../controllers/userController");
 const { isSignIn, isAdmin, checkPermissions } = require("../middlewares/auth");
 
@@ -54,5 +55,8 @@ router.get(
 
 /* GET room-id */
 router.get("/room-id", isSignIn, getRoomIdController);
+
+/* GET profile */
+router.get("/profile", isSignIn, userProfileController);
 
 module.exports = router;

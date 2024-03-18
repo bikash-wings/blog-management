@@ -9,7 +9,7 @@ const randomString = require("randomstring");
 /**
  * This service is for signup
  */
-const signup = async (req, res) => {
+const signup = async (req) => {
   const { fname, lname, email, password, phone, avatar, answer } = req.body;
 
   if (!fname) {
@@ -139,10 +139,12 @@ const login = async (req) => {
     });
     user.dataValues.permissions = userPermissions.map((per) => per.name);
 
-    delete user.dataValues.password;
-    delete user.dataValues.verifyToken;
-    delete user.dataValues.updatedAt;
-    delete user.dataValues.role;
+    user.dataValues = {
+      id: user.dataValues.id,
+      fullName: user.dataValues.fullName,
+      permissions: user.dataValues.permissions,
+      avatar: user.dataValues.avatar,
+    };
 
     return { user: user, token: token };
   } catch (error) {
@@ -253,6 +255,11 @@ const forgotPassword = async (body) => {
     );
   }
 };
+
+/**
+ * This service is for google auth
+ */
+const googleAuthCallback = async () => {};
 
 /**
  * This service will update user info
@@ -415,6 +422,23 @@ const getRoomId = async () => {
   return roomId;
 };
 
+/**
+ * This service is to get logged user details
+ */
+const userProfile = async (req) => {
+  const user = req.user;
+
+  user.dataValues = {
+    fname: user.dataValues.fname,
+    lname: user.dataValues.lname,
+    address: user.dataValues.address,
+    answer: user.dataValues.answer,
+    phone: user.dataValues.phone,
+  };
+
+  return user;
+};
+
 module.exports = {
   signup,
   verifyMail,
@@ -427,4 +451,5 @@ module.exports = {
   logout,
   totalUsersCount,
   getRoomId,
+  userProfile,
 };

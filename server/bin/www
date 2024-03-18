@@ -30,7 +30,7 @@ const io = new Server(server, {
   cors: { origin: "http://localhost:5173", credentials: true },
 });
 
-// global.room = new Map();
+global.room = new Map();
 
 const CHAT_BOT = "ChatBot";
 
