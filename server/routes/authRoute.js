@@ -28,6 +28,7 @@ router.get(
     // Successful authentication, redirect login success.
     res.redirect(`/auth/login/success?code=${req.query.code}`);
   }
+  
 );
 
 // router.get("/google/callback", async (req, res, next) => {
