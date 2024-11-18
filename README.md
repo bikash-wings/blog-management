@@ -15,14 +15,14 @@ APIs built using NodeJS for the BigToes Fitness Application.
 ## Installation
 1. Clone the repository:
 ```bash
-       git clone https://github.com/your-repo/bigtoe-api.git
+git clone https://github.com/your-repo/bigtoe-api.git
 ```
 
 2. Install dependencies:
 ```bash
-       npm install
-          or
-       yarn install
+npm install
+    or
+yarn install
 ```
 
 <br />
@@ -95,9 +95,9 @@ MSG91_OTP_BASE_URL ="https://control.msg91.com/api/v5/otp"
 ## Running the Application in Development Mode:
 
 ```bash
-       npm run dev
-           or
-       yarn dev
+npm run dev
+    or
+yarn dev
 ```
 - API will be available at http://localhost:5000.
 
@@ -106,14 +106,14 @@ MSG91_OTP_BASE_URL ="https://control.msg91.com/api/v5/otp"
 
 ## Troubleshooting
 1. Database Connection Fails:
--- Check DATABASE_URL in the .env file.
--- Ensure the database server is running.
+* Check DATABASE_URL in the .env file.
+* Ensure the database server is running.
 2. Invalid Token:
--- Ensure JWT_SECRET in the .env matches across services.
+ Ensure JWT_SECRET in the .env matches across services.
 3. Port Already in Use:
-- Specify another port in .env:
+* Specify another port in .env:
 ```bash
-       PORT=5001
+PORT=5001
 ```
 <br />
 
@@ -121,12 +121,12 @@ MSG91_OTP_BASE_URL ="https://control.msg91.com/api/v5/otp"
 1. Fork the repositories.
 2. Create a feature branch:
 ```bash
-       git checkout -b feature-name
+git checkout -b feature-name
 ```
 3. Commit changes and push:
 ```bash
-       git commit -m "Your commit message"
-       git push origin feature-name
+git commit -m "Your commit message"
+git push origin feature-name
 ```
 4. Submit a pull request.
 
