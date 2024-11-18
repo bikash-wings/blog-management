@@ -75,3 +75,24 @@ yarn build
 - API Not Responding: Ensure Bigtoe API is running and VITE_BASE_URL is correctly set.
 - Logging Errors: If a component fails to load or throws any error logging that in UI & Console through Error Boundary.
 - Build Errors: Check the .env file for missing configurations and ensure dependencies are up to date.
+
+<br />
+
+## Contributing
+1. Fork the repositories.
+2. Create a feature branch:
+```bash
+git checkout -b feature-name
+```
+3. Commit changes and push:
+```bash
+git commit -m "Your commit message"
+git push origin feature-name
+```
+4. Submit a pull request.
+
+   
+<br />
+
+## Support
+For any issues, feel free to contact the support team or open an issue in the respective GitHub repositories.
