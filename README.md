@@ -1,4 +1,4 @@
-# bigtoes-api
+# BigToes Fitness API
 APIs built using NodeJS for the BigToes Fitness Application.
 
 
@@ -106,12 +106,10 @@ yarn dev
 
 ## Troubleshooting
 1. Database Connection Fails:
-* Check DATABASE_URL in the .env file.
-* Ensure the database server is running.
-2. Invalid Token:
- Ensure JWT_SECRET in the .env matches across services.
-3. Port Already in Use:
-* Specify another port in .env:
+- Check DATABASE_URL in the .env file.
+- Ensure the database server is running.
+2. Invalid Token: Ensure JWT_SECRET in the .env matches across services.
+3. Port Already in Use: Specify another port in .env:
 ```bash
 PORT=5001
 ```
