@@ -1,10 +1,15 @@
 # bigtoes-api
 APIs built using NodeJS for the BigToes Fitness Application.
 
+
+<br />
+
 ## Prerequisites
 - Node.js (v18.x or above)
 - npm or yarn
 - MySQL
+  
+<br />
 
   
 ## Installation
@@ -19,6 +24,8 @@ npm install
 # or
 yarn install
 ```
+
+<br />
 
 ## Environment Setup
 1. Create a .env file in the root directory.
@@ -83,15 +90,19 @@ MSG91_OTP_BASE_URL ="https://control.msg91.com/api/v5/otp"
 
 ```
 
-### Running the Application in Development Mode:
+<br />
+
+## Running the Application in Development Mode:
 
 ```bash
-Copy code
 npm run dev
 # or
 yarn dev
 ```
 - API will be available at http://localhost:5000.
+
+  
+<br />
 
 ## Troubleshooting
 1. Database Connection Fails:
@@ -104,6 +115,7 @@ yarn dev
 ```bash
 PORT=5001
 ```
+<br />
 
 ## Contributing
 1. Fork the repositories.
@@ -117,6 +129,9 @@ git commit -m "Your commit message"
 git push origin feature-name
 ```
 3. Submit a pull request.
+
+   
+<br />
 
 ## Support
 For any issues, feel free to contact the support team or open an issue in the respective GitHub repositories.
