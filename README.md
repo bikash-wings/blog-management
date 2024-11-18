@@ -15,7 +15,7 @@ APIs built using NodeJS for the BigToes Fitness Application.
 ## Installation
 1. Clone the repository:
 ```bash
-git clone [https://github.com/your-repo/bigtoe-api.git](https://github.com/PM-wts/bigtoes-api.git)
+git clone https://github.com/PM-wts/bigtoes-api.git
 ```
 
 2. Install dependencies:
